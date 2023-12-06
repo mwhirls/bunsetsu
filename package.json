@@ -9,10 +9,10 @@
   ],
   "scripts": {
     "clean": "rm -rf dist/",
-    "compile": "tsc --declaration",
     "lint": "eslint \"./{src,test}/**/*.{js,cjs,mjs,ts}\"",
-    "prepublish": "npm run compile",
-    "test": "mocha \"./test/*.{js,cjs,mjs,ts}\""
+    "test": "mocha \"./test/*.{js,cjs,mjs,ts}\"",
+    "compile": "tsc --declaration",
+    "prepublish": "npm run clean && npm run lint && npm run test && npm run compile"
   },
   "author": "",
   "license": "Apache-2.0",

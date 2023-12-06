@@ -6,8 +6,8 @@ const DICTIONARY_PATH = "./node_modules/kuromoji/dict"
 describe('Segmenter', function () {
   describe('build', async function () {
     it('should successfully build when a valid path is provided', async function () {
-      const _segmenter = await tokun.build(DICTIONARY_PATH);
-      assert.equal(true, true);
+      const segmenter = await tokun.build(DICTIONARY_PATH);
+      assert.equal(segmenter, segmenter);
     });
   });
 

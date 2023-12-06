@@ -39,7 +39,15 @@ function handleVerb(tokens: IpadicFeatures[], index: number): Word {
     return { tokens: [token] };
 }
 
-function handleNoun(tokens: IpadicFeatures[], index: number): Word {
+function handleSuffixedNoun(stem: IpadicFeatures, suffix: IpadicFeatures, lookup: WordExistsCallback): Word {
+    const compound = `${stem}${suffix}`;
+    if (lookup(compound)) {
+        return { tokens: [stem, suffix] };
+    }
+    return { tokens: [stem] };
+}
+
+function handleNoun(tokens: IpadicFeatures[], index: number, lookup: WordExistsCallback): Word {
     const token = tokens[index];
     if (isSuruVerb(token)) {
         const next = index + 1 < tokens.length ? tokens[index + 1] : null;
@@ -48,16 +56,20 @@ function handleNoun(tokens: IpadicFeatures[], index: number): Word {
             return { tokens: [token, ...verb.tokens] };
         }
     }
+    const next = index + 1 < tokens.length ? tokens[index + 1] : null;
+    if (next && next.basic_form === '接尾') {
+        return handleSuffixedNoun(token, next, lookup);
+    }
     return { tokens: [token] };
 }
 
 
-function nextWord(tokens: IpadicFeatures[], index: number): Word {
+function nextWord(tokens: IpadicFeatures[], index: number, lookup: WordExistsCallback): Word {
     const token = tokens[index];
     if (token.pos === '動詞') {
         return handleVerb(tokens, index);
     } else if (token.pos === '名詞') {
-        return handleNoun(tokens, index);
+        return handleNoun(tokens, index, lookup);
     } else {
         return { tokens: [token] };
     }
@@ -67,7 +79,7 @@ function nextSentence(tokens: IpadicFeatures[], start: number, lookup: WordExist
     const result = [];
     let index = start;
     while (index < tokens.length) {
-        const word = nextWord(tokens, index);
+        const word = nextWord(tokens, index, lookup);
         index += word.tokens.length;
         result.push(word);
     }
