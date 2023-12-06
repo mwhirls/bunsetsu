@@ -1,4 +1,5 @@
 import { IpadicFeatures, Tokenizer, builder } from "kuromoji";
+import { JMdictWord } from '@scriptin/jmdict-simplified-types'
 
 // https://qiita.com/ensan_hcl/items/885588c7d2d99de85b44
 export enum PartOfSpeech {
@@ -69,15 +70,11 @@ function handleVerb(tokens: IpadicFeatures[], index: number): IpadicWord {
     return new IpadicWord(PartOfSpeech.Verb, [token]);
 }
 
-async function handleSuffixedNoun(stem: IpadicFeatures, suffix: IpadicFeatures, lookup: WordExistsCallback): Promise<IpadicWord> {
-    const compound = `${stem}${suffix}`;
-    if (await lookup(compound)) {
-        return new IpadicWord(PartOfSpeech.Noun, [stem, suffix]);
-    }
-    return new IpadicWord(PartOfSpeech.Noun, [stem]);
+async function handleSuffixedNoun(stem: IpadicFeatures, suffix: IpadicFeatures): Promise<IpadicWord> {
+    return new IpadicWord(PartOfSpeech.Noun, [stem, suffix]);
 }
 
-async function handleNoun(tokens: IpadicFeatures[], index: number, lookup: WordExistsCallback): Promise<IpadicWord> {
+async function handleNoun(tokens: IpadicFeatures[], index: number): Promise<IpadicWord> {
     const token = tokens[index];
     if (isSuruVerb(token)) {
         const next = index + 1 < tokens.length ? tokens[index + 1] : null;
@@ -88,7 +85,7 @@ async function handleNoun(tokens: IpadicFeatures[], index: number, lookup: WordE
     }
     const next = index + 1 < tokens.length ? tokens[index + 1] : null;
     if (next && next.basic_form === Details.Suffix) {
-        return await handleSuffixedNoun(token, next, lookup);
+        return await handleSuffixedNoun(token, next);
     }
     return new IpadicWord(PartOfSpeech.Noun, [token]);
 }
@@ -121,7 +118,7 @@ function handleAdjective(tokens: IpadicFeatures[], index: number) {
     return filler ?? new IpadicWord(PartOfSpeech.Interjection, [token]);
 }
 
-async function nextWord(tokens: IpadicFeatures[], index: number, lookup: WordExistsCallback): Promise<IpadicWord> {
+async function nextWord(tokens: IpadicFeatures[], index: number): Promise<IpadicWord> {
     const token = tokens[index];
     switch (token.pos) {
         case PartOfSpeech.Filler:
@@ -129,7 +126,7 @@ async function nextWord(tokens: IpadicFeatures[], index: number, lookup: WordExi
         case PartOfSpeech.Interjection:
             return handleInterjection(tokens, index);
         case PartOfSpeech.Noun:
-            return handleNoun(tokens, index, lookup);
+            return handleNoun(tokens, index);
         case PartOfSpeech.Verb:
             return handleVerb(tokens, index);
         case PartOfSpeech.Adjective:
@@ -139,11 +136,11 @@ async function nextWord(tokens: IpadicFeatures[], index: number, lookup: WordExi
     }
 }
 
-async function nextSentence(tokens: IpadicFeatures[], start: number, lookup: WordExistsCallback): Promise<IpadicSentence> {
+async function nextSentence(tokens: IpadicFeatures[], start: number): Promise<IpadicSentence> {
     const result = [];
     let index = start;
     while (index < tokens.length) {
-        const word = await nextWord(tokens, index, lookup);
+        const word = await nextWord(tokens, index);
         index += word.tokens.length;
         result.push(word);
         // todo: break sentence
@@ -151,22 +148,22 @@ async function nextSentence(tokens: IpadicFeatures[], start: number, lookup: Wor
     return { words: result, start, end: index };
 }
 
-async function toSentences(tokens: IpadicFeatures[], lookup: WordExistsCallback): Promise<Sentence[]> {
+async function toSentences(tokens: IpadicFeatures[]): Promise<Sentence[]> {
     const result = [];
     let index = 0;
     while (index < tokens.length) {
-        const sentence = await nextSentence(tokens, index, lookup);
+        const sentence = await nextSentence(tokens, index);
         index += sentence.end - sentence.start;
         result.push(sentence);
     }
     return result;
 }
 
-async function toWords(tokens: IpadicFeatures[], lookup: WordExistsCallback): Promise<Word[]> {
+async function toWords(tokens: IpadicFeatures[]): Promise<Word[]> {
     const result = [];
     let index = 0;
     while (index < tokens.length) {
-        const word = await nextWord(tokens, index, lookup);
+        const word = await nextWord(tokens, index);
         index += word.tokens.length;
         result.push(word);
     }
@@ -222,11 +219,11 @@ export interface Sentence {
     words: Word[];
 }
 
-export type WordExistsCallback = (text: string) => Promise<boolean>;
+export type DictionaryLookup = (text: string) => Promise<JMdictWord | null>;
 
 export interface Segmenter {
-    segmentAsWords(text: string, lookup: WordExistsCallback): Promise<Word[]>;
-    segmentAsSentences(text: string, lookup: WordExistsCallback): Promise<Sentence[]>;
+    segmentAsWords(text: string): Promise<Word[]>;
+    segmentAsSentences(text: string): Promise<Sentence[]>;
 }
 
 class IpadicSentence implements Sentence {
@@ -248,13 +245,13 @@ class IpadicSegmenter implements Segmenter {
         this.tokenizer = tokenizer;
     }
 
-    async segmentAsWords(text: string, lookup: WordExistsCallback): Promise<Word[]> {
+    async segmentAsWords(text: string): Promise<Word[]> {
         const tokens = this.tokenizer.tokenize(text);
-        return await toWords(tokens, lookup);
+        return await toWords(tokens);
     }
-    async segmentAsSentences(text: string, lookup: WordExistsCallback): Promise<Sentence[]> {
+    async segmentAsSentences(text: string): Promise<Sentence[]> {
         const tokens = this.tokenizer.tokenize(text);
-        return toSentences(tokens, lookup);
+        return toSentences(tokens);
     }
 }
 

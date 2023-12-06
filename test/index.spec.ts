@@ -27,13 +27,12 @@ describe('Factory Methods', function () {
 
 describe('Segmenter', async function () {
   const segmenter = await tokun.build(DICTIONARY_PATH);
-  const lookup = async () => false;
   describe('segmentAsWords()', function () {
     describe('PartOfSpeech.Filler', function () {
       const fillerWords = ['あの', 'あのー', 'あのう', 'えっと', 'えーと', 'えーっと', 'ええと', 'ええっと'];
       for (const form of fillerWords) {
         it(`should identify ${form} as one filler word`, async function () {
-          const words = await segmenter.segmentAsWords(form, lookup);
+          const words = await segmenter.segmentAsWords(form);
           assert.equal(words.length, 1);
           const word = words[0];
           assert.equal(word.surfaceForm, form);
@@ -46,7 +45,7 @@ describe('Segmenter', async function () {
       const interjections = ['こんにちは', 'おはよう', 'じゃあ', 'こんばんは', 'おめでとう'];
       for (const form of interjections) {
         it(`should identify ${form} as one interjection`, async function () {
-          const words = await segmenter.segmentAsWords(form, lookup);
+          const words = await segmenter.segmentAsWords(form);
           assert.equal(words.length, 1);
           const word = words[0];
           assert.equal(word.surfaceForm, form);
