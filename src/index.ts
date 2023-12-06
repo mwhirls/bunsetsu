@@ -5,6 +5,7 @@ import { JMdictWord } from '@scriptin/jmdict-simplified-types'
 export enum PartOfSpeech {
     Filler = 'フィラー', // 「あのー」「えーと」
     Interjection = '感動詞',
+    Symbol = '記号',
     Noun = '名詞',
     Verb = '動詞',
     Adjective = '形容詞',
@@ -18,6 +19,18 @@ export enum Details {
     SuruConjunction = 'サ変接続',
     NotIndependent = '非自立',
     ConjunctionParticle = '接続助詞',
+}
+
+export enum SymbolType {
+    Alphabet = 'アルファベット',
+    OpeningBracketParens = '括弧開',
+    ClosingBracketParens = '括弧閉',
+    Period = '句点',
+    QuestionMark = '疑問符', // びっくりマーク (!) not categorized by kuromoji
+    ExclamationMark = '感嘆符', // はてなマーク (?) not categorized by kuromoji
+    Space = '空白',
+    Comma = '読点',
+    Interpunct = '中点' // ・not categorized by kuromoji
 }
 
 export enum ConjugatedForm {
@@ -112,6 +125,11 @@ function handleInterjection(tokens: IpadicFeatures[], index: number): IpadicWord
     return filler ?? new IpadicWord(PartOfSpeech.Interjection, [token]);
 }
 
+function handleSymbol(tokens: IpadicFeatures[], index: number): IpadicWord {
+    const token = tokens[index];
+    return new IpadicWord(PartOfSpeech.Symbol, [token]);
+}
+
 function handleAdjective(tokens: IpadicFeatures[], index: number) {
     const token = tokens[index];
     const filler = handleFiller(tokens, index); // sometimes pieces of fillers are categorized as adjectives
@@ -125,6 +143,8 @@ async function nextWord(tokens: IpadicFeatures[], index: number): Promise<Ipadic
             return handleFiller(tokens, index) ?? new IpadicWord(PartOfSpeech.Filler, [token]);
         case PartOfSpeech.Interjection:
             return handleInterjection(tokens, index);
+        case PartOfSpeech.Symbol:
+            return handleSymbol(tokens, index);
         case PartOfSpeech.Noun:
             return handleNoun(tokens, index);
         case PartOfSpeech.Verb:
@@ -181,19 +201,21 @@ export interface Token {
 }
 
 export interface Word {
-    surfaceForm: string;
     pos: PartOfSpeech;
+    surfaceForm: string;
     basicForm: string;
     reading?: string | undefined;
     pronunciation?: string | undefined;
+    symbolType?: SymbolType | undefined;
 }
 
 class IpadicWord implements Word {
-    surfaceForm: string;
     pos: PartOfSpeech;
+    surfaceForm: string;
     basicForm: string;
     reading?: string | undefined;
     pronunciation?: string | undefined;
+    symbolType?: SymbolType | undefined;
     tokens: IpadicFeatures[];
 
     constructor(pos: PartOfSpeech, tokens: IpadicFeatures[]) {
@@ -205,12 +227,29 @@ class IpadicWord implements Word {
         };
         const reading = tokens.reduce((acc, curr) => acc + curr.reading ?? "", "");
         const pronunciation = tokens.reduce((acc, curr) => acc + curr.pronunciation ?? "", "");
+        let symbolType = pos === PartOfSpeech.Symbol && tokens.length ? Object.values(SymbolType).find(x => x === tokens[0].pos_detail_1) : undefined;
+        if (!symbolType) {
+            switch (tokens[0].basic_form) {
+                case '！':
+                    symbolType = SymbolType.ExclamationMark;
+                    break;
+                case '？':
+                    symbolType = SymbolType.QuestionMark;
+                    break;
+                case '・':
+                    symbolType = SymbolType.Interpunct;
+                    break;
+                default:
+                    break;
+            }
+        }
 
-        this.surfaceForm = tokens.reduce((acc, curr) => acc + curr.surface_form, "");
         this.pos = pos;
+        this.surfaceForm = tokens.reduce((acc, curr) => acc + curr.surface_form, "");
         this.basicForm = getBasicForm();
         this.reading = reading.length ? reading : undefined;
         this.pronunciation = pronunciation.length ? pronunciation : undefined;
+        this.symbolType = symbolType;
         this.tokens = tokens;
     }
 }

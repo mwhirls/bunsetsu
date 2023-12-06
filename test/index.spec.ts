@@ -53,6 +53,138 @@ describe('Segmenter', async function () {
         });
       }
     });
+
+    describe('PartOfSpeech.Symbol', function () {
+      describe('SymbolType.Alphabet', function () {
+        const alphabet = [...'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ'];
+        for (const c of alphabet) {
+          it(`should identify ${c} as one alphabetical character`, async function () {
+            const words = await segmenter.segmentAsWords(c);
+            assert.equal(words.length, 1);
+            const word = words[0];
+            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.symbolType, tokun.SymbolType.Alphabet);
+            assert.equal(word.surfaceForm, c);
+            assert.equal(word.basicForm, c);
+          });
+        }
+      });
+
+      describe('SymbolType.OpeningBracketParens', function () {
+        const brackets = [...'「『（'];
+        for (const c of brackets) {
+          it(`should identify ${c} as one opening bracket/parentheses`, async function () {
+            const words = await segmenter.segmentAsWords(c);
+            assert.equal(words.length, 1);
+            const word = words[0];
+            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.symbolType, tokun.SymbolType.OpeningBracketParens);
+            assert.equal(word.surfaceForm, c);
+            assert.equal(word.basicForm, c);
+          });
+        }
+      });
+
+      describe('SymbolType.ClosingBracketParens', function () {
+        const brackets = [...'」』）'];
+        for (const c of brackets) {
+          it(`should identify ${c} as one closing bracket/parentheses`, async function () {
+            const words = await segmenter.segmentAsWords(c);
+            assert.equal(words.length, 1);
+            const word = words[0];
+            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.symbolType, tokun.SymbolType.ClosingBracketParens);
+            assert.equal(word.surfaceForm, c);
+            assert.equal(word.basicForm, c);
+          });
+        }
+      });
+
+
+      describe('SymbolType.Period', function () {
+        const c = '。';
+        it(`should identify ${c} as one full stop character`, async function () {
+          const words = await segmenter.segmentAsWords(c);
+          assert.equal(words.length, 1);
+          const word = words[0];
+          assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+          assert.equal(word.symbolType, tokun.SymbolType.Period);
+          assert.equal(word.surfaceForm, c);
+          assert.equal(word.basicForm, c);
+        });
+      });
+
+
+      describe('SymbolType.ExclamationMark', function () {
+        const c = '！';
+        it(`should identify ${c} as one exclamation mark`, async function () {
+          const words = await segmenter.segmentAsWords(c);
+          assert.equal(words.length, 1);
+          const word = words[0];
+          assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+          assert.equal(word.symbolType, tokun.SymbolType.ExclamationMark);
+          assert.equal(word.surfaceForm, c);
+          assert.equal(word.basicForm, c);
+        });
+      });
+
+
+      describe('SymbolType.QuestionMark', function () {
+        const c = '？';
+        it(`should identify ${c} as one question mark`, async function () {
+          const words = await segmenter.segmentAsWords(c);
+          assert.equal(words.length, 1);
+          const word = words[0];
+          assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+          assert.equal(word.symbolType, tokun.SymbolType.QuestionMark);
+          assert.equal(word.surfaceForm, c);
+          assert.equal(word.basicForm, c);
+        });
+      });
+
+      describe('SymbolType.Interpunct', function () {
+        const c = '・';
+        it(`should identify ${c} as one interpunt character`, async function () {
+          const words = await segmenter.segmentAsWords(c);
+          assert.equal(words.length, 1);
+          const word = words[0];
+          assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+          assert.equal(word.symbolType, tokun.SymbolType.Interpunct);
+          assert.equal(word.surfaceForm, c);
+          assert.equal(word.basicForm, c);
+        });
+      });
+
+      describe('SymbolType.Space', function () {
+        const spaces = [...'　'];
+        for (const c of spaces) {
+          it(`should identify ${c} as one full stop character`, async function () {
+            const words = await segmenter.segmentAsWords(c);
+            assert.equal(words.length, 1);
+            const word = words[0];
+            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.symbolType, tokun.SymbolType.Space);
+            assert.equal(word.surfaceForm, c);
+            assert.equal(word.basicForm, c);
+          });
+        }
+      });
+
+      describe('SymbolType.Comma', function () {
+        const spaces = [...'、'];
+        for (const c of spaces) {
+          it(`should identify ${c} as one comma`, async function () {
+            const words = await segmenter.segmentAsWords(c);
+            assert.equal(words.length, 1);
+            const word = words[0];
+            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.symbolType, tokun.SymbolType.Comma);
+            assert.equal(word.surfaceForm, c);
+            assert.equal(word.basicForm, c);
+          });
+        }
+      });
+    });
   });
 
 });
