@@ -41,6 +41,19 @@ describe('Segmenter', async function () {
         });
       }
     });
+
+    describe('PartOfSpeech.Interjection', function () {
+      const interjections = ['こんにちは', 'おはよう', 'じゃあ', 'こんばんは', 'おめでとう'];
+      for (const form of interjections) {
+        it(`should identify ${form} as one interjection`, async function () {
+          const words = await segmenter.segmentAsWords(form, lookup);
+          assert.equal(words.length, 1);
+          const word = words[0];
+          assert.equal(word.surfaceForm, form);
+          assert.equal(word.pos, tokun.PartOfSpeech.Interjection);
+        });
+      }
+    });
   });
 
 });
