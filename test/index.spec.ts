@@ -17,7 +17,8 @@ describe('Segmenter', function () {
         await tokun.build("invalid");
         assert.fail();
       } catch (err) {
-        assert.equal(err.code, 'ENOENT');
+        assert.equal(true, err instanceof Error);
+        assert.equal((err as NodeJS.ErrnoException).code, 'ENOENT');
       }
     });
   });
