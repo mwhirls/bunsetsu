@@ -16,6 +16,6 @@
     "plugins": [
         "@typescript-eslint"
     ],
-    "rules": {
-    }
+    "root": true,
+    "rules": {}
 }
