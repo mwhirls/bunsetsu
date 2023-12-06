@@ -1,12 +1,41 @@
 import { IpadicFeatures, Tokenizer, builder } from "kuromoji";
 
+// https://qiita.com/ensan_hcl/items/885588c7d2d99de85b44
+enum PartOfSpeech {
+    Filler = 'フィラー', // 「あのー」「えーと」
+    Noun = '名詞',
+    Verb = '動詞',
+    Adjective = '形容詞',
+    Particle = '助詞',
+    AuxillaryVerb = '助動詞',
+    Conjunction = '接続詞'
+}
+
+enum Details {
+    Suffix = '接尾',
+    SuruConjunction = 'サ変接続',
+    NotIndependent = '非自立',
+    ConjunctionParticle = '接続助詞',
+}
+
+enum ConjugatedForm {
+    MasuStem = '連用形',
+    TaForm = '連用タ接続',
+    NaiStem = '未然形',
+}
+
+enum IrregularVerb {
+    Suru = 'する',
+    Kuru = 'くる'
+}
+
 function posDetails(token: IpadicFeatures): string[] {
     return [token.pos_detail_1, token.pos_detail_2, token.pos_detail_3];
 }
 
 function isSuruVerb(token: IpadicFeatures) {
     const details = posDetails(token);
-    return token.pos === '名詞' && details.some((value) => value === 'サ変接続');
+    return token.pos === PartOfSpeech.Noun && details.some((value) => value === Details.SuruConjunction);
 }
 
 function handleConjugation(tokens: IpadicFeatures[], start: number): Word {
@@ -15,10 +44,10 @@ function handleConjugation(tokens: IpadicFeatures[], start: number): Word {
     while (index < tokens.length) {
         const token = tokens[index];
         const details = posDetails(token);
-        if (details.some((value) => value === '接尾') ||
-            token.pos === "助詞" && details.some((value) => value === '接続助詞') ||
-            token.pos === "動詞" && details.some((value) => value === '非自立') ||
-            token.pos === '助動詞') {
+        if (details.some((value) => value === Details.Suffix) ||
+            token.pos === PartOfSpeech.Particle && details.some((value) => value === Details.NotIndependent) ||
+            token.pos === PartOfSpeech.Verb && details.some((value) => value === Details.NotIndependent) ||
+            token.pos === PartOfSpeech.AuxillaryVerb) {
             index++;
             word.push(token);
         } else {
@@ -30,9 +59,9 @@ function handleConjugation(tokens: IpadicFeatures[], start: number): Word {
 
 function handleVerb(tokens: IpadicFeatures[], index: number): Word {
     const token = tokens[index];
-    if (token.conjugated_form === "連用形" ||
-        token.conjugated_form === '連用タ接続' ||
-        token.conjugated_form === '未然形') {
+    if (token.conjugated_form === ConjugatedForm.MasuStem ||
+        token.conjugated_form === ConjugatedForm.TaForm ||
+        token.conjugated_form === ConjugatedForm.NaiStem) {
         const conjugation = handleConjugation(tokens, index + 1);
         return { tokens: [token, ...conjugation.tokens] }
     }
@@ -51,13 +80,13 @@ async function handleNoun(tokens: IpadicFeatures[], index: number, lookup: WordE
     const token = tokens[index];
     if (isSuruVerb(token)) {
         const next = index + 1 < tokens.length ? tokens[index + 1] : null;
-        if (next && next.basic_form === 'する') {
+        if (next && next.basic_form === IrregularVerb.Suru) {
             const verb = handleVerb(tokens, index + 1);
             return { tokens: [token, ...verb.tokens] };
         }
     }
     const next = index + 1 < tokens.length ? tokens[index + 1] : null;
-    if (next && next.basic_form === '接尾') {
+    if (next && next.basic_form === Details.Suffix) {
         return await handleSuffixedNoun(token, next, lookup);
     }
     return { tokens: [token] };
@@ -66,9 +95,9 @@ async function handleNoun(tokens: IpadicFeatures[], index: number, lookup: WordE
 
 async function nextWord(tokens: IpadicFeatures[], index: number, lookup: WordExistsCallback): Promise<Word> {
     const token = tokens[index];
-    if (token.pos === '動詞') {
+    if (token.pos === PartOfSpeech.Verb) {
         return handleVerb(tokens, index);
-    } else if (token.pos === '名詞') {
+    } else if (token.pos === PartOfSpeech.Noun) {
         return handleNoun(tokens, index, lookup);
     } else {
         return { tokens: [token] };
