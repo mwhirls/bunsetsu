@@ -39,15 +39,15 @@ function handleVerb(tokens: IpadicFeatures[], index: number): Word {
     return { tokens: [token] };
 }
 
-function handleSuffixedNoun(stem: IpadicFeatures, suffix: IpadicFeatures, lookup: WordExistsCallback): Word {
+async function handleSuffixedNoun(stem: IpadicFeatures, suffix: IpadicFeatures, lookup: WordExistsCallback): Promise<Word> {
     const compound = `${stem}${suffix}`;
-    if (lookup(compound)) {
+    if (await lookup(compound)) {
         return { tokens: [stem, suffix] };
     }
     return { tokens: [stem] };
 }
 
-function handleNoun(tokens: IpadicFeatures[], index: number, lookup: WordExistsCallback): Word {
+async function handleNoun(tokens: IpadicFeatures[], index: number, lookup: WordExistsCallback): Promise<Word> {
     const token = tokens[index];
     if (isSuruVerb(token)) {
         const next = index + 1 < tokens.length ? tokens[index + 1] : null;
@@ -58,13 +58,13 @@ function handleNoun(tokens: IpadicFeatures[], index: number, lookup: WordExistsC
     }
     const next = index + 1 < tokens.length ? tokens[index + 1] : null;
     if (next && next.basic_form === '接尾') {
-        return handleSuffixedNoun(token, next, lookup);
+        return await handleSuffixedNoun(token, next, lookup);
     }
     return { tokens: [token] };
 }
 
 
-function nextWord(tokens: IpadicFeatures[], index: number, lookup: WordExistsCallback): Word {
+async function nextWord(tokens: IpadicFeatures[], index: number, lookup: WordExistsCallback): Promise<Word> {
     const token = tokens[index];
     if (token.pos === '動詞') {
         return handleVerb(tokens, index);
@@ -75,24 +75,36 @@ function nextWord(tokens: IpadicFeatures[], index: number, lookup: WordExistsCal
     }
 }
 
-function nextSentence(tokens: IpadicFeatures[], start: number, lookup: WordExistsCallback): IpadicSentence {
+async function nextSentence(tokens: IpadicFeatures[], start: number, lookup: WordExistsCallback): Promise<IpadicSentence> {
     const result = [];
     let index = start;
     while (index < tokens.length) {
-        const word = nextWord(tokens, index, lookup);
+        const word = await nextWord(tokens, index, lookup);
         index += word.tokens.length;
         result.push(word);
+        // todo: break sentence
     }
     return { words: result, start, end: index };
 }
 
-function toSentences(tokens: IpadicFeatures[], lookup: WordExistsCallback): Sentence[] {
+async function toSentences(tokens: IpadicFeatures[], lookup: WordExistsCallback): Promise<Sentence[]> {
     const result = [];
     let index = 0;
     while (index < tokens.length) {
-        const sentence = nextSentence(tokens, index, lookup);
+        const sentence = await nextSentence(tokens, index, lookup);
         index += sentence.end - sentence.start;
         result.push(sentence);
+    }
+    return result;
+}
+
+async function toWords(tokens: IpadicFeatures[], lookup: WordExistsCallback): Promise<Word[]> {
+    const result = [];
+    let index = 0;
+    while (index < tokens.length) {
+        const word = await nextWord(tokens, index, lookup);
+        index += word.tokens.length;
+        result.push(word);
     }
     return result;
 }
@@ -108,23 +120,34 @@ export interface Sentence {
 export type WordExistsCallback = (text: string) => Promise<boolean>;
 
 export interface Segmenter {
-    segment(text: string, lookup: WordExistsCallback): Sentence[];
+    segmentAsWords(text: string, lookup: WordExistsCallback): Promise<Word[]>;
+    segmentAsSentences(text: string, lookup: WordExistsCallback): Promise<Sentence[]>;
 }
 
 class IpadicSentence implements Sentence {
     words: Word[];
     start: number;
     end: number;
+
+    constructor(words: Word[], start: number, end: number) {
+        this.words = words;
+        this.start = start;
+        this.end = end;
+    }
 }
 
 class IpadicSegmenter implements Segmenter {
     tokenizer: Tokenizer<IpadicFeatures>;
 
-    constructor(tokenizer) {
+    constructor(tokenizer: Tokenizer<IpadicFeatures>) {
         this.tokenizer = tokenizer;
     }
 
-    segment(text: string, lookup: WordExistsCallback): Sentence[] {
+    async segmentAsWords(text: string, lookup: WordExistsCallback): Promise<Word[]> {
+        const tokens = this.tokenizer.tokenize(text);
+        return await toWords(tokens, lookup);
+    }
+    async segmentAsSentences(text: string, lookup: WordExistsCallback): Promise<Sentence[]> {
         const tokens = this.tokenizer.tokenize(text);
         return toSentences(tokens, lookup);
     }
