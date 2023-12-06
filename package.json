@@ -2,8 +2,8 @@
   "name": "tokun",
   "version": "1.0.0",
   "description": "A wrapper library around https://github.com/takuyaa/kuromoji.js that intelligently groups Japanese morphemes into words",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
