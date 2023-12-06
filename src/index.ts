@@ -6,9 +6,9 @@ export enum PartOfSpeech {
     Filler = 'フィラー', // 「あのー」「えーと」
     Interjection = '感動詞',
     Symbol = '記号',
+    Adjective = '形容詞',
     Noun = '名詞',
     Verb = '動詞',
-    Adjective = '形容詞',
     Particle = '助詞',
     AuxillaryVerb = '助動詞',
     Conjunction = '接続詞'
@@ -34,9 +34,22 @@ export enum SymbolType {
 }
 
 export enum ConjugatedForm {
-    MasuStem = '連用形',
-    TaFormStem = '連用タ接続',
-    NaiStem = '未然形',
+    GaruConjunction = 'ガル接続', // 嬉し(がる), 早(すぎる), 悲し(さ), 虚し(そう), etc
+    ConditionalForm = '仮定形', // 美味しけれ(ば), etc
+    ConditionalContraction1 = '仮定縮約１', // 美味しけりゃ
+    ConditionalContraction2 = '仮定縮約２', // 美味しきゃ
+    PlainForm = '基本形',
+    IndeclinableNominalConjunction = '体言接続', // ウザき(人)
+    ClassicalPlainForm = '文語基本形', // (いと)エモし
+    IrrealisUConjunction = '未然ウ接続', // 高かろ(う)
+    IrrealisNuConjunction = '未然ヌ接続', // 高から(ぬ)
+    ImperativeE = '命令ｅ', // (幸)多かれ
+    GozaiConjunction = '連用ゴザイ接続', // 愛しう(ございます), 苦しゅう(ない)
+    TaConjunction = '連用タ接続', // うるさかっ(た)
+    TeConjunction = '連用テ接続', // 女々しく(て), うるさく(する), 芳しく(ない)
+
+    Continuative = '連用形', // -masu stem
+    Irrealis = '未然形', // 来(ない) -nai stem
 }
 
 export enum IrregularVerb {
@@ -74,9 +87,9 @@ function handleConjugation(tokens: IpadicFeatures[], start: number): IpadicWord 
 
 function handleVerb(tokens: IpadicFeatures[], index: number): IpadicWord {
     const token = tokens[index];
-    if (token.conjugated_form === ConjugatedForm.MasuStem ||
-        token.conjugated_form === ConjugatedForm.TaFormStem ||
-        token.conjugated_form === ConjugatedForm.NaiStem) {
+    if (token.conjugated_form === ConjugatedForm.Continuative ||
+        token.conjugated_form === ConjugatedForm.TaConjunction ||
+        token.conjugated_form === ConjugatedForm.Irrealis) {
         const conjugation = handleConjugation(tokens, index + 1);
         return new IpadicWord(PartOfSpeech.Verb, [token, ...conjugation.tokens]);
     }
@@ -133,7 +146,14 @@ function handleSymbol(tokens: IpadicFeatures[], index: number): IpadicWord {
 function handleAdjective(tokens: IpadicFeatures[], index: number) {
     const token = tokens[index];
     const filler = handleFiller(tokens, index); // sometimes pieces of fillers are categorized as adjectives
-    return filler ?? new IpadicWord(PartOfSpeech.Interjection, [token]);
+    if (filler) {
+        return filler;
+    }
+    if (token.conjugated_form === ConjugatedForm.GaruConjunction) {
+        const conjugation = handleConjugation(tokens, index + 1);
+        return new IpadicWord(PartOfSpeech.Adjective, [token, ...conjugation.tokens]);
+    }
+    return new IpadicWord(PartOfSpeech.Adjective, [token]);
 }
 
 async function nextWord(tokens: IpadicFeatures[], index: number): Promise<IpadicWord> {
@@ -220,7 +240,7 @@ class IpadicWord implements Word {
 
     constructor(pos: PartOfSpeech, tokens: IpadicFeatures[]) {
         const getBasicForm = () => {
-            if (pos === PartOfSpeech.Verb) {
+            if (pos === PartOfSpeech.Verb || pos === PartOfSpeech.Adjective) {
                 return tokens.length ? tokens[0].basic_form : "";
             }
             return tokens.reduce((acc, curr) => acc + curr.basic_form ?? "", "");

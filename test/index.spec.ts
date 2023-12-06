@@ -185,6 +185,49 @@ describe('Segmenter', async function () {
         }
       });
     });
-  });
 
+
+    describe('PartOfSpeech.Adjective', function () {
+      describe('ConjugatedForm.GaruConjunction', function () {
+        const adjectives = [
+          { surface: '嬉しがる', basic: "嬉しい" },
+          { surface: '早すぎる', basic: '早い' },
+          { surface: '悲しさ', basic: '悲しい' },
+          { surface: '虚しそう', basic: '虚しい' },
+        ];
+        for (const adjective of adjectives) {
+          it(`should identify ${adjective.surface} as one word`, async function () {
+            const words = await segmenter.segmentAsWords(adjective.surface);
+            assert.equal(words.length, 1);
+            const word = words[0];
+            assert.equal(word.pos, tokun.PartOfSpeech.Adjective);
+            assert.equal(word.surfaceForm, adjective.surface);
+            assert.equal(word.basicForm, adjective.basic);
+          });
+        }
+      });
+    });
+
+  });
 });
+
+/*
+export enum ConjugatedForm {
+    ConditionalForm = '仮定形', // 美味しけれ(ば), etc
+    ConditionalContraction1 = '仮定縮約１', // 美味しけりゃ
+    ConditionalContraction2 = '仮定縮約２', // 美味しきゃ
+    PlainForm = '基本形',
+    IndeclinableNominalConjunction = '体言接続', // ウザき(人)
+    ClassicalPlainForm = '文語基本形', // (いと)エモし
+    IrrealisUConjunction = '未然ウ接続', // 高かろ(う)
+    IrrealisNuConjunction = '未然ヌ接続', // 高から(ぬ)
+    ImperativeE = '命令ｅ', // (幸)多かれ
+    GozaiConjunction = '連用ゴザイ接続', // 愛しう(ございます), 苦しゅう(ない)
+    TaConjunction = '連用タ接続', // うるさかっ(た)
+    TeConjunction = '連用テ接続', // 女々しく(て), うるさく(する), 芳しく(ない)
+
+    Continuative = '連用形', // -masu stem
+    Irrealis = '未然形', // 来(ない) -nai stem
+}
+
+*/
