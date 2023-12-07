@@ -6,7 +6,7 @@ export enum PartOfSpeech {
     Filler = 'フィラー', // 「あのー」「えーと」
     Interjection = '感動詞',
     Symbol = '記号',
-    Adjective = '形容詞',
+    iAdjective = '形容詞',
     Noun = '名詞',
     Verb = '動詞',
     Particle = '助詞',
@@ -66,8 +66,8 @@ function isSuruVerb(token: IpadicFeatures) {
     return token.pos === PartOfSpeech.Noun && details.some((value) => value === Details.SuruConjunction);
 }
 
-function handleConjugation(tokens: IpadicFeatures[], start: number): IpadicWord {
-    const word: IpadicFeatures[] = [];
+function handleConjugation(tokens: IpadicFeatures[], start: number) {
+    const result: IpadicFeatures[] = [];
     let index = start;
     while (index < tokens.length) {
         const token = tokens[index];
@@ -75,14 +75,15 @@ function handleConjugation(tokens: IpadicFeatures[], start: number): IpadicWord 
         if (details.some((value) => value === Details.Suffix) ||
             token.pos === PartOfSpeech.Particle && details.some((value) => value === Details.NotIndependent) ||
             token.pos === PartOfSpeech.Verb && details.some((value) => value === Details.NotIndependent) ||
-            token.pos === PartOfSpeech.AuxillaryVerb) {
+            token.pos === PartOfSpeech.AuxillaryVerb ||
+            token.pos === PartOfSpeech.Particle && details.some((value) => value === Details.ConjunctionParticle)) {
             index++;
-            word.push(token);
+            result.push(token);
         } else {
             break;
         }
     }
-    return new IpadicWord(PartOfSpeech.Verb, word);
+    return result;
 }
 
 function handleVerb(tokens: IpadicFeatures[], index: number): IpadicWord {
@@ -91,7 +92,7 @@ function handleVerb(tokens: IpadicFeatures[], index: number): IpadicWord {
         token.conjugated_form === ConjugatedForm.TaConjunction ||
         token.conjugated_form === ConjugatedForm.Irrealis) {
         const conjugation = handleConjugation(tokens, index + 1);
-        return new IpadicWord(PartOfSpeech.Verb, [token, ...conjugation.tokens]);
+        return new IpadicWord(PartOfSpeech.Verb, [token, ...conjugation]);
     }
     return new IpadicWord(PartOfSpeech.Verb, [token]);
 }
@@ -149,11 +150,13 @@ function handleAdjective(tokens: IpadicFeatures[], index: number) {
     if (filler) {
         return filler;
     }
-    if (token.conjugated_form === ConjugatedForm.GaruConjunction) {
+    if (token.conjugated_form !== ConjugatedForm.PlainForm &&
+        token.conjugated_form !== ConjugatedForm.ConditionalContraction1 &&
+        token.conjugated_form !== ConjugatedForm.ConditionalContraction2) {
         const conjugation = handleConjugation(tokens, index + 1);
-        return new IpadicWord(PartOfSpeech.Adjective, [token, ...conjugation.tokens]);
+        return new IpadicWord(PartOfSpeech.iAdjective, [token, ...conjugation]);
     }
-    return new IpadicWord(PartOfSpeech.Adjective, [token]);
+    return new IpadicWord(PartOfSpeech.iAdjective, [token]);
 }
 
 async function nextWord(tokens: IpadicFeatures[], index: number): Promise<IpadicWord> {
@@ -169,7 +172,7 @@ async function nextWord(tokens: IpadicFeatures[], index: number): Promise<Ipadic
             return handleNoun(tokens, index);
         case PartOfSpeech.Verb:
             return handleVerb(tokens, index);
-        case PartOfSpeech.Adjective:
+        case PartOfSpeech.iAdjective:
             return handleAdjective(tokens, index);
         default:
             return new IpadicWord(PartOfSpeech[token.pos as keyof typeof PartOfSpeech], [token]);
@@ -240,7 +243,7 @@ class IpadicWord implements Word {
 
     constructor(pos: PartOfSpeech, tokens: IpadicFeatures[]) {
         const getBasicForm = () => {
-            if (pos === PartOfSpeech.Verb || pos === PartOfSpeech.Adjective) {
+            if (pos === PartOfSpeech.Verb || pos === PartOfSpeech.iAdjective) {
                 return tokens.length ? tokens[0].basic_form : "";
             }
             return tokens.reduce((acc, curr) => acc + curr.basic_form ?? "", "");

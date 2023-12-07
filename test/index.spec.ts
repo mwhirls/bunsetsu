@@ -187,7 +187,20 @@ describe('Segmenter', async function () {
     });
 
 
-    describe('PartOfSpeech.Adjective', function () {
+    describe('PartOfSpeech.iAdjective', function () {
+      const runTest = (testCases: { surface: string, basic: string }[]) => {
+        for (const adjective of testCases) {
+          it(`should identify ${adjective.surface} as one word`, async function () {
+            const words = await segmenter.segmentAsWords(adjective.surface);
+            assert.equal(words.length, 1);
+            const word = words[0];
+            assert.equal(word.pos, tokun.PartOfSpeech.iAdjective);
+            assert.equal(word.surfaceForm, adjective.surface);
+            assert.equal(word.basicForm, adjective.basic);
+          });
+        }
+      };
+
       describe('ConjugatedForm.GaruConjunction', function () {
         const adjectives = [
           { surface: '嬉しがる', basic: "嬉しい" },
@@ -195,39 +208,101 @@ describe('Segmenter', async function () {
           { surface: '悲しさ', basic: '悲しい' },
           { surface: '虚しそう', basic: '虚しい' },
         ];
-        for (const adjective of adjectives) {
-          it(`should identify ${adjective.surface} as one word`, async function () {
-            const words = await segmenter.segmentAsWords(adjective.surface);
-            assert.equal(words.length, 1);
-            const word = words[0];
-            assert.equal(word.pos, tokun.PartOfSpeech.Adjective);
-            assert.equal(word.surfaceForm, adjective.surface);
-            assert.equal(word.basicForm, adjective.basic);
-          });
-        }
+        runTest(adjectives);
       });
-    });
 
+      describe('ConjugatedForm.ConditionalForm', function () {
+        const adjectives = [
+          { surface: '美味しければ', basic: "美味しい" },
+          { surface: '早ければ', basic: "早い" },
+        ];
+        runTest(adjectives);
+      });
+
+      describe('ConjugatedForm.ConditionalContraction1', function () {
+        const adjectives = [
+          { surface: '美味しけりゃ', basic: "美味しい" },
+          { surface: '早けりゃ', basic: "早い" },
+        ];
+        runTest(adjectives);
+      });
+
+      describe('ConjugatedForm.ConditionalContraction2', function () {
+        const adjectives = [
+          { surface: '美味しきゃ', basic: "美味しい" },
+          { surface: '早きゃ', basic: "早い" },
+        ];
+        runTest(adjectives);
+      });
+
+      describe('ConjugatedForm.PlainForm', function () {
+        const adjectives = [
+          { surface: '美味しい', basic: "美味しい" },
+          { surface: '早い', basic: "早い" },
+        ];
+        runTest(adjectives);
+      });
+
+      describe('ConjugatedForm.IndeclinableNominalConjunction', function () {
+        const adjectives = [
+          { surface: '美しき', basic: "美しい" },
+          { surface: '親しき', basic: "親しい" },
+        ];
+        runTest(adjectives);
+      });
+
+      describe('ConjugatedForm.ClassicalPlainForm', function () {
+        const adjectives = [
+          { surface: '赤し', basic: "赤い" },
+        ];
+        runTest(adjectives);
+      });
+
+      describe('ConjugatedForm.IrrealisUConjunction', function () {
+        const adjectives = [
+          { surface: '高かろう', basic: "高い" },
+        ];
+        runTest(adjectives);
+      });
+
+      describe('ConjugatedForm.IrrealisNuConjunction', function () {
+        const adjectives = [
+          { surface: '高からぬ', basic: "高い" },
+        ];
+        runTest(adjectives);
+      });
+
+      describe('ConjugatedForm.ImperativeE', function () {
+        const adjectives = [
+          { surface: '多かれ', basic: "多い" },
+        ];
+        runTest(adjectives);
+      });
+
+      describe('ConjugatedForm.GozaiConjunction', function () {
+        const adjectives = [
+          { surface: '愛しうございます', basic: "愛しい" },
+          { surface: '苦しゅうない', basic: "苦しい" },
+        ];
+        runTest(adjectives);
+      });
+
+      describe('ConjugatedForm.TaConjunction', function () {
+        const adjectives = [
+          { surface: 'うるさかった', basic: "うるさい" },
+        ];
+        runTest(adjectives);
+      });
+
+      describe('ConjugatedForm.TeConjunction', function () {
+        const adjectives = [
+          { surface: '女々しくて', basic: "女々しい" },
+          { surface: 'うるさく', basic: "うるさい" },
+          { surface: '芳しくない', basic: "芳しい" },
+        ];
+        runTest(adjectives);
+      });
+
+    });
   });
 });
-
-/*
-export enum ConjugatedForm {
-    ConditionalForm = '仮定形', // 美味しけれ(ば), etc
-    ConditionalContraction1 = '仮定縮約１', // 美味しけりゃ
-    ConditionalContraction2 = '仮定縮約２', // 美味しきゃ
-    PlainForm = '基本形',
-    IndeclinableNominalConjunction = '体言接続', // ウザき(人)
-    ClassicalPlainForm = '文語基本形', // (いと)エモし
-    IrrealisUConjunction = '未然ウ接続', // 高かろ(う)
-    IrrealisNuConjunction = '未然ヌ接続', // 高から(ぬ)
-    ImperativeE = '命令ｅ', // (幸)多かれ
-    GozaiConjunction = '連用ゴザイ接続', // 愛しう(ございます), 苦しゅう(ない)
-    TaConjunction = '連用タ接続', // うるさかっ(た)
-    TeConjunction = '連用テ接続', // 女々しく(て), うるさく(する), 芳しく(ない)
-
-    Continuative = '連用形', // -masu stem
-    Irrealis = '未然形', // 来(ない) -nai stem
-}
-
-*/
