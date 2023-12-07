@@ -34,27 +34,29 @@ export enum SymbolType {
 }
 
 export enum ConjugatedForm {
-    GaruConjunction = 'ガル接続', // 嬉し(がる), 早(すぎる), 悲し(さ), 虚し(そう), etc
+    ClassicalPlainForm = '文語基本形', // (いと)エモし
     ConditionalForm = '仮定形', // 美味しけれ(ば), etc
     ConditionalContraction1 = '仮定縮約１', // 美味しけりゃ
     ConditionalContraction2 = '仮定縮約２', // 美味しきゃ
-    PlainForm = '基本形',
+    Continuative = '連用形', // -masu stem
     IndeclinableNominalConjunction = '体言接続', // ウザき(人)
-    ClassicalPlainForm = '文語基本形', // (いと)エモし
+    GaruConjunction = 'ガル接続', // 嬉し(がる), 早(すぎる), 悲し(さ), 虚し(そう), etc
+    GozaiConjunction = '連用ゴザイ接続', // 愛しう(ございます), 苦しゅう(ない)
+    Irrealis = '未然形', // 来(ない) -nai stem
     IrrealisUConjunction = '未然ウ接続', // 高かろ(う)
     IrrealisNuConjunction = '未然ヌ接続', // 高から(ぬ)
     ImperativeE = '命令ｅ', // (幸)多かれ
-    GozaiConjunction = '連用ゴザイ接続', // 愛しう(ございます), 苦しゅう(ない)
+    ImperativeI = '命令ｉ', // 来い
+    ImperativeYo = '命令ｙｏ', // 来よ
+    PlainForm = '基本形',
+    SpecialIndeclinableNominalConjunction1 = '体言接続特殊', // (今日)来ん(の)？
+    SpecialIndeclinableNominalConjunction2 = '体言接続特殊２', // (今日)来(の)？
     TaConjunction = '連用タ接続', // うるさかっ(た)
     TeConjunction = '連用テ接続', // 女々しく(て), うるさく(する), 芳しく(ない)
-
-    Continuative = '連用形', // -masu stem
-    Irrealis = '未然形', // 来(ない) -nai stem
 }
 
-export enum IrregularVerb {
-    Suru = 'する',
-    Kuru = 'くる'
+export enum VerbType {
+    Kuru = 'カ変動詞',
 }
 
 function posDetails(token: IpadicFeatures): string[] {
@@ -88,9 +90,9 @@ function handleConjugation(tokens: IpadicFeatures[], start: number) {
 
 function handleVerb(tokens: IpadicFeatures[], index: number): IpadicWord {
     const token = tokens[index];
-    if (token.conjugated_form === ConjugatedForm.Continuative ||
-        token.conjugated_form === ConjugatedForm.TaConjunction ||
-        token.conjugated_form === ConjugatedForm.Irrealis) {
+    if (token.conjugated_form !== ConjugatedForm.PlainForm &&
+        token.conjugated_form !== ConjugatedForm.ConditionalContraction1 &&
+        token.conjugated_form !== ConjugatedForm.ConditionalContraction2) {
         const conjugation = handleConjugation(tokens, index + 1);
         return new IpadicWord(PartOfSpeech.Verb, [token, ...conjugation]);
     }
@@ -105,7 +107,7 @@ async function handleNoun(tokens: IpadicFeatures[], index: number): Promise<Ipad
     const token = tokens[index];
     if (isSuruVerb(token)) {
         const next = index + 1 < tokens.length ? tokens[index + 1] : null;
-        if (next && next.basic_form === IrregularVerb.Suru) {
+        if (next && next.basic_form === 'する') {
             const verb = handleVerb(tokens, index + 1);
             return new IpadicWord(PartOfSpeech.Noun, [token, ...verb.tokens]);
         }

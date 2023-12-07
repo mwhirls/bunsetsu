@@ -304,5 +304,72 @@ describe('Segmenter', async function () {
       });
 
     });
+
+    describe('PartOfSpeech.Verb', function () {
+      const runTest = (testCases: string[]) => {
+        for (const verb of testCases) {
+          it(`should identify ${verb} as one word`, async function () {
+            const words = await segmenter.segmentAsWords(verb);
+            assert.equal(words.length, 1);
+            const word = words[0];
+            assert.equal(word.pos, tokun.PartOfSpeech.Verb);
+            assert.equal(word.surfaceForm, verb);
+            assert.equal(word.basicForm, '来る');
+          });
+        }
+      };
+
+      describe('VerbType.Kuru', function () {
+        describe('ConjugatedForm.ConditionalForm', function () {
+          const verbs = ['来れば'];
+          runTest(verbs);
+        });
+        describe('ConjugatedForm.ConditionalContraction1', function () {
+          const verbs = ['来りゃ'];
+          runTest(verbs);
+        });
+        describe('ConjugatedForm.PlainForm', function () {
+          const verbs = ['来る'];
+          runTest(verbs);
+        });
+        describe('ConjugatedForm.SpecialIndeclinableNominalConjunction1', function () {
+          const verbs = ['来ん'];
+          runTest(verbs);
+        });
+        describe('ConjugatedForm.SpecialIndeclinableNominalConjunction2', function () {
+          const verbs = ['来'];
+          runTest(verbs);
+        });
+        describe('ConjugatedForm.IrrealisUConjunction', function () {
+          const verbs = ['来よう'];
+          runTest(verbs);
+        });
+        describe('ConjugatedForm.Irrealis', function () {
+          const verbs = ['来ない'];
+          runTest(verbs);
+        });
+        describe('ConjugatedForm.ImperativeI', function () {
+          const verbs = ['来い'];
+          runTest(verbs);
+        });
+        describe('ConjugatedForm.ImperativeYo', function () {
+          const verbs = ['来よ'];
+          runTest(verbs);
+        });
+        describe('ConjugatedForm.Continuative', function () {
+          const verbs = ['来ます', '来ました', '来まして'];
+          runTest(verbs);
+        });
+        describe('ConjugatedForm.TaConjunction', function () {
+          const verbs = ['来た'];
+          runTest(verbs);
+        });
+        describe('ConjugatedForm.TeConjunction', function () {
+          const verbs = ['来て'];
+          runTest(verbs);
+        });
+      });
+    });
+
   });
 });
