@@ -43,10 +43,12 @@ export enum ConjugatedForm {
     GaruConjunction = 'ガル接続', // 嬉し(がる), 早(すぎる), 悲し(さ), 虚し(そう), etc
     GozaiConjunction = '連用ゴザイ接続', // 愛しう(ございます), 苦しゅう(ない)
     Irrealis = '未然形', // 来(ない) -nai stem
-    IrrealisUConjunction = '未然ウ接続', // 高かろ(う)
     IrrealisNuConjunction = '未然ヌ接続', // 高から(ぬ)
+    IrrealisReruConjunction = '未然レル接続', // （）される
+    IrrealisUConjunction = '未然ウ接続', // 高かろ(う)
     ImperativeE = '命令ｅ', // (幸)多かれ
     ImperativeI = '命令ｉ', // 来い
+    ImperativeRo = '命令ｒｏ', // しろ
     ImperativeYo = '命令ｙｏ', // 来よ
     PlainForm = '基本形',
     SpecialIndeclinableNominalConjunction1 = '体言接続特殊', // (今日)来ん(の)？
@@ -88,9 +90,22 @@ function handleConjugation(tokens: IpadicFeatures[], start: number) {
     return result;
 }
 
+function handleImperativeEConjugation(tokens: IpadicFeatures[], index: number) {
+    const token = tokens[index];
+    if (token.conjugated_type === '五段・サ行') {
+        const next = index + 1 < tokens.length ? tokens[index + 1] : null;
+        if (next && next.surface_form === 'よ') {
+            return new IpadicWord(PartOfSpeech.Verb, [token, next]); // archaic せよ case
+        }
+    }
+    return new IpadicWord(PartOfSpeech[token.pos as keyof typeof PartOfSpeech], [token]);
+}
+
 function handleVerb(tokens: IpadicFeatures[], index: number): IpadicWord {
     const token = tokens[index];
-    if (token.conjugated_form !== ConjugatedForm.PlainForm &&
+    if (token.conjugated_form === ConjugatedForm.ImperativeE) {
+        return handleImperativeEConjugation(tokens, index);
+    } else if (token.conjugated_form !== ConjugatedForm.PlainForm &&
         token.conjugated_form !== ConjugatedForm.ConditionalContraction1 &&
         token.conjugated_form !== ConjugatedForm.ConditionalContraction2) {
         const conjugation = handleConjugation(tokens, index + 1);
