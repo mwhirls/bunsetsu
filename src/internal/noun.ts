@@ -1,6 +1,6 @@
 import { IpadicFeatures } from "kuromoji";
 import { NounDetail } from "../noun";
-import { PartOfSpeech } from "../word";
+import { PartOfSpeech, Word } from "../word";
 import { IpadicVerb } from "./verb";
 import { IpadicWord } from "./word";
 
@@ -21,7 +21,7 @@ export class IpadicNoun extends IpadicWord {
 export class IpadicNounDetail implements NounDetail {
     type: PartOfSpeech.Noun;
     suffix?: IpadicFeatures | undefined;
-    suru?: IpadicVerb | undefined;
+    suru?: Word | undefined;
 
     constructor(token: IpadicFeatures, suffix?: IpadicFeatures, suru?: IpadicVerb) {
         this.type = PartOfSpeech.Noun;

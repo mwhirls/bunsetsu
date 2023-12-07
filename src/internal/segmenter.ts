@@ -1,5 +1,4 @@
-import { IpadicFeatures, Tokenizer } from "kuromoji";
-import { Segmenter } from "..";
+import { IpadicFeatures, Tokenizer, builder } from "kuromoji";
 import { ConjugatedForm } from "../conjugation";
 import { Sentence } from "../sentence";
 import { PartOfSpeech, Details, Word } from "../word";
@@ -9,6 +8,7 @@ import { IpadicSentence } from "./sentence";
 import { IpadicSymbol } from "./symbol";
 import { IpadicVerb } from "./verb";
 import { posDetails, IpadicWord } from "./word";
+import { Segmenter } from "../segmenter";
 
 function isSuruVerb(token: IpadicFeatures) {
     const details = posDetails(token);
@@ -200,3 +200,19 @@ export class IpadicSegmenter implements Segmenter {
         return toSentences(tokens);
     }
 }
+
+export function buildSegmenter(dicPath: string): Promise<Segmenter> {
+    return new Promise((resolve, reject) => {
+        const tokenizerBuilder = builder({ dicPath });
+        tokenizerBuilder.build((err: Error, tokenizer: Tokenizer<IpadicFeatures>) => {
+            if (err) {
+                reject(err);
+            } else {
+                const segmenter = new IpadicSegmenter(tokenizer);
+                resolve(segmenter);
+            }
+        });
+    });
+}
+
+export default buildSegmenter;

@@ -1,9 +1,8 @@
 import { IpadicFeatures } from "kuromoji";
-import { IpadicVerb } from "./verb";
-import { PartOfSpeech } from "./word";
+import { PartOfSpeech, Word } from "./word";
 
 export interface NounDetail {
     type: PartOfSpeech.Noun;
     suffix?: IpadicFeatures | undefined;
-    suru?: IpadicVerb | undefined;
+    suru?: Word | undefined;
 }
