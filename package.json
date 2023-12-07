@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "A wrapper library around https://github.com/takuyaa/kuromoji.js that intelligently groups Japanese morphemes into words",
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/index.bundle.js",
+  "module": "dist/index.bundle.js",
+  "types": "dist/index.bundle.d.ts",
   "files": [
     "dist/"
   ],
