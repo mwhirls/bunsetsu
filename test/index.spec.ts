@@ -35,8 +35,8 @@ describe('Segmenter', async function () {
           const words = segmenter.segmentAsWords(form);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.type, tokun.PartOfSpeech.Filler);
-          assert.equal((word as tokun.Filler).surfaceForm, form);
+          assert.equal(word.pos, tokun.PartOfSpeech.Filler);
+          assert.equal(word.surfaceForm, form);
         });
       }
     });
@@ -48,8 +48,8 @@ describe('Segmenter', async function () {
           const words = segmenter.segmentAsWords(form);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.type, tokun.PartOfSpeech.Interjection);
-          assert.equal((word as tokun.Filler).surfaceForm, form);
+          assert.equal(word.pos, tokun.PartOfSpeech.Interjection);
+          assert.equal(word.surfaceForm, form);
         });
       }
     });
@@ -62,11 +62,13 @@ describe('Segmenter', async function () {
             const words = segmenter.segmentAsWords(c);
             assert.equal(words.length, 1);
             const word = words[0];
-            assert.equal(word.type, tokun.PartOfSpeech.Symbol);
-            const symbol = word as tokun.SymbolWord;
+            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.surfaceForm, c);
+            assert.equal(word.basicForm, c);
+            assert.equal(word.detail !== undefined, true);
+            assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
+            const symbol = word.detail as tokun.SymbolDetail;
             assert.equal(symbol.symbolType, tokun.SymbolType.Alphabet);
-            assert.equal(symbol.surfaceForm, c);
-            assert.equal(symbol.basicForm, c);
           });
         }
       });
@@ -78,11 +80,13 @@ describe('Segmenter', async function () {
             const words = segmenter.segmentAsWords(c);
             assert.equal(words.length, 1);
             const word = words[0];
-            assert.equal(word.type, tokun.PartOfSpeech.Symbol);
-            const symbol = word as tokun.SymbolWord;
+            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.surfaceForm, c);
+            assert.equal(word.basicForm, c);
+            assert.equal(word.detail !== undefined, true);
+            assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
+            const symbol = word.detail as tokun.SymbolDetail;
             assert.equal(symbol.symbolType, tokun.SymbolType.OpeningBracketParens);
-            assert.equal(symbol.surfaceForm, c);
-            assert.equal(symbol.basicForm, c);
           });
         }
       });
@@ -94,11 +98,13 @@ describe('Segmenter', async function () {
             const words = segmenter.segmentAsWords(c);
             assert.equal(words.length, 1);
             const word = words[0];
-            assert.equal(word.type, tokun.PartOfSpeech.Symbol);
-            const symbol = word as tokun.SymbolWord;
+            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.surfaceForm, c);
+            assert.equal(word.basicForm, c);
+            assert.equal(word.detail !== undefined, true);
+            assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
+            const symbol = word.detail as tokun.SymbolDetail;
             assert.equal(symbol.symbolType, tokun.SymbolType.ClosingBracketParens);
-            assert.equal(symbol.surfaceForm, c);
-            assert.equal(symbol.basicForm, c);
           });
         }
       });
@@ -110,11 +116,13 @@ describe('Segmenter', async function () {
           const words = segmenter.segmentAsWords(c);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.type, tokun.PartOfSpeech.Symbol);
-          const symbol = word as tokun.SymbolWord;
+          assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+          assert.equal(word.surfaceForm, c);
+          assert.equal(word.basicForm, c);
+          assert.equal(word.detail !== undefined, true);
+          assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
+          const symbol = word.detail as tokun.SymbolDetail;
           assert.equal(symbol.symbolType, tokun.SymbolType.Period);
-          assert.equal(symbol.surfaceForm, c);
-          assert.equal(symbol.basicForm, c);
         });
 
 
@@ -124,11 +132,13 @@ describe('Segmenter', async function () {
             const words = segmenter.segmentAsWords(c);
             assert.equal(words.length, 1);
             const word = words[0];
-            assert.equal(word.type, tokun.PartOfSpeech.Symbol);
-            const symbol = word as tokun.SymbolWord;
+            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.surfaceForm, c);
+            assert.equal(word.basicForm, c);
+            assert.equal(word.detail !== undefined, true);
+            assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
+            const symbol = word.detail as tokun.SymbolDetail;
             assert.equal(symbol.symbolType, tokun.SymbolType.ExclamationMark);
-            assert.equal(symbol.surfaceForm, c);
-            assert.equal(symbol.basicForm, c);
           });
         });
 
@@ -139,11 +149,13 @@ describe('Segmenter', async function () {
             const words = segmenter.segmentAsWords(c);
             assert.equal(words.length, 1);
             const word = words[0];
-            assert.equal(word.type, tokun.PartOfSpeech.Symbol);
-            const symbol = word as tokun.SymbolWord;
+            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.surfaceForm, c);
+            assert.equal(word.basicForm, c);
+            assert.equal(word.detail !== undefined, true);
+            assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
+            const symbol = word.detail as tokun.SymbolDetail;
             assert.equal(symbol.symbolType, tokun.SymbolType.QuestionMark);
-            assert.equal(symbol.surfaceForm, c);
-            assert.equal(symbol.basicForm, c);
           });
         });
 
@@ -153,11 +165,13 @@ describe('Segmenter', async function () {
             const words = segmenter.segmentAsWords(c);
             assert.equal(words.length, 1);
             const word = words[0];
-            assert.equal(word.type, tokun.PartOfSpeech.Symbol);
-            const symbol = word as tokun.SymbolWord;
+            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.surfaceForm, c);
+            assert.equal(word.basicForm, c);
+            assert.equal(word.detail !== undefined, true);
+            assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
+            const symbol = word.detail as tokun.SymbolDetail;
             assert.equal(symbol.symbolType, tokun.SymbolType.Interpunct);
-            assert.equal(symbol.surfaceForm, c);
-            assert.equal(symbol.basicForm, c);
           });
         });
 
@@ -168,11 +182,13 @@ describe('Segmenter', async function () {
               const words = segmenter.segmentAsWords(c);
               assert.equal(words.length, 1);
               const word = words[0];
-              assert.equal(word.type, tokun.PartOfSpeech.Symbol);
-              const symbol = word as tokun.SymbolWord;
+              assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+              assert.equal(word.surfaceForm, c);
+              assert.equal(word.basicForm, c);
+              assert.equal(word.detail !== undefined, true);
+              assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
+              const symbol = word.detail as tokun.SymbolDetail;
               assert.equal(symbol.symbolType, tokun.SymbolType.Space);
-              assert.equal(symbol.surfaceForm, c);
-              assert.equal(symbol.basicForm, c);
             });
           }
         });
@@ -184,11 +200,14 @@ describe('Segmenter', async function () {
               const words = segmenter.segmentAsWords(c);
               assert.equal(words.length, 1);
               const word = words[0];
-              assert.equal(word.type, tokun.PartOfSpeech.Symbol);
-              const symbol = word as tokun.SymbolWord;
+              assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+              assert.equal(word.surfaceForm, c);
+              assert.equal(word.basicForm, c);
+              assert.equal(word.detail !== undefined, true);
+              assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
+              const symbol = word.detail as tokun.SymbolDetail;
               assert.equal(symbol.symbolType, tokun.SymbolType.Comma);
-              assert.equal(symbol.surfaceForm, c);
-              assert.equal(symbol.basicForm, c);
+
             });
           }
         });
@@ -202,10 +221,9 @@ describe('Segmenter', async function () {
               const words = segmenter.segmentAsWords(adjective.surfaceForm);
               assert.equal(words.length, 1);
               const word = words[0];
-              assert.equal(word.type, tokun.PartOfSpeech.iAdjective);
-              const adj = word as tokun.IAdjective;
-              assert.equal(adj.surfaceForm, adjective.surfaceForm);
-              assert.equal(adj.stem.basicForm, adjective.basicForm);
+              assert.equal(word.pos, tokun.PartOfSpeech.iAdjective);
+              assert.equal(word.surfaceForm, adjective.surfaceForm);
+              assert.equal(word.basicForm, adjective.basicForm);
             });
           }
         };
@@ -321,9 +339,8 @@ describe('Segmenter', async function () {
               const words = await segmenter.segmentAsWords(verb.surfaceForm);
               assert.equal(words.length, 1);
               const word = words[0];
-              assert.equal(word.type, tokun.PartOfSpeech.Verb);
-              const v = word as tokun.Verb;
-              assert.equal(v.surfaceForm, verb.surfaceForm);
+              assert.equal(word.pos, tokun.PartOfSpeech.Verb);
+              assert.equal(word.surfaceForm, verb.surfaceForm);
             });
           }
         };
@@ -411,10 +428,11 @@ describe('Segmenter', async function () {
               const words = await segmenter.segmentAsWords(sentence);
               assert.equal(words.length, 4); // 今日、す、の、？
               const word = words[1];
-              assert.equal(word.type, tokun.PartOfSpeech.Verb);
-              const v = word as tokun.Verb;
-              assert.equal(v.surfaceForm, verb);
-              assert.equal(v.stem.basicForm, 'する');
+              assert.equal(word.pos, tokun.PartOfSpeech.Verb);
+              assert.equal(word.surfaceForm, verb);
+              const detail = word.detail && word.detail.type === tokun.PartOfSpeech.Verb ? word.detail : undefined;
+              assert.equal(true, detail);
+              assert.equal(detail?.stem.basicForm, 'する');
             });
           });
           describe('ConjugatedForm.ClassicalPlainForm', function () {
@@ -424,10 +442,11 @@ describe('Segmenter', async function () {
               const words = await segmenter.segmentAsWords(sentence);
               assert.equal(words.length, 5); // この、よう, に、す、？
               const word = words[3];
-              assert.equal(word.type, tokun.PartOfSpeech.Verb);
-              const v = word as tokun.Verb;
-              assert.equal(v.surfaceForm, verb);
-              assert.equal(v.stem.basicForm, 'する');
+              assert.equal(word.pos, tokun.PartOfSpeech.Verb);
+              assert.equal(word.surfaceForm, verb);
+              const detail = word.detail && word.detail.type === tokun.PartOfSpeech.Verb ? word.detail : undefined;
+              assert.equal(true, detail);
+              assert.equal(detail?.stem.basicForm, 'する');
             });
           });
           describe('ConjugatedForm.IrrealisUConjunction', function () {
@@ -491,9 +510,8 @@ describe('Segmenter', async function () {
               const words = await segmenter.segmentAsWords(sentence);
               assert.equal(words.length, 3); // 主命,に,反す
               const word = words[2];
-              assert.equal(word.type, tokun.PartOfSpeech.Verb);
-              const v = word as tokun.Verb;
-              assert.equal(v.surfaceForm, verb);
+              assert.equal(word.pos, tokun.PartOfSpeech.Verb);
+              assert.equal(word.surfaceForm, verb);
             });
           });
           describe('ConjugatedForm.IrrealisUConjunction', function () {
