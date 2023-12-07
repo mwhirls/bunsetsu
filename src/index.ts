@@ -1,5 +1,4 @@
 import { IpadicFeatures, Tokenizer, builder } from "kuromoji";
-import { JMdictWord } from '@scriptin/jmdict-simplified-types'
 
 // https://qiita.com/ensan_hcl/items/885588c7d2d99de85b44
 export enum PartOfSpeech {
@@ -90,18 +89,25 @@ function handleConjugation(tokens: IpadicFeatures[], start: number) {
     return result;
 }
 
-function handleImperativeEConjugation(tokens: IpadicFeatures[], index: number) {
+function handleImperativeEConjugation(tokens: IpadicFeatures[], index: number): IpadicVerb | IpadicIAdjective {
     const token = tokens[index];
     if (token.conjugated_type === '五段・サ行') {
         const next = index + 1 < tokens.length ? tokens[index + 1] : null;
         if (next && next.surface_form === 'よ') {
-            return new IpadicWord(PartOfSpeech.Verb, [token, next]); // archaic せよ case
+            return new IpadicVerb(token, [next]); // archaic せよ case
         }
     }
-    return new IpadicWord(PartOfSpeech[token.pos as keyof typeof PartOfSpeech], [token]);
+    switch (token.pos) {
+        case PartOfSpeech.Verb:
+            return new IpadicVerb(token, []);
+        case PartOfSpeech.iAdjective:
+            return new IpadicIAdjective(token, []);
+        default:
+            throw new Error('unrecognized imperative conjugation');
+    }
 }
 
-function handleVerb(tokens: IpadicFeatures[], index: number): IpadicWord {
+function handleVerb(tokens: IpadicFeatures[], index: number): IpadicVerb | IpadicIAdjective {
     const token = tokens[index];
     if (token.conjugated_form === ConjugatedForm.ImperativeE) {
         return handleImperativeEConjugation(tokens, index);
@@ -109,56 +115,58 @@ function handleVerb(tokens: IpadicFeatures[], index: number): IpadicWord {
         token.conjugated_form !== ConjugatedForm.ConditionalContraction1 &&
         token.conjugated_form !== ConjugatedForm.ConditionalContraction2) {
         const conjugation = handleConjugation(tokens, index + 1);
-        return new IpadicWord(PartOfSpeech.Verb, [token, ...conjugation]);
+        return new IpadicVerb(token, [...conjugation]);
     }
-    return new IpadicWord(PartOfSpeech.Verb, [token]);
+    return new IpadicVerb(token, []);
 }
 
-async function handleSuffixedNoun(stem: IpadicFeatures, suffix: IpadicFeatures): Promise<IpadicWord> {
-    return new IpadicWord(PartOfSpeech.Noun, [stem, suffix]);
+function handleSuffixedNoun(stem: IpadicFeatures, suffix: IpadicFeatures): IpadicNoun {
+    return new IpadicNoun(stem, suffix);
 }
 
-async function handleNoun(tokens: IpadicFeatures[], index: number): Promise<IpadicWord> {
+function handleNoun(tokens: IpadicFeatures[], index: number): IpadicNoun {
     const token = tokens[index];
     if (isSuruVerb(token)) {
         const next = index + 1 < tokens.length ? tokens[index + 1] : null;
         if (next && next.basic_form === 'する') {
             const verb = handleVerb(tokens, index + 1);
-            return new IpadicWord(PartOfSpeech.Noun, [token, ...verb.tokens]);
+            if (verb.type === PartOfSpeech.Verb) {
+                return new IpadicNoun(token, undefined, verb);
+            }
         }
     }
     const next = index + 1 < tokens.length ? tokens[index + 1] : null;
     if (next && next.basic_form === Details.Suffix) {
-        return await handleSuffixedNoun(token, next);
+        return handleSuffixedNoun(token, next);
     }
-    return new IpadicWord(PartOfSpeech.Noun, [token]);
+    return new IpadicNoun(token);
 }
 
-function handleFiller(tokens: IpadicFeatures[], index: number): IpadicWord | null {
+function handleFiller(tokens: IpadicFeatures[], index: number): IpadicFiller | null {
     const specialCases = ['あのう', 'えっと', 'ええっと', 'ええと']; // tokenizer splits these into separate tokens
     const token = tokens[index];
     const next = index + 1 < tokens.length ? tokens[index + 1] : null;
     if (next) {
         const compound = `${token.basic_form}${next.basic_form}`;
         if (specialCases.some((value) => compound === value)) {
-            return new IpadicWord(PartOfSpeech.Filler, [token, next]);
+            return new IpadicFiller([token, next]);
         }
     }
     if (token.pos === PartOfSpeech.Filler) {
-        return new IpadicWord(PartOfSpeech.Filler, [token]);
+        return new IpadicFiller([token]);
     }
     return null;
 }
 
-function handleInterjection(tokens: IpadicFeatures[], index: number): IpadicWord {
+function handleInterjection(tokens: IpadicFeatures[], index: number): IpadicFiller | IpadicInterjection {
     const token = tokens[index];
     const filler = handleFiller(tokens, index); // sometimes pieces of fillers are categorized as interjections
-    return filler ?? new IpadicWord(PartOfSpeech.Interjection, [token]);
+    return filler ?? new IpadicInterjection(token);
 }
 
-function handleSymbol(tokens: IpadicFeatures[], index: number): IpadicWord {
+function handleSymbol(tokens: IpadicFeatures[], index: number): IpadicSymbolWord {
     const token = tokens[index];
-    return new IpadicWord(PartOfSpeech.Symbol, [token]);
+    return new IpadicSymbolWord(token);
 }
 
 function handleAdjective(tokens: IpadicFeatures[], index: number) {
@@ -171,16 +179,16 @@ function handleAdjective(tokens: IpadicFeatures[], index: number) {
         token.conjugated_form !== ConjugatedForm.ConditionalContraction1 &&
         token.conjugated_form !== ConjugatedForm.ConditionalContraction2) {
         const conjugation = handleConjugation(tokens, index + 1);
-        return new IpadicWord(PartOfSpeech.iAdjective, [token, ...conjugation]);
+        return new IpadicIAdjective(token, [...conjugation]);
     }
-    return new IpadicWord(PartOfSpeech.iAdjective, [token]);
+    return new IpadicIAdjective(token, []);
 }
 
-async function nextWord(tokens: IpadicFeatures[], index: number): Promise<IpadicWord> {
+function nextWord(tokens: IpadicFeatures[], index: number): IpadicWord {
     const token = tokens[index];
     switch (token.pos) {
         case PartOfSpeech.Filler:
-            return handleFiller(tokens, index) ?? new IpadicWord(PartOfSpeech.Filler, [token]);
+            return handleFiller(tokens, index) ?? new IpadicFiller([token]);
         case PartOfSpeech.Interjection:
             return handleInterjection(tokens, index);
         case PartOfSpeech.Symbol:
@@ -192,15 +200,15 @@ async function nextWord(tokens: IpadicFeatures[], index: number): Promise<Ipadic
         case PartOfSpeech.iAdjective:
             return handleAdjective(tokens, index);
         default:
-            return new IpadicWord(PartOfSpeech[token.pos as keyof typeof PartOfSpeech], [token]);
+            return new IpadicUnknownWord(token);
     }
 }
 
-async function nextSentence(tokens: IpadicFeatures[], start: number): Promise<IpadicSentence> {
+function nextSentence(tokens: IpadicFeatures[], start: number): IpadicSentence {
     const result = [];
     let index = start;
     while (index < tokens.length) {
-        const word = await nextWord(tokens, index);
+        const word = nextWord(tokens, index);
         index += word.tokens.length;
         result.push(word);
         // todo: break sentence
@@ -208,68 +216,150 @@ async function nextSentence(tokens: IpadicFeatures[], start: number): Promise<Ip
     return { words: result, start, end: index };
 }
 
-async function toSentences(tokens: IpadicFeatures[]): Promise<Sentence[]> {
+function toSentences(tokens: IpadicFeatures[]): Sentence[] {
     const result = [];
     let index = 0;
     while (index < tokens.length) {
-        const sentence = await nextSentence(tokens, index);
+        const sentence = nextSentence(tokens, index);
         index += sentence.end - sentence.start;
         result.push(sentence);
     }
     return result;
 }
 
-async function toWords(tokens: IpadicFeatures[]): Promise<Word[]> {
+function toWords(tokens: IpadicFeatures[]): Word[] {
     const result = [];
     let index = 0;
     while (index < tokens.length) {
-        const word = await nextWord(tokens, index);
+        const word = nextWord(tokens, index);
         index += word.tokens.length;
         result.push(word);
     }
     return result;
 }
 
-export interface Token {
+export interface Filler {
+    type: PartOfSpeech.Filler;
     surfaceForm: string;
-    pos: PartOfSpeech;
-    posDetails: Details[];
+    basicForm: string;
+}
+
+export interface SymbolWord {
+    type: PartOfSpeech.Symbol;
+    surfaceForm: string;
+    basicForm: string;
+    symbolType: SymbolType;
+}
+
+export interface Interjection {
+    type: PartOfSpeech.Interjection;
+    surfaceForm: string;
+    basicForm: string;
+    reading: string | undefined;
+    pronunciation: string | undefined;
+}
+
+export interface IAdjective {
+    type: PartOfSpeech.iAdjective;
+    stem: Stem;
+    conjugation: Conjugation;
+    surfaceForm: string;
+    reading: string;
+    pronunciation: string;
+}
+
+export interface Verb {
+    type: PartOfSpeech.Verb;
+    stem: Stem;
+    conjugation: Conjugation;
+    surfaceForm: string;
+    reading: string;
+    pronunciation: string;
+}
+
+export interface Noun {
+    type: PartOfSpeech.Noun;
+}
+
+export interface Stem {
+    surfaceForm: string;
+    basicForm: string;
+    reading: string | undefined;
+    pronunciation: string | undefined;
+}
+
+export interface Conjugation {
     conjugatedForm: ConjugatedForm;
+    surfaceForm: string;
+    basicForm: string;
+    reading: string | undefined;
+    pronunciation: string | undefined;
+}
+
+export interface UnknownWord {
+    type: 'unknown';
+    surfaceForm: string;
     basicForm: string;
     reading?: string | undefined;
     pronunciation?: string | undefined;
 }
 
-export interface Word {
-    pos: PartOfSpeech;
-    surfaceForm: string;
-    basicForm: string;
-    reading?: string | undefined;
-    pronunciation?: string | undefined;
-    symbolType?: SymbolType | undefined;
-}
+export type Word = Filler | Interjection | SymbolWord | IAdjective | Verb | Noun | UnknownWord;
+export type IpadicWord = IpadicFiller | IpadicInterjection | IpadicSymbolWord | IpadicIAdjective | IpadicVerb | IpadicNoun | IpadicUnknownWord;
 
-class IpadicWord implements Word {
-    pos: PartOfSpeech;
-    surfaceForm: string;
-    basicForm: string;
-    reading?: string | undefined;
-    pronunciation?: string | undefined;
-    symbolType?: SymbolType | undefined;
+class BaseIpadicWord {
     tokens: IpadicFeatures[];
 
-    constructor(pos: PartOfSpeech, tokens: IpadicFeatures[]) {
-        const getBasicForm = () => {
-            if (pos === PartOfSpeech.Verb || pos === PartOfSpeech.iAdjective) {
-                return tokens.length ? tokens[0].basic_form : "";
-            }
-            return tokens.reduce((acc, curr) => acc + curr.basic_form ?? "", "");
-        };
-        const reading = tokens.reduce((acc, curr) => acc + curr.reading ?? "", "");
-        const pronunciation = tokens.reduce((acc, curr) => acc + curr.pronunciation ?? "", "");
-        let symbolType = pos === PartOfSpeech.Symbol && tokens.length ? Object.values(SymbolType).find(x => x === tokens[0].pos_detail_1) : undefined;
+    constructor(tokens: IpadicFeatures[]) {
+        this.tokens = tokens;
+    }
+}
+
+class IpadicFiller extends BaseIpadicWord implements Filler {
+    type: PartOfSpeech.Filler;
+    surfaceForm: string;
+    basicForm: string;
+
+    constructor(tokens: IpadicFeatures[]) {
+        super(tokens);
+        this.type = PartOfSpeech.Filler;
+        this.surfaceForm = tokens.reduce((acc, curr) => acc + curr.surface_form ?? "", "");
+        this.basicForm = tokens.reduce((acc, curr) => acc + curr.basic_form ?? "", "")
+    }
+}
+
+class IpadicInterjection extends BaseIpadicWord implements Interjection {
+    type: PartOfSpeech.Interjection;
+    surfaceForm: string;
+    basicForm: string;
+    reading: string;
+    pronunciation: string;
+
+    constructor(token: IpadicFeatures) {
+        super([token]);
+        this.type = PartOfSpeech.Interjection;
+        this.surfaceForm = token.surface_form;
+        this.basicForm = token.basic_form;
+        this.reading = token.reading ?? "";
+        this.pronunciation = token.pronunciation ?? "";
+    }
+}
+
+class IpadicSymbolWord extends BaseIpadicWord implements SymbolWord {
+    type: PartOfSpeech.Symbol;
+    surfaceForm: string;
+    basicForm: string;
+    symbolType: SymbolType;
+
+    constructor(token: IpadicFeatures) {
+        super([token]);
+        this.type = PartOfSpeech.Symbol;
+        this.surfaceForm = token.surface_form;
+        this.basicForm = token.basic_form;
+        const details = posDetails(token);
+        let symbolType = Object.values(SymbolType).find(x => details.some((detail) => x === detail));
         if (!symbolType) {
-            switch (tokens[0].basic_form) {
+            switch (token.basic_form) {
                 case '！':
                     symbolType = SymbolType.ExclamationMark;
                     break;
@@ -280,17 +370,121 @@ class IpadicWord implements Word {
                     symbolType = SymbolType.Interpunct;
                     break;
                 default:
-                    break;
+                    throw new Error('unrecognized symbol');
             }
         }
-
-        this.pos = pos;
-        this.surfaceForm = tokens.reduce((acc, curr) => acc + curr.surface_form, "");
-        this.basicForm = getBasicForm();
-        this.reading = reading.length ? reading : undefined;
-        this.pronunciation = pronunciation.length ? pronunciation : undefined;
         this.symbolType = symbolType;
-        this.tokens = tokens;
+    }
+}
+
+class IpadicIAdjective extends BaseIpadicWord implements IAdjective {
+    type: PartOfSpeech.iAdjective;
+    stem: Stem;
+    conjugation: Conjugation;
+    surfaceForm: string;
+    reading: string;
+    pronunciation: string;
+
+    constructor(stem: IpadicFeatures, conjugation: IpadicFeatures[]) {
+        super([stem, ...conjugation]);
+        this.type = PartOfSpeech.iAdjective;
+        this.stem = new IpadicStem(stem);
+        this.conjugation = new IpadicConjugation(stem, conjugation);
+        this.surfaceForm = `${this.stem.surfaceForm}${this.conjugation.surfaceForm}`;
+        this.reading = `${this.stem.reading}${this.conjugation.reading}`;
+        this.pronunciation = `${this.stem.pronunciation}${this.conjugation.pronunciation}`;
+    }
+}
+
+class IpadicVerb extends BaseIpadicWord implements Verb {
+    type: PartOfSpeech.Verb;
+    stem: Stem;
+    conjugation: Conjugation;
+    surfaceForm: string;
+    reading: string;
+    pronunciation: string;
+
+    constructor(stem: IpadicFeatures, conjugation: IpadicFeatures[]) {
+        super([stem, ...conjugation]);
+        this.type = PartOfSpeech.Verb;
+        this.stem = new IpadicStem(stem);
+        this.conjugation = new IpadicConjugation(stem, conjugation);
+        this.surfaceForm = `${this.stem.surfaceForm}${this.conjugation.surfaceForm}`;
+        this.reading = `${this.stem.reading}${this.conjugation.reading}`;
+        this.pronunciation = `${this.stem.pronunciation}${this.conjugation.pronunciation}`;
+    }
+}
+
+class IpadicStem implements Stem {
+    surfaceForm: string;
+    basicForm: string;
+    reading: string | undefined;
+    pronunciation: string | undefined;
+
+    constructor(token: IpadicFeatures) {
+        this.surfaceForm = token.surface_form;
+        this.basicForm = token.basic_form;
+        this.reading = token.reading;
+        this.pronunciation = token.pronunciation;
+    }
+}
+
+class IpadicConjugation implements Conjugation {
+    conjugatedForm: ConjugatedForm;
+    surfaceForm: string;
+    basicForm: string;
+    reading: string | undefined;
+    pronunciation: string | undefined;
+
+    constructor(stem: IpadicFeatures, tokens: IpadicFeatures[]) {
+        const conjugatedForm = Object.values(ConjugatedForm).find(x => x === stem.conjugated_form);
+        if (!conjugatedForm) {
+            throw Error('unrecognized conjugated form');
+        }
+        this.conjugatedForm = conjugatedForm;
+        this.surfaceForm = tokens.reduce((acc, curr) => acc + curr.surface_form ?? "", "");
+        this.basicForm = tokens.reduce((acc, curr) => acc + curr.basic_form ?? "", "");
+        this.reading = tokens.reduce((acc, curr) => acc + curr.reading ?? "", "");
+        this.pronunciation = tokens.reduce((acc, curr) => acc + curr.reading ?? "", "");
+    }
+}
+
+class IpadicNoun extends BaseIpadicWord implements Noun {
+    type: PartOfSpeech.Noun;
+    token: IpadicFeatures;
+    suffix: IpadicFeatures | undefined;
+    suru: IpadicVerb | undefined;
+
+    constructor(token: IpadicFeatures, suffix?: IpadicFeatures, suru?: IpadicVerb) {
+        const tokens = [token];
+        if (suffix) {
+            tokens.push(suffix);
+        }
+        if (suru) {
+            tokens.push(...suru.tokens);
+        }
+        super(tokens);
+        this.type = PartOfSpeech.Noun;
+        this.token = token;
+        this.suffix = suffix;
+        this.suru = suru;
+    }
+}
+
+class IpadicUnknownWord extends BaseIpadicWord implements UnknownWord {
+    type: 'unknown';
+    surfaceForm: string;
+    basicForm: string;
+    reading?: string | undefined;
+    pronunciation?: string | undefined;
+
+    constructor(token: IpadicFeatures) {
+        super([token]);
+        this.type = 'unknown';
+        this.surfaceForm = token.surface_form;
+        this.basicForm = token.basic_form;
+        this.reading = token.reading;
+        this.pronunciation = token.pronunciation;
     }
 }
 
@@ -298,11 +492,9 @@ export interface Sentence {
     words: Word[];
 }
 
-export type DictionaryLookup = (text: string) => Promise<JMdictWord | null>;
-
 export interface Segmenter {
-    segmentAsWords(text: string): Promise<Word[]>;
-    segmentAsSentences(text: string): Promise<Sentence[]>;
+    segmentAsWords(text: string): Word[];
+    segmentAsSentences(text: string): Sentence[];
 }
 
 class IpadicSentence implements Sentence {
@@ -324,11 +516,11 @@ class IpadicSegmenter implements Segmenter {
         this.tokenizer = tokenizer;
     }
 
-    async segmentAsWords(text: string): Promise<Word[]> {
+    segmentAsWords(text: string): Word[] {
         const tokens = this.tokenizer.tokenize(text);
-        return await toWords(tokens);
+        return toWords(tokens);
     }
-    async segmentAsSentences(text: string): Promise<Sentence[]> {
+    segmentAsSentences(text: string): Sentence[] {
         const tokens = this.tokenizer.tokenize(text);
         return toSentences(tokens);
     }
