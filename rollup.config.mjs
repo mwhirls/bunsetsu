@@ -7,6 +7,7 @@ import del from 'rollup-plugin-delete';
 export default [
     {
         input: 'src/index.ts',
+        external: ['kuromoji'],
         plugins: [
             del({ targets: 'dist/*' }),
             commonjs(),
