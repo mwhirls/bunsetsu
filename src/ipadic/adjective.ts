@@ -3,12 +3,11 @@ import { AdjectiveDetail } from "../adjective.js";
 import { Stem, Conjugation } from "../conjugation.js";
 import { PartOfSpeech } from "../word.js";
 import { IpadicStem, IpadicConjugation } from "./conjugation.js";
-import { IpadicVerbDetail } from "./verb.js";
 import { IpadicWord } from "./word.js";
 
 export class IpadicAdjective extends IpadicWord {
     constructor(stem: IpadicFeatures, conjugation: IpadicFeatures[]) {
-        const detail = new IpadicVerbDetail(stem, conjugation);
+        const detail = new IpadicAdjectiveDetail(stem, conjugation);
         super(PartOfSpeech.iAdjective, [stem, ...conjugation], undefined, stem.basic_form, undefined, undefined, detail);
     }
 }
