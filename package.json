@@ -12,7 +12,7 @@
   "scripts": {
     "clean": "rm -rf dist/",
     "lint": "eslint \"./{src,test}/**/*.{js,cjs,mjs,ts}\"",
-    "test": "mocha \"./test/*.{js,cjs,mjs,ts}\"",
+    "test": "SET TS_NODE_LOG_ERROR=true && mocha \"./test/*.{js,cjs,mjs,ts}\"",
     "build": "rollup --config",
     "dev": "rollup --config --watch",
     "prepublish": "npm run clean && npm run lint && npm run test && npm run build"

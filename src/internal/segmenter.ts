@@ -1,4 +1,4 @@
-import * as kuromoji from "kuromoji";
+import kuromoji from "kuromoji";
 import { ConjugatedForm } from "../conjugation.js";
 import { Sentence } from "../sentence.js";
 import { PartOfSpeech, Details, Word } from "../word.js";

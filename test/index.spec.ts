@@ -1,4 +1,4 @@
-import * as tokun from "../src"
+import * as tokun from "../src/index.js"
 import * as assert from 'assert'
 
 const DICTIONARY_PATH = "./node_modules/kuromoji/dict"
@@ -23,7 +23,6 @@ describe('Factory Methods', function () {
     });
   });
 });
-
 
 describe('Segmenter', async function () {
   const segmenter = await tokun.build(DICTIONARY_PATH);
