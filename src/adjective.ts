@@ -1,5 +1,5 @@
-import { Stem, Conjugation } from "./conjugation";
-import { PartOfSpeech } from "./word";
+import { Stem, Conjugation } from "./conjugation.js";
+import { PartOfSpeech } from "./word.js";
 
 export interface AdjectiveDetail {
     type: PartOfSpeech.iAdjective;

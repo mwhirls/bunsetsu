@@ -1,4 +1,4 @@
-import { PartOfSpeech } from "./word";
+import { PartOfSpeech } from "./word.js";
 
 export enum SymbolType {
     Alphabet = 'アルファベット',

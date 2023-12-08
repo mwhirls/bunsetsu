@@ -1,10 +1,10 @@
 import { IpadicFeatures } from "kuromoji";
-import { AdjectiveDetail } from "../adjective";
-import { Stem, Conjugation } from "../conjugation";
-import { PartOfSpeech } from "../word";
-import { IpadicStem, IpadicConjugation } from "./conjugation";
-import { IpadicVerbDetail } from "./verb";
-import { IpadicWord } from "./word";
+import { AdjectiveDetail } from "../adjective.js";
+import { Stem, Conjugation } from "../conjugation.js";
+import { PartOfSpeech } from "../word.js";
+import { IpadicStem, IpadicConjugation } from "./conjugation.js";
+import { IpadicVerbDetail } from "./verb.js";
+import { IpadicWord } from "./word.js";
 
 export class IpadicAdjective extends IpadicWord {
     constructor(stem: IpadicFeatures, conjugation: IpadicFeatures[]) {

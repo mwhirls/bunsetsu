@@ -1,9 +1,9 @@
 import { IpadicFeatures } from "kuromoji";
-import { PartOfSpeech, WordDetail } from "../word";
-import { IpadicAdjectiveDetail } from "./adjective";
-import { IpadicNounDetail } from "./noun";
-import { IpadicSymbolDetail } from "./symbol";
-import { IpadicVerbDetail } from "./verb";
+import { PartOfSpeech, WordDetail } from "../word.js";
+import { IpadicAdjectiveDetail } from "./adjective.js";
+import { IpadicNounDetail } from "./noun.js";
+import { IpadicSymbolDetail } from "./symbol.js";
+import { IpadicVerbDetail } from "./verb.js";
 
 export class IpadicWord {
     pos: PartOfSpeech;

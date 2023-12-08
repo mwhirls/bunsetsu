@@ -1,6 +1,6 @@
-import buildSegmenter from "./internal/segmenter";
-import { Sentence } from "./sentence";
-import { Word } from "./word";
+import buildSegmenter from "./internal/segmenter.js";
+import { Sentence } from "./sentence.js";
+import { Word } from "./word.js";
 
 export interface Segmenter {
     segmentAsWords(text: string): Word[];

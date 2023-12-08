@@ -1,7 +1,7 @@
 import { IpadicFeatures } from "kuromoji";
-import { SymbolDetail, SymbolType } from "../symbol";
-import { PartOfSpeech } from "../word";
-import { IpadicWord, posDetails } from "./word";
+import { SymbolDetail, SymbolType } from "../symbol.js";
+import { PartOfSpeech } from "../word.js";
+import { IpadicWord, posDetails } from "./word.js";
 
 export class IpadicSymbol extends IpadicWord {
     constructor(token: IpadicFeatures) {

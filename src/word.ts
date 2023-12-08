@@ -1,7 +1,7 @@
-import { AdjectiveDetail } from "./adjective";
-import { NounDetail } from "./noun";
-import { SymbolDetail } from "./symbol";
-import { VerbDetail } from "./verb";
+import { AdjectiveDetail } from "./adjective.js";
+import { NounDetail } from "./noun.js";
+import { SymbolDetail } from "./symbol.js";
+import { VerbDetail } from "./verb.js";
 
 // https://qiita.com/ensan_hcl/items/885588c7d2d99de85b44
 export enum PartOfSpeech {

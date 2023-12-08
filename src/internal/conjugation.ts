@@ -1,6 +1,6 @@
 
 import { IpadicFeatures } from "kuromoji";
-import { Stem, Conjugation, ConjugatedForm } from "../conjugation";
+import { Stem, Conjugation, ConjugatedForm } from "../conjugation.js";
 
 export class IpadicStem implements Stem {
     surfaceForm: string;

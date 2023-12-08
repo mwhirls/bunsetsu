@@ -1,8 +1,8 @@
 import { IpadicFeatures } from "kuromoji";
-import { NounDetail } from "../noun";
-import { PartOfSpeech, Word } from "../word";
-import { IpadicVerb } from "./verb";
-import { IpadicWord } from "./word";
+import { NounDetail } from "../noun.js";
+import { PartOfSpeech, Word } from "../word.js";
+import { IpadicVerb } from "./verb.js";
+import { IpadicWord } from "./word.js";
 
 export class IpadicNoun extends IpadicWord {
     constructor(token: IpadicFeatures, suffix?: IpadicFeatures, suru?: IpadicVerb) {

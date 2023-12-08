@@ -1,22 +1,22 @@
-import { IpadicFeatures, Tokenizer, builder } from "kuromoji";
-import { ConjugatedForm } from "../conjugation";
-import { Sentence } from "../sentence";
-import { PartOfSpeech, Details, Word } from "../word";
-import { IpadicAdjective } from "./adjective";
-import { IpadicNoun } from "./noun";
-import { IpadicSentence } from "./sentence";
-import { IpadicSymbol } from "./symbol";
-import { IpadicVerb } from "./verb";
-import { posDetails, IpadicWord } from "./word";
-import { Segmenter } from "../segmenter";
+import * as kuromoji from "kuromoji";
+import { ConjugatedForm } from "../conjugation.js";
+import { Sentence } from "../sentence.js";
+import { PartOfSpeech, Details, Word } from "../word.js";
+import { IpadicAdjective } from "./adjective.js";
+import { IpadicNoun } from "./noun.js";
+import { IpadicSentence } from "./sentence.js";
+import { IpadicSymbol } from "./symbol.js";
+import { IpadicVerb } from "./verb.js";
+import { posDetails, IpadicWord } from "./word.js";
+import { Segmenter } from "../segmenter.js";
 
-function isSuruVerb(token: IpadicFeatures) {
+function isSuruVerb(token: kuromoji.IpadicFeatures) {
     const details = posDetails(token);
     return token.pos === PartOfSpeech.Noun && details.some((value) => value === Details.SuruConjunction);
 }
 
-function handleConjugation(tokens: IpadicFeatures[], start: number) {
-    const result: IpadicFeatures[] = [];
+function handleConjugation(tokens: kuromoji.IpadicFeatures[], start: number) {
+    const result: kuromoji.IpadicFeatures[] = [];
     let index = start;
     while (index < tokens.length) {
         const token = tokens[index];
@@ -35,7 +35,7 @@ function handleConjugation(tokens: IpadicFeatures[], start: number) {
     return result;
 }
 
-function handleImperativeEConjugation(tokens: IpadicFeatures[], index: number) {
+function handleImperativeEConjugation(tokens: kuromoji.IpadicFeatures[], index: number) {
     const token = tokens[index];
     if (token.conjugated_type === '五段・サ行') {
         const next = index + 1 < tokens.length ? tokens[index + 1] : null;
@@ -53,7 +53,7 @@ function handleImperativeEConjugation(tokens: IpadicFeatures[], index: number) {
     }
 }
 
-function handleVerb(tokens: IpadicFeatures[], index: number) {
+function handleVerb(tokens: kuromoji.IpadicFeatures[], index: number) {
     const token = tokens[index];
     if (token.conjugated_form === ConjugatedForm.ImperativeE) {
         return handleImperativeEConjugation(tokens, index);
@@ -66,11 +66,11 @@ function handleVerb(tokens: IpadicFeatures[], index: number) {
     return new IpadicAdjective(token, []);
 }
 
-function handleSuffixedNoun(stem: IpadicFeatures, suffix: IpadicFeatures) {
+function handleSuffixedNoun(stem: kuromoji.IpadicFeatures, suffix: kuromoji.IpadicFeatures) {
     return new IpadicNoun(stem, suffix);
 }
 
-function handleNoun(tokens: IpadicFeatures[], index: number) {
+function handleNoun(tokens: kuromoji.IpadicFeatures[], index: number) {
     const token = tokens[index];
     if (isSuruVerb(token)) {
         const next = index + 1 < tokens.length ? tokens[index + 1] : null;
@@ -88,7 +88,7 @@ function handleNoun(tokens: IpadicFeatures[], index: number) {
     return new IpadicNoun(token);
 }
 
-function handleFiller(tokens: IpadicFeatures[], index: number) {
+function handleFiller(tokens: kuromoji.IpadicFeatures[], index: number) {
     const specialCases = ['あのう', 'えっと', 'ええっと', 'ええと']; // tokenizer splits these into separate tokens
     const token = tokens[index];
     const next = index + 1 < tokens.length ? tokens[index + 1] : null;
@@ -104,18 +104,18 @@ function handleFiller(tokens: IpadicFeatures[], index: number) {
     return null;
 }
 
-function handleInterjection(tokens: IpadicFeatures[], index: number) {
+function handleInterjection(tokens: kuromoji.IpadicFeatures[], index: number) {
     const token = tokens[index];
     const filler = handleFiller(tokens, index); // sometimes pieces of fillers are categorized as interjections
     return filler ?? new IpadicWord(PartOfSpeech.Interjection, [token]);
 }
 
-function handleSymbol(tokens: IpadicFeatures[], index: number) {
+function handleSymbol(tokens: kuromoji.IpadicFeatures[], index: number) {
     const token = tokens[index];
     return new IpadicSymbol(token);
 }
 
-function handleAdjective(tokens: IpadicFeatures[], index: number) {
+function handleAdjective(tokens: kuromoji.IpadicFeatures[], index: number) {
     const token = tokens[index];
     const filler = handleFiller(tokens, index); // sometimes pieces of fillers are categorized as adjectives
     if (filler) {
@@ -130,7 +130,7 @@ function handleAdjective(tokens: IpadicFeatures[], index: number) {
     return new IpadicAdjective(token, []);
 }
 
-function nextWord(tokens: IpadicFeatures[], index: number): IpadicWord {
+function nextWord(tokens: kuromoji.IpadicFeatures[], index: number): IpadicWord {
     const token = tokens[index];
     switch (token.pos) {
         case PartOfSpeech.Filler:
@@ -150,7 +150,7 @@ function nextWord(tokens: IpadicFeatures[], index: number): IpadicWord {
     }
 }
 
-function nextSentence(tokens: IpadicFeatures[], start: number): IpadicSentence {
+function nextSentence(tokens: kuromoji.IpadicFeatures[], start: number): IpadicSentence {
     const result = [];
     let index = start;
     while (index < tokens.length) {
@@ -162,7 +162,7 @@ function nextSentence(tokens: IpadicFeatures[], start: number): IpadicSentence {
     return { words: result, start, end: index };
 }
 
-function toSentences(tokens: IpadicFeatures[]): Sentence[] {
+function toSentences(tokens: kuromoji.IpadicFeatures[]): Sentence[] {
     const result = [];
     let index = 0;
     while (index < tokens.length) {
@@ -173,7 +173,7 @@ function toSentences(tokens: IpadicFeatures[]): Sentence[] {
     return result;
 }
 
-function toWords(tokens: IpadicFeatures[]): Word[] {
+function toWords(tokens: kuromoji.IpadicFeatures[]): Word[] {
     const result = [];
     let index = 0;
     while (index < tokens.length) {
@@ -185,9 +185,9 @@ function toWords(tokens: IpadicFeatures[]): Word[] {
 }
 
 export class IpadicSegmenter implements Segmenter {
-    tokenizer: Tokenizer<IpadicFeatures>;
+    tokenizer: kuromoji.Tokenizer<kuromoji.IpadicFeatures>;
 
-    constructor(tokenizer: Tokenizer<IpadicFeatures>) {
+    constructor(tokenizer: kuromoji.Tokenizer<kuromoji.IpadicFeatures>) {
         this.tokenizer = tokenizer;
     }
 
@@ -203,8 +203,8 @@ export class IpadicSegmenter implements Segmenter {
 
 export function buildSegmenter(dicPath: string): Promise<Segmenter> {
     return new Promise((resolve, reject) => {
-        const tokenizerBuilder = builder({ dicPath });
-        tokenizerBuilder.build((err: Error, tokenizer: Tokenizer<IpadicFeatures>) => {
+        const tokenizerBuilder = kuromoji.builder({ dicPath });
+        tokenizerBuilder.build((err: Error, tokenizer: kuromoji.Tokenizer<kuromoji.IpadicFeatures>) => {
             if (err) {
                 reject(err);
             } else {

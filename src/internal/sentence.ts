@@ -1,5 +1,5 @@
-import { Sentence } from "../sentence";
-import { Word } from "../word";
+import { Sentence } from "../sentence.js";
+import { Word } from "../word.js";
 
 export class IpadicSentence implements Sentence {
     words: Word[];
