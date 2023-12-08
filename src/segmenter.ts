@@ -1,4 +1,4 @@
-import buildSegmenter from "./internal/segmenter.js";
+import buildSegmenter from "./ipadic/segmenter.js";
 import { Sentence } from "./sentence.js";
 import { Word } from "./word.js";
 
