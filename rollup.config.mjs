@@ -22,11 +22,11 @@ export default [
         ]
     },
     {
-        input: "dist/dts/index.d.ts",
+        input: "dist/index.d.ts",
         output: [{ file: "dist/index.bundle.d.ts", format: "es" }],
         plugins: [
             dts(),
-            del({ hook: "buildEnd", targets: 'dist/dts' })
+            del({ hook: "buildEnd", targets: ['dist/*.d.ts', 'dist/internal'] })
         ]
     }
 ];
