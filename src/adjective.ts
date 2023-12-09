@@ -1,9 +1,10 @@
-import { Stem, Conjugation } from "./conjugation.js";
-import { PartOfSpeech } from "./word.js";
+import { ConjugatedForm } from "./conjugation.js";
+import { PartOfSpeech, Word } from "./word.js";
 
 export interface AdjectiveDetail {
     type: PartOfSpeech.iAdjective;
-    stem: Stem;
-    conjugation: Conjugation;
+    conjugatedForm: ConjugatedForm;
+    auxillaryWord?: Word,
+    negativeForm?: boolean;
 }
 

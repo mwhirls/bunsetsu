@@ -1,26 +1,29 @@
 import { IpadicFeatures } from "kuromoji";
 import { AdjectiveDetail } from "../adjective.js";
-import { Stem, Conjugation } from "../conjugation.js";
-import { PartOfSpeech } from "../word.js";
-import { IpadicStem, IpadicConjugation } from "./conjugation.js";
+import { ConjugatedForm } from "../conjugation.js";
+import { PartOfSpeech, Word } from "../word.js";
 import { IpadicWord } from "./word.js";
 
 export class IpadicAdjective extends IpadicWord {
-    constructor(stem: IpadicFeatures, conjugation: IpadicFeatures[]) {
-        const detail = new IpadicAdjectiveDetail(stem, conjugation);
-        super(PartOfSpeech.iAdjective, [stem, ...conjugation], undefined, stem.basic_form, undefined, undefined, detail);
+    constructor(stem: IpadicFeatures, inflection: IpadicFeatures[], detail: IpadicAdjectiveDetail) {
+        super(PartOfSpeech.iAdjective, [stem, ...inflection], undefined, stem.basic_form, undefined, undefined, detail);
     }
 }
 
 export class IpadicAdjectiveDetail implements AdjectiveDetail {
     type: PartOfSpeech.iAdjective;
-    stem: Stem;
-    conjugation: Conjugation;
+    conjugatedForm: ConjugatedForm;
+    auxillaryWord?: Word;
+    negativeForm?: boolean;
 
-    constructor(stem: IpadicFeatures, conjugation: IpadicFeatures[]) {
+    constructor(conjugatedForm: ConjugatedForm);
+    constructor(conjugatedForm: ConjugatedForm, auxillaryWord?: IpadicWord);
+    constructor(conjugatedForm: ConjugatedForm, auxillaryWord?: IpadicWord, negativeForm?: boolean);
+    constructor(conjugatedForm: ConjugatedForm, auxillaryWord?: IpadicWord, negativeForm?: boolean) {
         this.type = PartOfSpeech.iAdjective;
-        this.stem = new IpadicStem(stem);
-        this.conjugation = new IpadicConjugation(stem, conjugation);
+        this.conjugatedForm = conjugatedForm;
+        this.auxillaryWord = auxillaryWord;
+        this.negativeForm = negativeForm;
     }
 }
 

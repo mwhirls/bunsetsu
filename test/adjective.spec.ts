@@ -4,7 +4,7 @@ import { TestContext } from "./context.js";
 
 export function runTestSuite(context: TestContext) {
   describe('PartOfSpeech.iAdjective', function () {
-    const runTestCase = (testCases: { phrase: string, basicForm: string, reading: string, stemSurfaceForm: string, stemReading: string }[], conjugatedForm: tokun.ConjugatedForm) => {
+    const runTestCase = (testCases: { phrase: string, basicForm: string, reading: string, auxillary?: string }[], conjugatedForm: tokun.ConjugatedForm) => {
       for (const expected of testCases) {
         it(`should identify ${expected.phrase} as one word`, function () {
           assert.ok(context.segmenter);
@@ -20,54 +20,63 @@ export function runTestSuite(context: TestContext) {
           assert.ok(word.detail);
           assert.equal(word.detail.type, tokun.PartOfSpeech.iAdjective);
           const detail = word.detail as tokun.AdjectiveDetail;
+          assert.equal(detail.conjugatedForm, conjugatedForm);
 
-          const stem = detail.stem;
-          assert.equal(stem.basicForm, word.basicForm);
-          assert.equal(stem.surfaceForm, expected.stemSurfaceForm);
-          assert.equal(stem.reading, expected.stemReading);
-
-          const conj = detail.conjugation;
-          const conjSurfaceForm = expected.phrase.replace(expected.stemSurfaceForm, '');
-          const conjReading = expected.reading.replace(expected.stemReading, '');
-          assert.equal(conj.conjugatedForm, conjugatedForm);
-          assert.equal(conj.surfaceForm, conjSurfaceForm);
-          assert.equal(conj.reading, conjReading);
+          if (expected.auxillary) {
+            assert.equal(detail.auxillaryWord?.basicForm, expected.auxillary);
+          }
         });
       }
     };
 
-    describe('ConjugatedForm.GaruConjunction', function () {
-      const adjectives = [
-        { phrase: '嬉しがる', basicForm: "嬉しい", reading: 'ウレシガル', stemSurfaceForm: '嬉し', stemReading: 'ウレシ' },
-        { phrase: '早すぎる', basicForm: '早い', reading: 'ハヤスギル', stemSurfaceForm: '早', stemReading: 'ハヤ' },
-        { phrase: '悲しさ', basicForm: '悲しい', reading: 'カナシサ', stemSurfaceForm: '悲し', stemReading: 'カナシ' },
-        { phrase: '虚しそう', basicForm: '虚しい', reading: 'ムナシソウ', stemSurfaceForm: '虚し', stemReading: 'ムナシ' },
-      ];
-      runTestCase(adjectives, tokun.ConjugatedForm.GaruConjunction);
+    describe('ConjugatedForm.GaruForm', function () {
+      describe('as is', function () {
+        const adjectives = [
+          { phrase: '嬉し', basicForm: "嬉しい", reading: 'ウレシ' },
+          { phrase: '早', basicForm: '早い', reading: 'ハヤ' },
+        ];
+        runTestCase(adjectives, tokun.ConjugatedForm.GaruForm);
+      });
+
+      describe('with auxillary verb', function () {
+        const adjectives = [
+          { phrase: '嬉しがる', basicForm: "嬉しい", reading: 'ウレシガル', auxillary: 'がる' },
+          { phrase: '早すぎる', basicForm: '早い', reading: 'ハヤスギル', auxillary: 'すぎる' },
+        ];
+        runTestCase(adjectives, tokun.ConjugatedForm.GaruForm);
+      });
+
+      describe('with suffix', function () {
+        const adjectives = [
+          { phrase: '悲しさ', basicForm: '悲しい', reading: 'カナシサ', auxillary: 'さ' },
+          { phrase: '虚しそう', basicForm: '虚しい', reading: 'ムナシソウ', auxillary: 'そう' },
+        ];
+        runTestCase(adjectives, tokun.ConjugatedForm.GaruForm);
+      });
     });
 
-    describe('ConjugatedForm.ConditionalForm', function () {
+    describe('ConjugatedForm.Conditional', function () {
       const adjectives = [
-        { phrase: '美味しければ', basicForm: "美味しい", reading: 'オイシケレバ', stemSurfaceForm: '美味し', stemReading: 'オイシ' },
-        { phrase: '早ければ', basicForm: "早い", reading: 'ハヤケレバ', stemSurfaceForm: '早', stemReading: 'ハヤ' },
+        { phrase: '美味しければ', basicForm: "美味しい", reading: 'オイシケレバ' },
+        { phrase: '早ければ', basicForm: "早い", reading: 'ハヤケレバ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.ConditionalForm);
+      runTestCase(adjectives, tokun.ConjugatedForm.Conditional);
     });
 
-    describe('ConjugatedForm.ConditionalContraction1', function () {
+    describe('ConjugatedForm.ConditionalContraction (1)', function () {
       const adjectives = [
-        { phrase: '美味しけりゃ', basicForm: "美味しい", reading: 'オイシイケリャ', stemSurfaceForm: '美味し', stemReading: 'オイシ' },
-        { phrase: '早けりゃ', basicForm: "早い", reading: 'ハヤケリャ', stemSurfaceForm: '早', stemReading: 'ハヤ' },
+        { phrase: '美味しけりゃ', basicForm: "美味しい", reading: 'オイシケリャ' },
+        { phrase: '早けりゃ', basicForm: "早い", reading: 'ハヤケリャ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.ConditionalContraction1);
+      runTestCase(adjectives, tokun.ConjugatedForm.ConditionalContraction);
     });
 
-    describe('ConjugatedForm.ConditionalContraction2', function () {
+    describe('ConjugatedForm.ConditionalContraction (2)', function () {
       const adjectives = [
         { phrase: '美味しきゃ', basicForm: "美味しい", reading: 'オイシキャ', stemSurfaceForm: '美味し', stemReading: 'オイシ' },
         { phrase: '早きゃ', basicForm: "早い", reading: 'ハヤキャ', stemSurfaceForm: '早', stemReading: 'ハヤ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.ConditionalContraction2);
+      runTestCase(adjectives, tokun.ConjugatedForm.ConditionalContraction);
     });
 
     describe('ConjugatedForm.PlainForm', function () {
@@ -78,12 +87,12 @@ export function runTestSuite(context: TestContext) {
       runTestCase(adjectives, tokun.ConjugatedForm.PlainForm);
     });
 
-    describe('ConjugatedForm.IndeclinableNominalConjunction', function () {
+    describe('ConjugatedForm.IndeclinableNominal', function () {
       const adjectives = [
-        { phrase: '美しき', basicForm: "美しい", reading: 'オイシキ', stemSurfaceForm: '美し', stemReading: 'オイシ' },
-        { phrase: '親しき', basicForm: "親しい", reading: 'シタシキ', stemSurfaceForm: '親し', stemReading: 'オイシ' },
+        { phrase: '美しき', basicForm: "美しい", reading: 'ウツクシキ' },
+        { phrase: '親しき', basicForm: "親しい", reading: 'シタシキ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.IndeclinableNominalConjunction);
+      runTestCase(adjectives, tokun.ConjugatedForm.IndeclinableNominal);
     });
 
     describe('ConjugatedForm.ClassicalPlainForm', function () {
@@ -95,47 +104,56 @@ export function runTestSuite(context: TestContext) {
 
     describe('ConjugatedForm.IrrealisUConjunction', function () {
       const adjectives = [
-        { phrase: '高かろう', basicForm: "高い", reading: 'タカロウ', stemSurfaceForm: '高', stemReading: 'タカ' },
+        { phrase: '高かろう', basicForm: "高い", reading: 'タカカロウ', auxillary: 'う' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.IrrealisUConjunction);
+      runTestCase(adjectives, tokun.ConjugatedForm.IrrealisUForm);
     });
+
 
     describe('ConjugatedForm.IrrealisNuConjunction', function () {
       const adjectives = [
-        { phrase: '高からぬ', basicForm: "高い", reading: 'タカラヌ', stemSurfaceForm: '高', stemReading: 'タカ' },
+        { phrase: '高からぬ', basicForm: "高い", reading: 'タカカラヌ', auxillary: 'ぬ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.IrrealisNuConjunction);
+      runTestCase(adjectives, tokun.ConjugatedForm.IrrealisNuForm);
     });
 
     describe('ConjugatedForm.ImperativeE', function () {
       const adjectives = [
-        { phrase: '多かれ', basicForm: "多い", reading: 'オオカレ', stemSurfaceForm: '多', stemReading: 'オオ' },
+        { phrase: '多かれ', basicForm: "多い", reading: 'オオカレ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.ImperativeE);
+      runTestCase(adjectives, tokun.ConjugatedForm.Imperative);
     });
 
-    describe('ConjugatedForm.GozaiConjunction', function () {
+    describe('ConjugatedForm.GozaiForm', function () {
       const adjectives = [
-        { phrase: '暑うございます', basicForm: "暑い", reading: 'アツゴザイマス', stemSurfaceForm: '暑', stemReading: 'アツ' },
-        { phrase: '苦しゅうない', basicForm: "苦しい", reading: 'クルシユウナイ', stemSurfaceForm: '苦し', stemReading: 'クルシ' },
+        { phrase: '暑うございます', basicForm: "暑い", reading: 'アツウゴザイマス', auxillary: 'ござる' },
+        { phrase: '苦しゅうない', basicForm: "苦しい", reading: 'クルシュウナイ', auxillary: 'ない' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.GozaiConjunction);
+      runTestCase(adjectives, tokun.ConjugatedForm.GozaiForm);
     });
 
-    describe('ConjugatedForm.TaConjunction', function () {
+    describe('ConjugatedForm.PastForm', function () {
       const adjectives = [
         { phrase: 'うるさかった', basicForm: "うるさい", reading: "ウルサカッタ", stemSurfaceForm: 'うるさ', stemReading: 'ウルサ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.TaConjunction);
+      runTestCase(adjectives, tokun.ConjugatedForm.PastForm);
     });
 
-    describe('ConjugatedForm.TeConjunction', function () {
+    describe('ConjugatedForm.TeForm', function () {
       const adjectives = [
-        { phrase: '女々しくて', basicForm: "女々しい", reading: 'メメシクテ', stemSurfaceForm: '女々し', stemReading: 'メメシ' },
-        { phrase: 'うるさく', basicForm: "うるさい", reading: "ウルサク", stemSurfaceForm: 'うるさ', stemReading: 'ウルサ' },
-        { phrase: '芳しくない', basicForm: "芳しい", reading: 'カンバシクナイ', stemSurfaceForm: '芳し', stemReading: 'カンバシ' },
+        { phrase: '女々しくて', basicForm: "女々しい", reading: 'メメシクテ' },
+        { phrase: '寒くて', basicForm: "寒い", reading: 'サムクテ' },
+
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.TeConjunction);
+      runTestCase(adjectives, tokun.ConjugatedForm.TeForm);
+    });
+
+    describe('ConjugatedForm.Adverbial', function () {
+      const adjectives = [
+        { phrase: 'うるさく', basicForm: "うるさい", reading: "ウルサク" },
+        { phrase: '芳しくない', basicForm: "芳しい", reading: 'カンバシクナイ', auxillary: 'ない' },
+      ];
+      runTestCase(adjectives, tokun.ConjugatedForm.Adverbial);
     });
   });
 }

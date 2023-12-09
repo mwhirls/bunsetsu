@@ -1,5 +1,5 @@
-import { Conjugation, Stem } from "./conjugation.js";
-import { PartOfSpeech } from "./word.js";
+import { ConjugatedForm } from "./conjugation.js";
+import { PartOfSpeech, Word } from "./word.js";
 
 export enum VerbType {
     Kuru = 'カ変動詞',
@@ -7,6 +7,7 @@ export enum VerbType {
 
 export interface VerbDetail {
     type: PartOfSpeech.Verb;
-    stem: Stem;
-    conjugation: Conjugation;
+    conjugatedForm: ConjugatedForm;
+    auxillaryWord?: Word,
+    negativeForm?: boolean;
 }
