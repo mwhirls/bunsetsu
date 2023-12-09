@@ -18,8 +18,9 @@ export enum IpadicConjugatedForm {
     ImperativeRo = '命令ｒｏ', // しろ
     ImperativeYo = '命令ｙｏ', // 来よ
     PlainForm = '基本形',
-    SpecialIndeclinableNominalConjunction1 = '体言接続特殊', // (今日)来ん(の)？
-    SpecialIndeclinableNominalConjunction2 = '体言接続特殊２', // (今日)来(の)？
-    TaConjunction = '連用タ接続', // うるさかっ(た)
-    TeConjunction = '連用テ接続', // 女々しく(て), うるさく(する), 芳しく(ない)
+    SpecialIndeclinableNominalConjunction1 = '体言接続特殊', // 今日（来ん）の？
+    SpecialIndeclinableNominalConjunction2 = '体言接続特殊２', // 今日（来）の？
+    SpecialIrrealis = '未然特殊', // やめて（くん）ない？
+    TaConjunction = '連用タ接続', // （うるさかっ）た
+    TeConjunction = '連用テ接続', // （女々しく）て, （うるさく）する, （芳しく）ない
 }

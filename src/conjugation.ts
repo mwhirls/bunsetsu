@@ -4,6 +4,7 @@ export enum ConjugatedForm {
     CausativePassive,
     ClassicalPlainForm,
     Conditional,
+    Contracted,
     TaraConditional,
     ConditionalContraction,
     Continuative,
@@ -13,11 +14,13 @@ export enum ConjugatedForm {
     GaruForm,
     GozaiForm,
     Imperative,
+    NaiForm,
     Passive,
     PastForm,
     PlainForm,
     PoliteForm,
-    Potential,
+    Potential, // TODO
     TeForm,
+    Volitional,
     Unknown,
 } 

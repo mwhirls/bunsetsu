@@ -91,18 +91,6 @@ function handleConditional(tokens: kuromoji.IpadicFeatures[], index: number): Ip
     return conjugatedWord(token, [], form);
 }
 
-function handleImperativeEConjugation(tokens: kuromoji.IpadicFeatures[], index: number) {
-    const token = tokens[index];
-    const form = ConjugatedForm.Imperative;
-    if (token.conjugated_type === '五段・サ行') {
-        const next = index + 1 < tokens.length ? tokens[index + 1] : null;
-        if (next && next.surface_form === 'よ') {
-            return conjugatedWord(token, [next], form); // archaic せよ case
-        }
-    }
-    return conjugatedWord(token, [], form);
-}
-
 function handleTaConjunction(tokens: kuromoji.IpadicFeatures[], index: number): IpadicAdjective | IpadicVerb {
     const token = tokens[index];
     const next = index + 1 < tokens.length ? tokens[index + 1] : null;
@@ -138,6 +126,39 @@ function handleTeConjunction(tokens: kuromoji.IpadicFeatures[], index: number): 
     return conjugatedWord(token, [], ConjugatedForm.Unknown);
 }
 
+function handleContinuativeForm(tokens: kuromoji.IpadicFeatures[], index: number) {
+    const token = tokens[index];
+    const next = index + 1 < tokens.length ? tokens[index + 1] : null;
+    if (!next) {
+        // todo: how to categorize this? is this a partial phrase?
+        return conjugatedWord(token, [], ConjugatedForm.Continuative);
+    }
+    switch (next.pos) {
+        case PartOfSpeech.Verb:
+        case PartOfSpeech.AuxillaryVerb: {
+            const auxillaryVerb = handleVerbAdjective(tokens, index + 1);
+            switch (auxillaryVerb.basicForm) {
+                case 'ます': // 来ます
+                    return conjugatedWord(token, [...auxillaryVerb.tokens], ConjugatedForm.PoliteForm, auxillaryVerb);
+                case 'た': // 来ました
+                    return handleTaConjunction(tokens, index);
+                default:
+                    throw Error('unrecognized continuative form');
+            }
+        }
+        case PartOfSpeech.Particle: {
+            switch (next.basic_form) {
+                case 'て': // // 来まして
+                    return handleTeConjunction(tokens, index);
+                default:
+                    throw Error('unrecognized continuative form');
+            }
+        }
+        default:
+            throw Error('unrecognized continuative form');
+    }
+}
+
 function handleConjunctiveForm(tokens: kuromoji.IpadicFeatures[], index: number, conjugatedForm: ConjugatedForm) {
     const token = tokens[index];
     const next = index + 1 < tokens.length ? tokens[index + 1] : null;
@@ -166,6 +187,21 @@ function handleConjunctiveForm(tokens: kuromoji.IpadicFeatures[], index: number,
     }
 }
 
+function handleIrrealisForm(tokens: kuromoji.IpadicFeatures[], index: number) {
+    // 感じない, 逃げない, 走らない, 来ない、しない, etc
+    return handleConjunctiveForm(tokens, index, ConjugatedForm.NaiForm);
+}
+
+function handleIrrealisUConjunction(tokens: kuromoji.IpadicFeatures[], index: number) {
+    const token = tokens[index];
+    switch (token.pos) {
+        case PartOfSpeech.Verb: // 来よう、食べよう、買おう、しよう, etc
+            return handleConjunctiveForm(tokens, index, ConjugatedForm.Volitional);
+        default:
+            return handleConjunctiveForm(tokens, index, ConjugatedForm.IrrealisUForm);
+    }
+}
+
 function handleVerbAdjective(tokens: kuromoji.IpadicFeatures[], index: number): IpadicAdjective | IpadicVerb {
     const token = tokens[index];
     const filler = handleFiller(tokens, index); // sometimes pieces of fillers are categorized as adjectives
@@ -182,20 +218,24 @@ function handleVerbAdjective(tokens: kuromoji.IpadicFeatures[], index: number): 
         case IpadicConjugatedForm.ConditionalForm:
             return handleConditional(tokens, index);
         case IpadicConjugatedForm.Continuative:
-            return handleConjunctiveForm(tokens, index, ConjugatedForm.Continuative);
+            return handleContinuativeForm(tokens, index);
         case IpadicConjugatedForm.GaruConjunction:
             return handleConjunctiveForm(tokens, index, ConjugatedForm.GaruForm);
         case IpadicConjugatedForm.GozaiConjunction:
             return handleConjunctiveForm(tokens, index, ConjugatedForm.GozaiForm);
+        case IpadicConjugatedForm.Irrealis:
+            return handleIrrealisForm(tokens, index);
         case IpadicConjugatedForm.IrrealisNuConjunction:
             return handleConjunctiveForm(tokens, index, ConjugatedForm.IrrealisNuForm);
         case IpadicConjugatedForm.IrrealisUConjunction:
-            return handleConjunctiveForm(tokens, index, ConjugatedForm.IrrealisUForm);
+            return handleIrrealisUConjunction(tokens, index);
+        case IpadicConjugatedForm.SpecialIrrealis:
+            return handleConjunctiveForm(tokens, index, ConjugatedForm.Contracted);
         case IpadicConjugatedForm.ImperativeI:
         case IpadicConjugatedForm.ImperativeRo:
         case IpadicConjugatedForm.ImperativeYo:
         case IpadicConjugatedForm.ImperativeE:
-            return handleImperativeEConjugation(tokens, index);
+            return conjugatedWord(token, [], ConjugatedForm.Imperative);
         case IpadicConjugatedForm.ClassicalPlainForm:
             return conjugatedWord(token, [], ConjugatedForm.ClassicalPlainForm);
         case IpadicConjugatedForm.IndeclinableNominalConjunction:

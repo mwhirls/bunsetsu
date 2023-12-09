@@ -3,266 +3,346 @@ import * as assert from 'assert'
 import { TestContext } from "./context.js";
 
 export function runTestSuite(context: TestContext) {
-  describe('PartOfSpeech.Verb', async function () {
-    const runTest = (testCases: { surfaceForm: string, basicForm: string }[]) => {
-      for (const verb of testCases) {
-        it(`should identify ${verb.surfaceForm} as one word`, async function () {
+  describe('PartOfSpeech.Verb', function () {
+    const runTest = (testCases: { surfaceForm: string, basicForm: string, reading: string, auxillary?: string }[], conjugatedForm: tokun.ConjugatedForm) => {
+      for (const expected of testCases) {
+        it(`should identify ${expected.surfaceForm} as one word`, function () {
           assert.ok(context.segmenter);
-          const words = await context.segmenter.segmentAsWords(verb.surfaceForm);
+          const words = context.segmenter.segmentAsWords(expected.surfaceForm);
           assert.equal(words.length, 1);
+
           const word = words[0];
           assert.equal(word.pos, tokun.PartOfSpeech.Verb);
-          assert.equal(word.surfaceForm, verb.surfaceForm);
+          assert.equal(word.surfaceForm, expected.surfaceForm);
+          assert.equal(word.basicForm, expected.basicForm);
+          assert.equal(word.reading, expected.reading);
+
+          assert.ok(word.detail);
+          assert.equal(word.detail.type, tokun.PartOfSpeech.Verb);
+          const detail = word.detail as tokun.VerbDetail;
+          assert.equal(detail.conjugatedForm, conjugatedForm);
+
+          if (expected.auxillary) {
+            assert.equal(detail.auxillaryWord?.basicForm, expected.auxillary);
+          }
+        });
+      }
+    };
+    const runTestOnPhrase = (testCases: { phrase: string, index: number, wordSurfaceForm: string, basicForm: string, reading: string, auxillary?: string }[], conjugatedForm: tokun.ConjugatedForm) => {
+      for (const expected of testCases) {
+        it(`should identify ${expected.wordSurfaceForm} as one word`, function () {
+          assert.ok(context.segmenter);
+          const words = context.segmenter.segmentAsWords(expected.phrase);
+
+          const word = words[expected.index];
+          assert.equal(word.pos, tokun.PartOfSpeech.Verb);
+          assert.equal(word.surfaceForm, expected.wordSurfaceForm);
+          assert.equal(word.basicForm, expected.basicForm);
+          assert.equal(word.reading, expected.reading);
+
+          assert.ok(word.detail);
+          assert.equal(word.detail.type, tokun.PartOfSpeech.Verb);
+          const detail = word.detail as tokun.VerbDetail;
+          assert.equal(detail.conjugatedForm, conjugatedForm);
+
+          if (expected.auxillary) {
+            assert.equal(detail.auxillaryWord?.basicForm, expected.auxillary);
+          }
         });
       }
     };
 
     describe('VerbType.Kuru', function () {
-      const runTestCase = (testCases: string[]) => {
-        const cases = testCases.map((testCase) => { return { surfaceForm: testCase, basicForm: '来る' } });
-        runTest(cases);
+      const runWordTestCase = (testCases: { surfaceForm: string, reading: string, auxillary?: string }[], form: tokun.ConjugatedForm) => {
+        const cases = testCases.map((testCase) => { return { ...testCase, basicForm: '来る' } });
+        runTest(cases, form);
       };
-      describe('ConjugatedForm.ConditionalForm', function () {
-        const verbs = ['来れば'];
-        runTestCase(verbs);
+      const runPhraseTestCase = (testCases: { phrase: string, index: number, wordSurfaceForm: string, reading: string, auxillary?: string }[], form: tokun.ConjugatedForm) => {
+        const cases = testCases.map((testCase) => { return { ...testCase, basicForm: '来る' } });
+        runTestOnPhrase(cases, form);
+      };
+
+      describe('ConjugatedForm.Conditional', function () {
+        const verbs = [
+          { surfaceForm: '来れば', reading: 'クレバ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.Conditional);
       });
-      describe('ConjugatedForm.ConditionalContraction1', function () {
-        const verbs = ['来りゃ'];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.ConditionalContraction', function () {
+        // need full sentence context, otherwise kuromoji can report 
+        // 来（く）る as 来（きた）る
+        const phrases = [
+          { phrase: '来りゃいい', index: 0, wordSurfaceForm: '来りゃ', reading: 'クリャ' },
+        ];
+        runPhraseTestCase(phrases, tokun.ConjugatedForm.ConditionalContraction);
       });
+
       describe('ConjugatedForm.PlainForm', function () {
-        const verbs = ['来る'];
-        runTestCase(verbs);
+        const verbs = [
+          { surfaceForm: '来る', reading: 'クル' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.PlainForm);
       });
-      describe('ConjugatedForm.SpecialIndeclinableNominalConjunction1', function () {
-        const verbs = ['来ん'];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.IndeclinableNominal', function () {
+        // need full sentence context, otherwise kuromoji can report 
+        // 来（く）る as 来（きた）る
+        const phrases = [
+          { phrase: '今日来んの?', index: 1, wordSurfaceForm: '来ん', reading: 'クン' },
+        ];
+        runPhraseTestCase(phrases, tokun.ConjugatedForm.IndeclinableNominal);
       });
-      describe('ConjugatedForm.SpecialIndeclinableNominalConjunction2', function () {
-        const verbs = ['来'];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.Volitional', function () {
+        const verbs = [
+          { surfaceForm: '来よう', reading: 'コヨウ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.Volitional);
       });
-      describe('ConjugatedForm.IrrealisUConjunction', function () {
-        const verbs = ['来よう'];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.NaiForm', function () {
+        const verbs = [
+          { surfaceForm: '来ない', reading: 'コナイ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.NaiForm);
       });
-      describe('ConjugatedForm.Irrealis', function () {
-        const verbs = ['来ない'];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.Imperative as い variant', function () {
+        const verbs = [
+          { surfaceForm: '来い', reading: 'コイ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.Imperative);
       });
-      describe('ConjugatedForm.ImperativeI', function () {
-        const verbs = ['来い'];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.Imperative as よ variant', function () {
+        const verbs = [
+          { surfaceForm: '来よ', reading: 'コヨ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.Imperative);
       });
-      describe('ConjugatedForm.ImperativeYo', function () {
-        const verbs = ['来よ'];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.PoliteForm', function () {
+        const verbs = [
+          { surfaceForm: '来ます', reading: 'キマス' },
+          { surfaceForm: '来ました', reading: 'キマシタ' },
+          { surfaceForm: '来まして', reading: 'キマシテ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.PoliteForm);
       });
-      describe('ConjugatedForm.Continuative', function () {
-        const verbs = ['来ます', '来ました', '来まして'];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.PastForm', function () {
+        const verbs = [
+          { surfaceForm: '来た', reading: 'キタ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.PastForm);
       });
-      describe('ConjugatedForm.TaConjunction', function () {
-        const verbs = ['来た'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.TeConjunction', function () {
-        const verbs = ['来て'];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.TeForm', function () {
+        const verbs = [
+          { surfaceForm: '来て', reading: 'キテ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.TeForm);
       });
     });
+
 
     describe('VerbType.Suru', function () {
-      const runTestCase = (testCases: string[]) => {
-        const cases = testCases.map((testCase) => { return { surfaceForm: testCase, basicForm: 'する' } });
-        runTest(cases);
-      };
-      describe('ConjugatedForm.ConditionalForm', function () {
-        const verbs = ['すれば'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.ConditionalContraction1', function () {
-        const verbs = ['すりゃ'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.PlainForm', function () {
-        const verbs = ['する'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.SpecialIndeclinableNominalConjunction1', function () {
-        const verbs = ['すん'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.SpecialIndeclinableNominalConjunction2', function () {
-        const sentence = '今日すの？';
-        const verb = 'す';
-        it(`should identify ${verb} in ${sentence} as one word`, async function () {
-          assert.ok(context.segmenter);
-          const words = await context.segmenter.segmentAsWords(sentence);
-          assert.equal(words.length, 4); // 今日、す、の、？
-          const word = words[1];
-          assert.equal(word.pos, tokun.PartOfSpeech.Verb);
-          assert.equal(word.surfaceForm, verb);
-          const detail = word.detail && word.detail.type === tokun.PartOfSpeech.Verb ? word.detail : undefined;
-          assert.equal(true, detail);
-          //assert.equal(detail?.stem.basicForm, 'する');
-        });
-      });
-      describe('ConjugatedForm.ClassicalPlainForm', function () {
-        const sentence = 'このようにす？';
-        const verb = 'す';
-        it(`should identify ${verb} in ${sentence} as one word`, async function () {
-          assert.ok(context.segmenter);
-          const words = await context.segmenter.segmentAsWords(sentence);
-          assert.equal(words.length, 5); // この、よう, に、す、？
-          const word = words[3];
-          assert.equal(word.pos, tokun.PartOfSpeech.Verb);
-          assert.equal(word.surfaceForm, verb);
-          const detail = word.detail && word.detail.type === tokun.PartOfSpeech.Verb ? word.detail : undefined;
-          assert.equal(true, detail);
-          //assert.equal(detail?.stem.basicForm, 'する');
-        });
-      });
-      describe('ConjugatedForm.IrrealisUConjunction', function () {
-        const verbs = ['しよう'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.IrrealisNuConjunction', function () {
-        const verbs = ['せぬ'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.IrrealisReruConjunction', function () {
-        const verbs = ['される'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.Irrealis', function () {
-        const verbs = ['しない'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.ImperativeRo', function () {
-        const verbs = ['しろ'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.ImperativeYo', function () {
-        const verbs = ['せよ'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.Continuative', function () {
-        const verbs = ['します', 'しました', 'しまして'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.TaConjunction', function () {
-        const verbs = ['した'];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.TeConjunction', function () {
-        const verbs = ['して'];
-        runTestCase(verbs);
-      });
-    });
 
-    describe('VerbType.SpecialClassSuruVerb', function () {
-      const runTestCase = (testCases: { surfaceForm: string, basicForm: string }[]) => {
-        runTest(testCases);
+      const runWordTestCase = (testCases: { surfaceForm: string, reading: string, auxillary?: string }[], form: tokun.ConjugatedForm) => {
+        const cases = testCases.map((testCase) => { return { ...testCase, basicForm: 'する' } });
+        runTest(cases, form);
       };
-      describe('ConjugatedForm.ConditionalForm', function () {
-        const verbs = [{ surfaceForm: '愛すれば', basicForm: "愛する" }];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.ConditionalContraction1', function () {
-        const verbs = [{ surfaceForm: '愛すりゃ', basicForm: "愛する" }];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.PlainForm', function () {
-        const verbs = [{ surfaceForm: '反する', basicForm: "反する" }];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.ClassicalPlainForm', function () {
-        const sentence = '主命に反す';
-        const verb = '反す';
-        it(`should identify ${verb} in ${sentence} as one word`, async function () {
-          assert.ok(context.segmenter);
-          const words = await context.segmenter.segmentAsWords(sentence);
-          assert.equal(words.length, 3); // 主命,に,反す
-          const word = words[2];
-          assert.equal(word.pos, tokun.PartOfSpeech.Verb);
-          assert.equal(word.surfaceForm, verb);
-        });
-      });
-      describe('ConjugatedForm.IrrealisUConjunction', function () {
-        const verbs = [{ surfaceForm: '愛しよう', basicForm: "愛する" }];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.Irrealis', function () {
-        const verbs = [{ surfaceForm: '反しない', basicForm: "反する" }];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.IrrealisReruConjunction', function () {
-        const verbs = [{ surfaceForm: '愛せらる', basicForm: "愛する" }];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.ImperativeRo', function () {
-        const verbs = [{ surfaceForm: '反しろ', basicForm: "反する" }];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.ImperativeYo', function () {
-        const verbs = [{ surfaceForm: '愛せよ', basicForm: "愛する" }];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.Continuative', function () {
+      const runPhraseTestCase = (testCases: { phrase: string, index: number, wordSurfaceForm: string, reading: string, auxillary?: string }[], form: tokun.ConjugatedForm) => {
+        const cases = testCases.map((testCase) => { return { ...testCase, basicForm: 'する' } });
+        runTestOnPhrase(cases, form);
+      };
+
+      describe('ConjugatedForm.Conditional', function () {
         const verbs = [
-          { surfaceForm: '反します', basicForm: "反する" },
-          { surfaceForm: '反しました', basicForm: "反する" },
-          { surfaceForm: '反しまして', basicForm: "反する" },
+          { surfaceForm: 'すれば', reading: 'スレバ' },
         ];
-        runTestCase(verbs);
+        runWordTestCase(verbs, tokun.ConjugatedForm.Conditional);
       });
-      describe('ConjugatedForm.TaConjunction', function () {
-        const verbs = [{ surfaceForm: '愛した', basicForm: "愛する" }];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.ConditionalContraction', function () {
+        const verbs = [
+          { surfaceForm: 'すりゃ', reading: 'スリャ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.ConditionalContraction);
       });
-      describe('ConjugatedForm.TeConjunction', function () {
-        const verbs = [{ surfaceForm: '愛して', basicForm: "愛する" }];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.PlainForm', function () {
+        const verbs = [
+          { surfaceForm: 'する', reading: 'スル' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.PlainForm);
+      });
+
+      describe('ConjugatedForm.IndeclinableNominal', function () {
+        // need full sentence context
+        const phrases = [
+          { phrase: 'ゲームすんの？', index: 1, wordSurfaceForm: 'すん', reading: 'スン' },
+        ];
+        runPhraseTestCase(phrases, tokun.ConjugatedForm.IndeclinableNominal);
+      });
+
+      describe('ConjugatedForm.ClassicalPlainForm', function () {
+        // need full sentence context
+        const phrases = [
+          { phrase: 'このようにす', index: 3, wordSurfaceForm: 'す', reading: 'ス' },
+        ];
+        runPhraseTestCase(phrases, tokun.ConjugatedForm.ClassicalPlainForm);
+      });
+
+      describe('ConjugatedForm.Volitional', function () {
+        const verbs = [
+          { surfaceForm: 'しよう', reading: 'シヨウ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.Volitional);
+      });
+
+      describe('ConjugatedForm.NaiForm', function () {
+        const verbs = [
+          { surfaceForm: 'しない', reading: 'シナイ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.NaiForm);
+      });
+
+      describe('ConjugatedForm.Imperative as い variant', function () {
+        const verbs = [
+          { surfaceForm: 'しろ', reading: 'シロ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.Imperative);
+      });
+
+      describe('ConjugatedForm.Imperative as よ variant', function () {
+        const verbs = [
+          { surfaceForm: 'せよ', reading: 'セヨ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.Imperative);
+      });
+
+      describe('ConjugatedForm.PoliteForm', function () {
+        const verbs = [
+          { surfaceForm: 'します', reading: 'シマス' },
+          { surfaceForm: 'しました', reading: 'シマシタ' },
+          { surfaceForm: 'しまして', reading: 'シマシテ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.PoliteForm);
+      });
+
+      describe('ConjugatedForm.PastForm', function () {
+        const verbs = [
+          { surfaceForm: 'した', reading: 'シタ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.PastForm);
+      });
+
+      describe('ConjugatedForm.TeForm', function () {
+        const verbs = [
+          { surfaceForm: 'して', reading: 'シテ' },
+        ];
+        runWordTestCase(verbs, tokun.ConjugatedForm.TeForm);
       });
     });
 
-    describe('VerbType.ZuruVerb', function () {
-      const runTestCase = (testCases: { surfaceForm: string, basicForm: string }[]) => {
-        runTest(testCases);
-      };
+    // Single kanji する verbs that conjugate irregularly due to lingering
+    // influence from classical Japanese.  Their usage has changed over time, so 
+    // as a result, MeCab has two entries for these types of verbs the (五段 -す 
+    // version and -する version). Examples include 愛す / 愛する and 反す / 反する. 
+    // The resulting surface forms are equivalent for some conjugations (愛します, 愛します), 
+    // but different for others (愛しない, 愛さない). MeCab seems to prefer to prioritize
+    // interpreting the words in ambiguous cases as the 五段 -す versions.
+    // https://japanese.stackexchange.com/questions/46857/difference-between-%E6%84%9B%E3%81%99%E3%82%8B-and-%E6%84%9B%E3%81%99
+    // https://qiita.com/ensan_hcl/items/885588c7d2d99de85b44#%E4%BA%94%E6%AE%B5%E5%8C%96%E3%81%A8%E4%B8%8A%E4%B8%80%E6%AE%B5%E5%8C%96
+    describe('VerbType.SpecialClassSuruVerb', function () {
       describe('ConjugatedForm.ConditionalForm', function () {
-        const verbs = [{ surfaceForm: '信ずれば', basicForm: "信ずる" }];
-        runTestCase(verbs);
+        const verbs = [
+          { surfaceForm: '愛すれば', basicForm: '愛する', reading: 'アイスレバ' },
+        ];
+        runTest(verbs, tokun.ConjugatedForm.Conditional);
       });
-      describe('ConjugatedForm.ConditionalContraction1', function () {
-        const verbs = [{ surfaceForm: '信ずりゃ', basicForm: "信ずる" }];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.ConditionalContraction', function () {
+        const verbs = [
+          { surfaceForm: '愛すりゃ', basicForm: '愛する', reading: 'アイスリャ' },
+        ];
+        runTest(verbs, tokun.ConjugatedForm.ConditionalContraction);
       });
+
       describe('ConjugatedForm.PlainForm', function () {
-        const verbs = [{ surfaceForm: '信ずる', basicForm: "信ずる" }];
-        runTestCase(verbs);
+        const verbs = [
+          { surfaceForm: '反する', basicForm: '反する', reading: 'ハンスル' },
+        ];
+        runTest(verbs, tokun.ConjugatedForm.PlainForm);
       });
-      describe('ConjugatedForm.ClassicalPlainForm', function () {
-        const verbs = [{ surfaceForm: '減ず', basicForm: "減ずる" }];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.Volitional', function () {
+        const verbs = [
+          { surfaceForm: '愛しよう', basicForm: '愛する', reading: 'アイシヨウ' },
+        ];
+        runTest(verbs, tokun.ConjugatedForm.Volitional);
       });
-      describe('ConjugatedForm.IrrealisUConjunction', function () {
-        const verbs = [{ surfaceForm: '命じよう', basicForm: "命ずる" }];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.NaiForm', function () {
+        const verbs = [
+          { surfaceForm: '反しない', basicForm: '反する', reading: 'ハンシナイ' },
+        ];
+        runTest(verbs, tokun.ConjugatedForm.NaiForm);
       });
-      describe('ConjugatedForm.Irrealis', function () {
-        const verbs = [{ surfaceForm: '信じない', basicForm: "信ずる" }];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.ImperativeRo', function () {
-        const verbs = [{ surfaceForm: '信じない', basicForm: "信ずる" }];
-        runTestCase(verbs);
-      });
-      describe('ConjugatedForm.ImperativeYo', function () {
-        const verbs = [{ surfaceForm: '信ぜよ', basicForm: "信ずる" }];
-        runTestCase(verbs);
+
+      describe('ConjugatedForm.Imperative as ろ variant', function () {
+        const verbs = [
+          { surfaceForm: '反しろ', basicForm: '反する', reading: 'ハンシロ' },
+        ];
+        runTest(verbs, tokun.ConjugatedForm.Imperative);
       });
     });
+
+    // Single kanji ずる verbs that conjugate irregularly due to lingering
+    // influence from classical Japanese.  Their usage has changed over time, so 
+    // as a result, MeCab has two entries for these types of verbs the (一段 -じる 
+    // version and -ずる version). Examples include 信ずる / 信じる and 命ずる / 命じる. 
+    // The more modern じる conjugations are often preferred by MeCab in ambiguous
+    // contexts.
+    // https://qiita.com/ensan_hcl/items/885588c7d2d99de85b44#%E4%BA%94%E6%AE%B5%E5%8C%96%E3%81%A8%E4%B8%8A%E4%B8%80%E6%AE%B5%E5%8C%96
+    describe('VerbType.ZuruVerb', function () {
+      describe('ConjugatedForm.ConditionalForm', function () {
+        const verbs = [
+          { surfaceForm: '信ずれば', basicForm: '信ずる', reading: 'シンズレバ' },
+        ];
+        runTest(verbs, tokun.ConjugatedForm.Conditional);
+      });
+
+      describe('ConjugatedForm.ConditionalContraction', function () {
+        const verbs = [
+          { surfaceForm: '信ずりゃ', basicForm: '信ずる', reading: 'シンズリャ' },
+        ];
+        runTest(verbs, tokun.ConjugatedForm.ConditionalContraction);
+      });
+
+      describe('ConjugatedForm.PlainForm', function () {
+        const verbs = [
+          { surfaceForm: '信ずる', basicForm: '信ずる', reading: 'シンズル' },
+        ];
+        runTest(verbs, tokun.ConjugatedForm.PlainForm);
+      });
+
+      describe('ConjugatedForm.ClassicalPlainForm', function () {
+        const verbs = [
+          { surfaceForm: '減ず', basicForm: '減ずる', reading: 'ゲンズ' },
+        ];
+        runTest(verbs, tokun.ConjugatedForm.ClassicalPlainForm);
+      });
+
+      describe('ConjugatedForm.Imperative as よ variant', function () {
+        const verbs = [
+          { surfaceForm: '信ぜよ', basicForm: '信ずる', reading: 'シンゼヨ' },
+        ];
+        runTest(verbs, tokun.ConjugatedForm.Imperative);
+      });
+    });
+
   });
 }
