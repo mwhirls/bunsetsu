@@ -24,3 +24,17 @@ export enum IpadicConjugatedForm {
     TaConjunction = '連用タ接続', // （うるさかっ）た
     TeConjunction = '連用テ接続', // （女々しく）て, （うるさく）する, （芳しく）ない
 }
+
+export enum IpadicConjugatedType {
+    Kuru = 'カ変・来ル',
+    SuruSpecialClass = 'サ変・−スル',
+    Zuru = 'サ変・−ズル',
+    Suru = 'サ変・スル',
+    Ra = 'ラ変',
+    Ichidan = '一段',
+    IchidanKureru = '一段・クレル',
+    ShimoNidan = '下二段',
+    KamiNidan = '上二段',
+    Yodan = '四段',
+    Godan = '五段',
+}

@@ -23,4 +23,4 @@ export enum ConjugatedForm {
     TeForm,
     Volitional,
     Unknown,
-} 
+}

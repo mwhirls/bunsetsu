@@ -9,7 +9,7 @@ import { IpadicSymbol } from "./symbol.js";
 import { IpadicVerb, IpadicVerbDetail } from "./verb.js";
 import { posDetails, IpadicWord } from "./word.js";
 import { Segmenter } from "../segmenter.js";
-import { IpadicConjugatedForm } from "./conjugation.js";
+import { IpadicConjugatedForm, IpadicConjugatedType } from "./conjugation.js";
 
 class TokenCursor {
     private readonly tokens: kuromoji.IpadicFeatures[];
@@ -174,7 +174,7 @@ function handleContinuativeForm(cursor: TokenCursor) {
     const token = cursor.token();
     const next = cursor.next();
     if (!next) {
-        if (token.conjugated_type === '一段・クレル' &&
+        if (token.conjugated_type === IpadicConjugatedType.IchidanKureru &&
             token.surface_form === 'くれ') { // irregular imperative of くれる can be miscategorized
             return conjugatedWord(token, [], ConjugatedForm.Imperative);
         }
