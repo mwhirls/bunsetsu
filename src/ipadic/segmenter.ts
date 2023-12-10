@@ -11,6 +11,40 @@ import { posDetails, IpadicWord } from "./word.js";
 import { Segmenter } from "../segmenter.js";
 import { IpadicConjugatedForm } from "./conjugation.js";
 
+class TokenCursor {
+    private readonly tokens: kuromoji.IpadicFeatures[];
+    private readonly curr: number;
+
+    constructor(tokens: kuromoji.IpadicFeatures[], curr: number) {
+        this.tokens = tokens;
+        this.curr = curr;
+    }
+
+    token(): kuromoji.IpadicFeatures {
+        return this.tokens[this.curr];
+    }
+
+    peek(): kuromoji.IpadicFeatures | null {
+        const next = this.curr + 1;
+        if (next >= this.tokens.length) {
+            return null;
+        }
+        return this.tokens[next];
+    }
+
+    advanced(num: number): TokenCursor | null {
+        const next = this.curr + num;
+        if (next >= this.tokens.length) {
+            return null;
+        }
+        return new TokenCursor(this.tokens, next);
+    }
+
+    next(): TokenCursor | null {
+        return this.advanced(1);
+    }
+}
+
 function isSuruVerb(token: kuromoji.IpadicFeatures) {
     const details = posDetails(token);
     return token.pos === PartOfSpeech.Noun && details.some((value) => value === SuffixType.SuruConjunction);
@@ -20,28 +54,28 @@ function handleSuffixedNoun(stem: kuromoji.IpadicFeatures, suffix: kuromoji.Ipad
     return new IpadicNoun(stem, suffix);
 }
 
-function handleNoun(tokens: kuromoji.IpadicFeatures[], index: number) {
-    const token = tokens[index];
+function handleNoun(cursor: TokenCursor) {
+    const token = cursor.token();
     if (isSuruVerb(token)) {
-        const next = index + 1 < tokens.length ? tokens[index + 1] : null;
-        if (next && next.basic_form === 'する') {
-            const verb = handleVerbAdjective(tokens, index + 1);
+        const next = cursor.next();
+        if (next && next.token().basic_form === 'する') {
+            const verb = handleVerbAdjective(next);
             if (verb.detail && verb.detail.type === PartOfSpeech.Verb) {
                 return new IpadicNoun(token, undefined, verb);
             }
         }
     }
-    const next = index + 1 < tokens.length ? tokens[index + 1] : null;
+    const next = cursor.peek();
     if (next && next.basic_form === Details.Suffix) {
         return handleSuffixedNoun(token, next);
     }
     return new IpadicNoun(token);
 }
 
-function handleFiller(tokens: kuromoji.IpadicFeatures[], index: number) {
+function handleFiller(cursor: TokenCursor) {
     const specialCases = ['あのう', 'えっと', 'ええっと', 'ええと']; // tokenizer splits these into separate tokens
-    const token = tokens[index];
-    const next = index + 1 < tokens.length ? tokens[index + 1] : null;
+    const token = cursor.token();
+    const next = cursor.peek();
     if (next) {
         const compound = `${token.basic_form}${next.basic_form}`;
         if (specialCases.some((value) => compound === value)) {
@@ -54,14 +88,14 @@ function handleFiller(tokens: kuromoji.IpadicFeatures[], index: number) {
     return null;
 }
 
-function handleInterjection(tokens: kuromoji.IpadicFeatures[], index: number) {
-    const token = tokens[index];
-    const filler = handleFiller(tokens, index); // sometimes pieces of fillers are categorized as interjections
+function handleInterjection(cursor: TokenCursor) {
+    const token = cursor.token();
+    const filler = handleFiller(cursor); // sometimes pieces of fillers are categorized as interjections
     return filler ?? new IpadicWord(PartOfSpeech.Interjection, [token]);
 }
 
-function handleSymbol(tokens: kuromoji.IpadicFeatures[], index: number) {
-    const token = tokens[index];
+function handleSymbol(cursor: TokenCursor) {
+    const token = cursor.token();
     return new IpadicSymbol(token);
 }
 
@@ -81,19 +115,19 @@ function conjugatedWord(stem: kuromoji.IpadicFeatures, inflection: kuromoji.Ipad
     }
 }
 
-function handleConditional(tokens: kuromoji.IpadicFeatures[], index: number): IpadicAdjective | IpadicVerb {
-    const token = tokens[index];
+function handleConditional(cursor: TokenCursor): IpadicAdjective | IpadicVerb {
+    const token = cursor.token();
     const form = ConjugatedForm.Conditional;
-    const next = index + 1 < tokens.length ? tokens[index + 1] : null;
+    const next = cursor.peek();
     if (next && next.surface_form === 'ば') { // group 来れ+ば
         return conjugatedWord(token, [next], form);
     }
     return conjugatedWord(token, [], form);
 }
 
-function handleTaConjunction(tokens: kuromoji.IpadicFeatures[], index: number): IpadicAdjective | IpadicVerb {
-    const token = tokens[index];
-    const next = index + 1 < tokens.length ? tokens[index + 1] : null;
+function handleTaConjunction(cursor: TokenCursor): IpadicAdjective | IpadicVerb {
+    const token = cursor.token();
+    const next = cursor.peek();
     if (next) {
         if (next.surface_form === 'たら') { // group 早かっ＋たら
             return conjugatedWord(token, [next], ConjugatedForm.TaraConditional);
@@ -105,26 +139,26 @@ function handleTaConjunction(tokens: kuromoji.IpadicFeatures[], index: number): 
     return conjugatedWord(token, [], ConjugatedForm.Unknown);
 }
 
-function handleTeConjunction(tokens: kuromoji.IpadicFeatures[], index: number): IpadicAdjective | IpadicVerb {
-    const token = tokens[index];
-    const next = index + 1 < tokens.length ? tokens[index + 1] : null;
+function handleTeConjunction(cursor: TokenCursor): IpadicAdjective | IpadicVerb {
+    const token = cursor.token();
+    const next = cursor.next();
     if (next) {
-        if (next.surface_form === 'て') { // group 早く＋て
-            const nextNext = index + 2 < tokens.length ? tokens[index + 2] : null;
+        if (next.token().surface_form === 'て') { // group 早く＋て
+            const nextNext = next.next();
             if (nextNext) {
-                const details = posDetails(nextNext);
-                if (nextNext.pos === PartOfSpeech.AuxillaryVerb ||
+                const details = posDetails(nextNext.token());
+                if (nextNext.token().pos === PartOfSpeech.AuxillaryVerb ||
                     details.some((value) => value === Details.NotIndependent)) {
-                    const auxillary = nextWord(tokens, index + 2);
-                    return conjugatedWord(token, [next, ...auxillary.tokens], ConjugatedForm.TeForm, auxillary);
+                    const auxillary = nextWord(nextNext);
+                    return conjugatedWord(token, [next.token(), ...auxillary.tokens], ConjugatedForm.TeForm, auxillary);
                 }
-                return conjugatedWord(token, [next], ConjugatedForm.TeForm);
+                return conjugatedWord(token, [next.token()], ConjugatedForm.TeForm);
             }
-            return conjugatedWord(token, [next], ConjugatedForm.TeForm);
+            return conjugatedWord(token, [next.token()], ConjugatedForm.TeForm);
         }
-        switch (next.pos) {
+        switch (next.token().pos) {
             case PartOfSpeech.AuxillaryVerb: { // group 早く＋ない
-                const auxillaryVerb = handleVerbAdjective(tokens, index + 1);
+                const auxillaryVerb = handleVerbAdjective(next);
                 return conjugatedWord(token, [...auxillaryVerb.tokens], ConjugatedForm.Adverbial, auxillaryVerb);
             }
         }
@@ -136,30 +170,30 @@ function handleTeConjunction(tokens: kuromoji.IpadicFeatures[], index: number): 
     return conjugatedWord(token, [], ConjugatedForm.Unknown);
 }
 
-function handleContinuativeForm(tokens: kuromoji.IpadicFeatures[], index: number) {
-    const token = tokens[index];
-    const next = index + 1 < tokens.length ? tokens[index + 1] : null;
+function handleContinuativeForm(cursor: TokenCursor) {
+    const token = cursor.token();
+    const next = cursor.next();
     if (!next) {
         // todo: how to categorize this? is this a partial phrase?
         return conjugatedWord(token, [], ConjugatedForm.Continuative);
     }
-    switch (next.pos) {
+    switch (next.token().pos) {
         case PartOfSpeech.Verb:
         case PartOfSpeech.AuxillaryVerb: {
-            const auxillaryVerb = handleVerbAdjective(tokens, index + 1);
+            const auxillaryVerb = handleVerbAdjective(next);
             switch (auxillaryVerb.basicForm) {
                 case 'ます': // 来ます
                     return conjugatedWord(token, [...auxillaryVerb.tokens], ConjugatedForm.PoliteForm, auxillaryVerb);
                 case 'た': // 来ました
-                    return handleTaConjunction(tokens, index);
+                    return handleTaConjunction(cursor);
                 default:
                     throw Error('unrecognized continuative form');
             }
         }
         case PartOfSpeech.Particle: {
-            switch (next.basic_form) {
+            switch (next.token().basic_form) {
                 case 'て': // // 来まして
-                    return handleTeConjunction(tokens, index);
+                    return handleTeConjunction(cursor);
                 default:
                     throw Error('unrecognized continuative form');
             }
@@ -169,26 +203,26 @@ function handleContinuativeForm(tokens: kuromoji.IpadicFeatures[], index: number
     }
 }
 
-function handleConjunctiveForm(tokens: kuromoji.IpadicFeatures[], index: number, conjugatedForm: ConjugatedForm) {
-    const token = tokens[index];
-    const next = index + 1 < tokens.length ? tokens[index + 1] : null;
+function handleConjunctiveForm(cursor: TokenCursor, conjugatedForm: ConjugatedForm) {
+    const token = cursor.token();
+    const next = cursor.next();
     if (!next) {
         return conjugatedWord(token, [], conjugatedForm);
     }
-    switch (next.pos) {
+    switch (next.token().pos) {
         case PartOfSpeech.Verb:
         case PartOfSpeech.AuxillaryVerb:
         case PartOfSpeech.iAdjective: {
-            const auxillaryVerb = handleVerbAdjective(tokens, index + 1);
+            const auxillaryVerb = handleVerbAdjective(next);
             return conjugatedWord(token, [...auxillaryVerb.tokens], conjugatedForm, auxillaryVerb);
         }
         case PartOfSpeech.Noun: {
-            const details = posDetails(next);
+            const details = posDetails(next.token());
             if (details.some((value) =>
                 value === SuffixType.Special || // ～さ
                 value === SuffixType.AuxillaryVerbStem)) { // ～そう
-                const suffix = handleNoun(tokens, index + 1);
-                return conjugatedWord(token, [next], conjugatedForm, suffix);
+                const suffix = handleNoun(next);
+                return conjugatedWord(token, [next.token()], conjugatedForm, suffix);
             }
             throw Error('unrecognized conjunctive form');
         }
@@ -197,24 +231,24 @@ function handleConjunctiveForm(tokens: kuromoji.IpadicFeatures[], index: number,
     }
 }
 
-function handleIrrealisForm(tokens: kuromoji.IpadicFeatures[], index: number) {
+function handleIrrealisForm(cursor: TokenCursor) {
     // 感じない, 逃げない, 走らない, 来ない、しない, etc
-    return handleConjunctiveForm(tokens, index, ConjugatedForm.NaiForm);
+    return handleConjunctiveForm(cursor, ConjugatedForm.NaiForm);
 }
 
-function handleIrrealisUConjunction(tokens: kuromoji.IpadicFeatures[], index: number) {
-    const token = tokens[index];
+function handleIrrealisUConjunction(cursor: TokenCursor) {
+    const token = cursor.token();
     switch (token.pos) {
         case PartOfSpeech.Verb: // 来よう、食べよう、買おう、しよう, etc
-            return handleConjunctiveForm(tokens, index, ConjugatedForm.Volitional);
+            return handleConjunctiveForm(cursor, ConjugatedForm.Volitional);
         default:
-            return handleConjunctiveForm(tokens, index, ConjugatedForm.IrrealisUForm);
+            return handleConjunctiveForm(cursor, ConjugatedForm.IrrealisUForm);
     }
 }
 
-function handleVerbAdjective(tokens: kuromoji.IpadicFeatures[], index: number): IpadicAdjective | IpadicVerb {
-    const token = tokens[index];
-    const filler = handleFiller(tokens, index); // sometimes pieces of fillers are categorized as adjectives
+function handleVerbAdjective(cursor: TokenCursor): IpadicAdjective | IpadicVerb {
+    const token = cursor.token();
+    const filler = handleFiller(cursor); // sometimes pieces of fillers are categorized as adjectives
     if (filler) {
         return filler;
     }
@@ -226,21 +260,21 @@ function handleVerbAdjective(tokens: kuromoji.IpadicFeatures[], index: number): 
         case IpadicConjugatedForm.ConditionalContraction2:
             return conjugatedWord(token, [], ConjugatedForm.ConditionalContraction);
         case IpadicConjugatedForm.ConditionalForm:
-            return handleConditional(tokens, index);
+            return handleConditional(cursor);
         case IpadicConjugatedForm.Continuative:
-            return handleContinuativeForm(tokens, index);
+            return handleContinuativeForm(cursor);
         case IpadicConjugatedForm.GaruConjunction:
-            return handleConjunctiveForm(tokens, index, ConjugatedForm.GaruForm);
+            return handleConjunctiveForm(cursor, ConjugatedForm.GaruForm);
         case IpadicConjugatedForm.GozaiConjunction:
-            return handleConjunctiveForm(tokens, index, ConjugatedForm.GozaiForm);
+            return handleConjunctiveForm(cursor, ConjugatedForm.GozaiForm);
         case IpadicConjugatedForm.Irrealis:
-            return handleIrrealisForm(tokens, index);
+            return handleIrrealisForm(cursor);
         case IpadicConjugatedForm.IrrealisNuConjunction:
-            return handleConjunctiveForm(tokens, index, ConjugatedForm.IrrealisNuForm);
+            return handleConjunctiveForm(cursor, ConjugatedForm.IrrealisNuForm);
         case IpadicConjugatedForm.IrrealisUConjunction:
-            return handleIrrealisUConjunction(tokens, index);
+            return handleIrrealisUConjunction(cursor);
         case IpadicConjugatedForm.SpecialIrrealis:
-            return handleConjunctiveForm(tokens, index, ConjugatedForm.Contracted);
+            return handleConjunctiveForm(cursor, ConjugatedForm.Contracted);
         case IpadicConjugatedForm.ImperativeI:
         case IpadicConjugatedForm.ImperativeRo:
         case IpadicConjugatedForm.ImperativeYo:
@@ -254,28 +288,28 @@ function handleVerbAdjective(tokens: kuromoji.IpadicFeatures[], index: number): 
         case IpadicConjugatedForm.SpecialIndeclinableNominalConjunction2:
             return conjugatedWord(token, [], ConjugatedForm.Contracted);
         case IpadicConjugatedForm.TaConjunction:
-            return handleTaConjunction(tokens, index);
+            return handleTaConjunction(cursor);
         case IpadicConjugatedForm.TeConjunction:
-            return handleTeConjunction(tokens, index);
+            return handleTeConjunction(cursor);
         default:
             throw new Error("unhandled verb/adjective conjugation");
     }
 }
 
-function nextWord(tokens: kuromoji.IpadicFeatures[], index: number): IpadicWord {
-    const token = tokens[index];
+function nextWord(cursor: TokenCursor): IpadicWord {
+    const token = cursor.token();
     switch (token.pos) {
         case PartOfSpeech.Filler:
-            return handleFiller(tokens, index) ?? new IpadicWord(PartOfSpeech.Filler, [token]);
+            return handleFiller(cursor) ?? new IpadicWord(PartOfSpeech.Filler, [token]);
         case PartOfSpeech.Interjection:
-            return handleInterjection(tokens, index);
+            return handleInterjection(cursor);
         case PartOfSpeech.Symbol:
-            return handleSymbol(tokens, index);
+            return handleSymbol(cursor);
         case PartOfSpeech.Verb:
         case PartOfSpeech.iAdjective:
-            return handleVerbAdjective(tokens, index);
+            return handleVerbAdjective(cursor);
         case PartOfSpeech.Noun:
-            return handleNoun(tokens, index);
+            return handleNoun(cursor);
         default:
             return new IpadicWord(PartOfSpeech[token.pos as keyof typeof PartOfSpeech], [token]);
     }
@@ -285,7 +319,7 @@ function nextSentence(tokens: kuromoji.IpadicFeatures[], start: number): IpadicS
     const result = [];
     let index = start;
     while (index < tokens.length) {
-        const word = nextWord(tokens, index);
+        const word = nextWord(new TokenCursor(tokens, index));
         index += word.tokens.length;
         result.push(word);
         // todo: break sentence
@@ -308,7 +342,7 @@ function toWords(tokens: kuromoji.IpadicFeatures[]): Word[] {
     const result = [];
     let index = 0;
     while (index < tokens.length) {
-        const word = nextWord(tokens, index);
+        const word = nextWord(new TokenCursor(tokens, index));
         index += word.tokens.length;
         result.push(word);
     }
