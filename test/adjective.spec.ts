@@ -102,7 +102,7 @@ export function runTestSuite(context: TestContext) {
       runTestCase(adjectives, bunsetsu.ConjugatedForm.ClassicalPlainForm);
     });
 
-    describe('ConjugatedForm.IrrealisUConjunction', function () {
+    describe('ConjugatedForm.IrrealisUForm', function () {
       const adjectives = [
         { phrase: '高かろう', basicForm: "高い", reading: 'タカカロウ', auxillary: 'う' },
       ];
@@ -110,7 +110,7 @@ export function runTestSuite(context: TestContext) {
     });
 
 
-    describe('ConjugatedForm.IrrealisNuConjunction', function () {
+    describe('ConjugatedForm.IrrealisNuForm', function () {
       const adjectives = [
         { phrase: '高からぬ', basicForm: "高い", reading: 'タカカラヌ', auxillary: 'ぬ' },
       ];

@@ -174,6 +174,10 @@ function handleContinuativeForm(cursor: TokenCursor) {
     const token = cursor.token();
     const next = cursor.next();
     if (!next) {
+        if (token.conjugated_type === '一段・クレル' &&
+            token.surface_form === 'くれ') { // irregular imperative of くれる can be miscategorized
+            return conjugatedWord(token, [], ConjugatedForm.Imperative);
+        }
         // todo: how to categorize this? is this a partial phrase?
         return conjugatedWord(token, [], ConjugatedForm.Continuative);
     }

@@ -79,11 +79,28 @@ export function runTestSuite(context: TestContext) {
     });
 
     // todo: detect as progressive form
-    describe('ConjugatedForm.Continuative', function () {
+    describe('ConjugatedForm.TeForm', function () {
       const verbs = [
         { surfaceForm: '食べてます', basicForm: '食べる', reading: 'タベテマス' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
+    });
+  });
+
+  // くれる is generally treated as 一段, but has a few irregularities
+  describe('VerbType.Kureru', function () {
+    describe('ConjugatedForm.Imperative', function () {
+      const phrases = [
+        { phrase: 'これをくれ', index: 2, wordSurfaceForm: 'くれ', basicForm: 'くれる', reading: 'クレ' },
+      ];
+      runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.Imperative, context);
+    });
+
+    describe('ConjugatedForm.Contracted', function () {
+      const verbs = [
+        { surfaceForm: 'くんない', basicForm: 'くれる', reading: 'クンナイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Contracted, context);
     });
   });
 }

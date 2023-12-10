@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { TestContext } from "../context";
+import { TestContext } from "../context.js";
 import * as bunsetsu from "../../src/index.js"
 
 export type VerbTestCase = {
