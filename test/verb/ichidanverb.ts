@@ -62,6 +62,14 @@ export function runTestSuite(context: TestContext) {
         ];
         runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.Imperative, context);
       });
+
+      describe('as い variant (なさい）', function () {
+        const verbs = [
+          { surfaceForm: '寝なさい', basicForm: '寝る', reading: 'ネナサイ' },
+          { surfaceForm: '寝な', basicForm: '寝る', reading: 'ネナ' },
+        ];
+        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
+      });
     });
 
     describe('ConjugatedForm.TeForm', function () {

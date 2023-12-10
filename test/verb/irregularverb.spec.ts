@@ -63,18 +63,26 @@ export function runTestSuite(context: TestContext) {
       runWordTestCase(verbs, bunsetsu.ConjugatedForm.NaiForm);
     });
 
-    describe('ConjugatedForm.Imperative as い variant', function () {
-      const verbs = [
-        { surfaceForm: '来い', reading: 'コイ' },
-      ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
-    });
+    describe('ConjugatedForm.Imperative', function () {
+      describe('as い variant', function () {
+        const verbs = [
+          { surfaceForm: '来い', reading: 'コイ' },
+        ];
+        runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      });
 
-    describe('ConjugatedForm.Imperative as よ variant', function () {
-      const verbs = [
-        { surfaceForm: '来よ', reading: 'コヨ' },
-      ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      describe('as よ variant', function () {
+        const verbs = [
+          { surfaceForm: '来よ', reading: 'コヨ' },
+        ];
+        runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      });
+      describe('as い variant (なさい）', function () {
+        const verbs = [
+          { surfaceForm: '来なさい', reading: 'キナサイ' },
+        ];
+        runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      });
     });
 
     describe('ConjugatedForm.PoliteForm', function () {
@@ -167,18 +175,28 @@ export function runTestSuite(context: TestContext) {
       runWordTestCase(verbs, bunsetsu.ConjugatedForm.NaiForm);
     });
 
-    describe('ConjugatedForm.Imperative as い variant', function () {
-      const verbs = [
-        { surfaceForm: 'しろ', reading: 'シロ' },
-      ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
-    });
+    describe('ConjugatedForm.Imperative', function () {
+      describe('as ろ variant', function () {
+        const verbs = [
+          { surfaceForm: 'しろ', reading: 'シロ' },
+        ];
+        runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      });
 
-    describe('ConjugatedForm.Imperative as よ variant', function () {
-      const verbs = [
-        { surfaceForm: 'せよ', reading: 'セヨ' },
-      ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      describe('as よ variant', function () {
+        const verbs = [
+          { surfaceForm: 'せよ', reading: 'セヨ' },
+        ];
+        runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      });
+
+      describe('as い variant (なさい）', function () {
+        const verbs = [
+          { surfaceForm: 'しなさい', reading: 'シナサイ' },
+          { surfaceForm: 'しな', reading: 'シナ' },
+        ];
+        runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      });
     });
 
     describe('ConjugatedForm.PoliteForm', function () {

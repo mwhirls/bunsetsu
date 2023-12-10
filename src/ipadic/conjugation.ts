@@ -37,4 +37,6 @@ export enum IpadicConjugatedType {
     KamiNidan = '上二段',
     Yodan = '四段',
     Godan = '五段',
+    Masu = '特殊・マス',
+    Ta = '特殊・タ',
 }
