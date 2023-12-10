@@ -200,7 +200,7 @@ function handleContinuativeForm(cursor: TokenCursor) {
             token.surface_form === 'くれ') { // irregular imperative of くれる can be miscategorized
             return conjugatedWord(token, [], ConjugatedForm.Imperative);
         }
-        // todo: how to categorize this? is this a partial phrase?
+        console.debug('recognized continuative form');
         return conjugatedWord(token, [], ConjugatedForm.Continuative);
     }
     switch (next.token().pos) {
@@ -215,11 +215,13 @@ function handleContinuativeForm(cursor: TokenCursor) {
                 case 'な': // し（な）よ 
                     return conjugatedWord(token, [next.token()], ConjugatedForm.Imperative);
                 default:
-                    throw Error('unrecognized continuative form');
+                    console.debug('recognized continuative form');
+                    return conjugatedWord(token, [], ConjugatedForm.Continuative);
             }
         }
         default:
-            throw Error('unrecognized continuative form');
+            console.debug('recognized continuative form');
+            return conjugatedWord(token, [], ConjugatedForm.Continuative);
     }
 }
 
@@ -244,10 +246,12 @@ function handleConjunctiveForm(cursor: TokenCursor, conjugatedForm: ConjugatedFo
                 const suffix = handleNoun(next);
                 return conjugatedWord(token, [next.token()], conjugatedForm, suffix);
             }
-            throw Error('unrecognized conjunctive form');
+            console.debug('unrecognized conjunctive form');
+            return conjugatedWord(token, [], conjugatedForm);
         }
         default:
-            throw Error('unrecognized conjunctive form');
+            console.debug('unrecognized conjunctive form');
+            return conjugatedWord(token, [], conjugatedForm);
     }
 }
 
