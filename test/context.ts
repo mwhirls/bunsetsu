@@ -1,5 +1,5 @@
-import * as tokun from "../src/index.js"
+import * as bunsetsu from "../src/index.js"
 
 export interface TestContext {
-    segmenter: tokun.Segmenter | null
+    segmenter: bunsetsu.Segmenter | null
 }

@@ -1,4 +1,4 @@
-import * as tokun from "../src/index.js"
+import * as bunsetsu from "../src/index.js"
 import * as assert from 'assert'
 import { TestContext } from "./context.js";
 
@@ -12,13 +12,13 @@ export function runTestSuite(context: TestContext) {
           const words = context.segmenter.segmentAsWords(c);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+          assert.equal(word.pos, bunsetsu.PartOfSpeech.Symbol);
           assert.equal(word.surfaceForm, c);
           assert.equal(word.basicForm, c);
           assert.equal(word.detail !== undefined, true);
-          assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
-          const symbol = word.detail as tokun.SymbolDetail;
-          assert.equal(symbol.symbolType, tokun.SymbolType.Alphabet);
+          assert.equal(word.detail?.type, bunsetsu.PartOfSpeech.Symbol);
+          const symbol = word.detail as bunsetsu.SymbolDetail;
+          assert.equal(symbol.symbolType, bunsetsu.SymbolType.Alphabet);
         });
       }
     });
@@ -31,13 +31,13 @@ export function runTestSuite(context: TestContext) {
           const words = context.segmenter.segmentAsWords(c);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+          assert.equal(word.pos, bunsetsu.PartOfSpeech.Symbol);
           assert.equal(word.surfaceForm, c);
           assert.equal(word.basicForm, c);
           assert.equal(word.detail !== undefined, true);
-          assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
-          const symbol = word.detail as tokun.SymbolDetail;
-          assert.equal(symbol.symbolType, tokun.SymbolType.OpeningBracketParens);
+          assert.equal(word.detail?.type, bunsetsu.PartOfSpeech.Symbol);
+          const symbol = word.detail as bunsetsu.SymbolDetail;
+          assert.equal(symbol.symbolType, bunsetsu.SymbolType.OpeningBracketParens);
         });
       }
     });
@@ -50,13 +50,13 @@ export function runTestSuite(context: TestContext) {
           const words = context.segmenter.segmentAsWords(c);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+          assert.equal(word.pos, bunsetsu.PartOfSpeech.Symbol);
           assert.equal(word.surfaceForm, c);
           assert.equal(word.basicForm, c);
           assert.equal(word.detail !== undefined, true);
-          assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
-          const symbol = word.detail as tokun.SymbolDetail;
-          assert.equal(symbol.symbolType, tokun.SymbolType.ClosingBracketParens);
+          assert.equal(word.detail?.type, bunsetsu.PartOfSpeech.Symbol);
+          const symbol = word.detail as bunsetsu.SymbolDetail;
+          assert.equal(symbol.symbolType, bunsetsu.SymbolType.ClosingBracketParens);
         });
       }
     });
@@ -69,13 +69,13 @@ export function runTestSuite(context: TestContext) {
         const words = context.segmenter.segmentAsWords(c);
         assert.equal(words.length, 1);
         const word = words[0];
-        assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+        assert.equal(word.pos, bunsetsu.PartOfSpeech.Symbol);
         assert.equal(word.surfaceForm, c);
         assert.equal(word.basicForm, c);
         assert.equal(word.detail !== undefined, true);
-        assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
-        const symbol = word.detail as tokun.SymbolDetail;
-        assert.equal(symbol.symbolType, tokun.SymbolType.Period);
+        assert.equal(word.detail?.type, bunsetsu.PartOfSpeech.Symbol);
+        const symbol = word.detail as bunsetsu.SymbolDetail;
+        assert.equal(symbol.symbolType, bunsetsu.SymbolType.Period);
       });
 
 
@@ -86,13 +86,13 @@ export function runTestSuite(context: TestContext) {
           const words = context.segmenter.segmentAsWords(c);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+          assert.equal(word.pos, bunsetsu.PartOfSpeech.Symbol);
           assert.equal(word.surfaceForm, c);
           assert.equal(word.basicForm, c);
           assert.equal(word.detail !== undefined, true);
-          assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
-          const symbol = word.detail as tokun.SymbolDetail;
-          assert.equal(symbol.symbolType, tokun.SymbolType.ExclamationMark);
+          assert.equal(word.detail?.type, bunsetsu.PartOfSpeech.Symbol);
+          const symbol = word.detail as bunsetsu.SymbolDetail;
+          assert.equal(symbol.symbolType, bunsetsu.SymbolType.ExclamationMark);
         });
       });
 
@@ -104,13 +104,13 @@ export function runTestSuite(context: TestContext) {
           const words = context.segmenter.segmentAsWords(c);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+          assert.equal(word.pos, bunsetsu.PartOfSpeech.Symbol);
           assert.equal(word.surfaceForm, c);
           assert.equal(word.basicForm, c);
           assert.equal(word.detail !== undefined, true);
-          assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
-          const symbol = word.detail as tokun.SymbolDetail;
-          assert.equal(symbol.symbolType, tokun.SymbolType.QuestionMark);
+          assert.equal(word.detail?.type, bunsetsu.PartOfSpeech.Symbol);
+          const symbol = word.detail as bunsetsu.SymbolDetail;
+          assert.equal(symbol.symbolType, bunsetsu.SymbolType.QuestionMark);
         });
       });
 
@@ -121,13 +121,13 @@ export function runTestSuite(context: TestContext) {
           const words = context.segmenter.segmentAsWords(c);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+          assert.equal(word.pos, bunsetsu.PartOfSpeech.Symbol);
           assert.equal(word.surfaceForm, c);
           assert.equal(word.basicForm, c);
           assert.equal(word.detail !== undefined, true);
-          assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
-          const symbol = word.detail as tokun.SymbolDetail;
-          assert.equal(symbol.symbolType, tokun.SymbolType.Interpunct);
+          assert.equal(word.detail?.type, bunsetsu.PartOfSpeech.Symbol);
+          const symbol = word.detail as bunsetsu.SymbolDetail;
+          assert.equal(symbol.symbolType, bunsetsu.SymbolType.Interpunct);
         });
       });
 
@@ -139,13 +139,13 @@ export function runTestSuite(context: TestContext) {
             const words = context.segmenter.segmentAsWords(c);
             assert.equal(words.length, 1);
             const word = words[0];
-            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.pos, bunsetsu.PartOfSpeech.Symbol);
             assert.equal(word.surfaceForm, c);
             assert.equal(word.basicForm, c);
             assert.equal(word.detail !== undefined, true);
-            assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
-            const symbol = word.detail as tokun.SymbolDetail;
-            assert.equal(symbol.symbolType, tokun.SymbolType.Space);
+            assert.equal(word.detail?.type, bunsetsu.PartOfSpeech.Symbol);
+            const symbol = word.detail as bunsetsu.SymbolDetail;
+            assert.equal(symbol.symbolType, bunsetsu.SymbolType.Space);
           });
         }
       });
@@ -158,13 +158,13 @@ export function runTestSuite(context: TestContext) {
             const words = context.segmenter.segmentAsWords(c);
             assert.equal(words.length, 1);
             const word = words[0];
-            assert.equal(word.pos, tokun.PartOfSpeech.Symbol);
+            assert.equal(word.pos, bunsetsu.PartOfSpeech.Symbol);
             assert.equal(word.surfaceForm, c);
             assert.equal(word.basicForm, c);
             assert.equal(word.detail !== undefined, true);
-            assert.equal(word.detail?.type, tokun.PartOfSpeech.Symbol);
-            const symbol = word.detail as tokun.SymbolDetail;
-            assert.equal(symbol.symbolType, tokun.SymbolType.Comma);
+            assert.equal(word.detail?.type, bunsetsu.PartOfSpeech.Symbol);
+            const symbol = word.detail as bunsetsu.SymbolDetail;
+            assert.equal(symbol.symbolType, bunsetsu.SymbolType.Comma);
 
           });
         }

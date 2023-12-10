@@ -1,10 +1,10 @@
-import * as tokun from "../src/index.js"
+import * as bunsetsu from "../src/index.js"
 import * as assert from 'assert'
 import { TestContext } from "./context.js";
 
 export function runTestSuite(context: TestContext) {
   describe('PartOfSpeech.iAdjective', function () {
-    const runTestCase = (testCases: { phrase: string, basicForm: string, reading: string, auxillary?: string }[], conjugatedForm: tokun.ConjugatedForm) => {
+    const runTestCase = (testCases: { phrase: string, basicForm: string, reading: string, auxillary?: string }[], conjugatedForm: bunsetsu.ConjugatedForm) => {
       for (const expected of testCases) {
         it(`should identify ${expected.phrase} as one word`, function () {
           assert.ok(context.segmenter);
@@ -12,14 +12,14 @@ export function runTestSuite(context: TestContext) {
           assert.equal(words.length, 1);
 
           const word = words[0];
-          assert.equal(word.pos, tokun.PartOfSpeech.iAdjective);
+          assert.equal(word.pos, bunsetsu.PartOfSpeech.iAdjective);
           assert.equal(word.surfaceForm, expected.phrase);
           assert.equal(word.basicForm, expected.basicForm);
           assert.equal(word.reading, expected.reading);
 
           assert.ok(word.detail);
-          assert.equal(word.detail.type, tokun.PartOfSpeech.iAdjective);
-          const detail = word.detail as tokun.AdjectiveDetail;
+          assert.equal(word.detail.type, bunsetsu.PartOfSpeech.iAdjective);
+          const detail = word.detail as bunsetsu.AdjectiveDetail;
           assert.equal(detail.conjugatedForm, conjugatedForm);
 
           if (expected.auxillary) {
@@ -35,7 +35,7 @@ export function runTestSuite(context: TestContext) {
           { phrase: '嬉し', basicForm: "嬉しい", reading: 'ウレシ' },
           { phrase: '早', basicForm: '早い', reading: 'ハヤ' },
         ];
-        runTestCase(adjectives, tokun.ConjugatedForm.GaruForm);
+        runTestCase(adjectives, bunsetsu.ConjugatedForm.GaruForm);
       });
 
       describe('with auxillary verb', function () {
@@ -43,7 +43,7 @@ export function runTestSuite(context: TestContext) {
           { phrase: '嬉しがる', basicForm: "嬉しい", reading: 'ウレシガル', auxillary: 'がる' },
           { phrase: '早すぎる', basicForm: '早い', reading: 'ハヤスギル', auxillary: 'すぎる' },
         ];
-        runTestCase(adjectives, tokun.ConjugatedForm.GaruForm);
+        runTestCase(adjectives, bunsetsu.ConjugatedForm.GaruForm);
       });
 
       describe('with suffix', function () {
@@ -51,7 +51,7 @@ export function runTestSuite(context: TestContext) {
           { phrase: '悲しさ', basicForm: '悲しい', reading: 'カナシサ', auxillary: 'さ' },
           { phrase: '虚しそう', basicForm: '虚しい', reading: 'ムナシソウ', auxillary: 'そう' },
         ];
-        runTestCase(adjectives, tokun.ConjugatedForm.GaruForm);
+        runTestCase(adjectives, bunsetsu.ConjugatedForm.GaruForm);
       });
     });
 
@@ -60,7 +60,7 @@ export function runTestSuite(context: TestContext) {
         { phrase: '美味しければ', basicForm: "美味しい", reading: 'オイシケレバ' },
         { phrase: '早ければ', basicForm: "早い", reading: 'ハヤケレバ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.Conditional);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.Conditional);
     });
 
     describe('ConjugatedForm.ConditionalContraction (1)', function () {
@@ -68,7 +68,7 @@ export function runTestSuite(context: TestContext) {
         { phrase: '美味しけりゃ', basicForm: "美味しい", reading: 'オイシケリャ' },
         { phrase: '早けりゃ', basicForm: "早い", reading: 'ハヤケリャ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.ConditionalContraction);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.ConditionalContraction);
     });
 
     describe('ConjugatedForm.ConditionalContraction (2)', function () {
@@ -76,7 +76,7 @@ export function runTestSuite(context: TestContext) {
         { phrase: '美味しきゃ', basicForm: "美味しい", reading: 'オイシキャ', stemSurfaceForm: '美味し', stemReading: 'オイシ' },
         { phrase: '早きゃ', basicForm: "早い", reading: 'ハヤキャ', stemSurfaceForm: '早', stemReading: 'ハヤ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.ConditionalContraction);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.ConditionalContraction);
     });
 
     describe('ConjugatedForm.PlainForm', function () {
@@ -84,7 +84,7 @@ export function runTestSuite(context: TestContext) {
         { phrase: '美味しい', basicForm: "美味しい", reading: 'オイシイ', stemSurfaceForm: '美味し', stemReading: 'オイシ' },
         { phrase: '早い', basicForm: "早い", reading: 'ハヤイ', stemSurfaceForm: '早', stemReading: 'ハヤ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.PlainForm);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.PlainForm);
     });
 
     describe('ConjugatedForm.IndeclinableNominal', function () {
@@ -92,21 +92,21 @@ export function runTestSuite(context: TestContext) {
         { phrase: '美しき', basicForm: "美しい", reading: 'ウツクシキ' },
         { phrase: '親しき', basicForm: "親しい", reading: 'シタシキ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.IndeclinableNominal);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.IndeclinableNominal);
     });
 
     describe('ConjugatedForm.ClassicalPlainForm', function () {
       const adjectives = [
         { phrase: '赤し', basicForm: "赤い", reading: 'アカシ', stemSurfaceForm: '赤', stemReading: 'アカ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.ClassicalPlainForm);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.ClassicalPlainForm);
     });
 
     describe('ConjugatedForm.IrrealisUConjunction', function () {
       const adjectives = [
         { phrase: '高かろう', basicForm: "高い", reading: 'タカカロウ', auxillary: 'う' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.IrrealisUForm);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.IrrealisUForm);
     });
 
 
@@ -114,14 +114,14 @@ export function runTestSuite(context: TestContext) {
       const adjectives = [
         { phrase: '高からぬ', basicForm: "高い", reading: 'タカカラヌ', auxillary: 'ぬ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.IrrealisNuForm);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.IrrealisNuForm);
     });
 
     describe('ConjugatedForm.ImperativeE', function () {
       const adjectives = [
         { phrase: '多かれ', basicForm: "多い", reading: 'オオカレ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.Imperative);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.Imperative);
     });
 
     describe('ConjugatedForm.GozaiForm', function () {
@@ -129,14 +129,14 @@ export function runTestSuite(context: TestContext) {
         { phrase: '暑うございます', basicForm: "暑い", reading: 'アツウゴザイマス', auxillary: 'ござる' },
         { phrase: '苦しゅうない', basicForm: "苦しい", reading: 'クルシュウナイ', auxillary: 'ない' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.GozaiForm);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.GozaiForm);
     });
 
     describe('ConjugatedForm.PastForm', function () {
       const adjectives = [
         { phrase: 'うるさかった', basicForm: "うるさい", reading: "ウルサカッタ", stemSurfaceForm: 'うるさ', stemReading: 'ウルサ' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.PastForm);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.PastForm);
     });
 
     describe('ConjugatedForm.TeForm', function () {
@@ -145,7 +145,7 @@ export function runTestSuite(context: TestContext) {
         { phrase: '寒くて', basicForm: "寒い", reading: 'サムクテ' },
 
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.TeForm);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.TeForm);
     });
 
     describe('ConjugatedForm.Adverbial', function () {
@@ -153,7 +153,7 @@ export function runTestSuite(context: TestContext) {
         { phrase: 'うるさく', basicForm: "うるさい", reading: "ウルサク" },
         { phrase: '芳しくない', basicForm: "芳しい", reading: 'カンバシクナイ', auxillary: 'ない' },
       ];
-      runTestCase(adjectives, tokun.ConjugatedForm.Adverbial);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.Adverbial);
     });
   });
 }

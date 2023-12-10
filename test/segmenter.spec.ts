@@ -1,4 +1,4 @@
-import * as tokun from "../src/index.js"
+import * as bunsetsu from "../src/index.js"
 import * as assert from 'assert'
 import * as symbol from "./symbol.spec.js";
 import * as adjective from "./adjective.spec.js";
@@ -10,7 +10,7 @@ export const DICTIONARY_PATH = "./node_modules/kuromoji/dict"
 describe('Segmenter', function () {
   describe('build', async function () {
     it('should successfully build when a valid path is provided', async function () {
-      const segmenter = await tokun.build(DICTIONARY_PATH);
+      const segmenter = await bunsetsu.build(DICTIONARY_PATH);
       assert.equal(segmenter, segmenter);
     });
   });
@@ -18,7 +18,7 @@ describe('Segmenter', function () {
   describe('build', async function () {
     it('should throw when an invalid path is provided', async function () {
       try {
-        await tokun.build("invalid");
+        await bunsetsu.build("invalid");
         assert.fail();
       } catch (err) {
         assert.equal(true, err instanceof Error);
@@ -32,7 +32,7 @@ describe('Segmenter', function () {
     // to print: https://github.com/mochajs/mocha/issues/2975
     const context: TestContext = { segmenter: null };
     before(async () => {
-      context.segmenter = await tokun.build(DICTIONARY_PATH);
+      context.segmenter = await bunsetsu.build(DICTIONARY_PATH);
     });
 
     describe('PartOfSpeech.Filler', async function () {
@@ -43,7 +43,7 @@ describe('Segmenter', function () {
           const words = context.segmenter.segmentAsWords(form);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.pos, tokun.PartOfSpeech.Filler);
+          assert.equal(word.pos, bunsetsu.PartOfSpeech.Filler);
           assert.equal(word.surfaceForm, form);
         });
       }
@@ -57,7 +57,7 @@ describe('Segmenter', function () {
           const words = context.segmenter.segmentAsWords(form);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.pos, tokun.PartOfSpeech.Interjection);
+          assert.equal(word.pos, bunsetsu.PartOfSpeech.Interjection);
           assert.equal(word.surfaceForm, form);
         });
       }

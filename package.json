@@ -1,5 +1,5 @@
 {
-  "name": "tokun",
+  "name": "bunsetsu",
   "version": "1.0.0",
   "description": "A wrapper library around https://github.com/takuyaa/kuromoji.js that intelligently groups Japanese morphemes into words",
   "type": "module",
