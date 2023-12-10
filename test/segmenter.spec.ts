@@ -2,7 +2,7 @@ import * as bunsetsu from "../src/index.js"
 import * as assert from 'assert'
 import * as symbol from "./symbol.spec.js";
 import * as adjective from "./adjective.spec.js";
-import * as verb from "./verb.spec.js";
+import * as verb from "./verb/verb.spec.js";
 import { TestContext } from "./context.js";
 
 export const DICTIONARY_PATH = "./node_modules/kuromoji/dict"

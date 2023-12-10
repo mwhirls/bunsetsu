@@ -110,6 +110,16 @@ function handleTeConjunction(tokens: kuromoji.IpadicFeatures[], index: number): 
     const next = index + 1 < tokens.length ? tokens[index + 1] : null;
     if (next) {
         if (next.surface_form === 'て') { // group 早く＋て
+            const nextNext = index + 2 < tokens.length ? tokens[index + 2] : null;
+            if (nextNext) {
+                const details = posDetails(nextNext);
+                if (nextNext.pos === PartOfSpeech.AuxillaryVerb ||
+                    details.some((value) => value === Details.NotIndependent)) {
+                    const auxillary = nextWord(tokens, index + 2);
+                    return conjugatedWord(token, [next, ...auxillary.tokens], ConjugatedForm.TeForm, auxillary);
+                }
+                return conjugatedWord(token, [next], ConjugatedForm.TeForm);
+            }
             return conjugatedWord(token, [next], ConjugatedForm.TeForm);
         }
         switch (next.pos) {
@@ -239,9 +249,10 @@ function handleVerbAdjective(tokens: kuromoji.IpadicFeatures[], index: number): 
         case IpadicConjugatedForm.ClassicalPlainForm:
             return conjugatedWord(token, [], ConjugatedForm.ClassicalPlainForm);
         case IpadicConjugatedForm.IndeclinableNominalConjunction:
+            return conjugatedWord(token, [], ConjugatedForm.IndeclinableNominal);
         case IpadicConjugatedForm.SpecialIndeclinableNominalConjunction1:
         case IpadicConjugatedForm.SpecialIndeclinableNominalConjunction2:
-            return conjugatedWord(token, [], ConjugatedForm.IndeclinableNominal);
+            return conjugatedWord(token, [], ConjugatedForm.Contracted);
         case IpadicConjugatedForm.TaConjunction:
             return handleTaConjunction(tokens, index);
         case IpadicConjugatedForm.TeConjunction:
