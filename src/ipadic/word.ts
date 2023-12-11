@@ -32,7 +32,3 @@ export class IpadicWord {
 }
 
 export type IpadicWordDetail = IpadicSymbolDetail | IpadicAdjectiveDetail | IpadicVerbDetail | IpadicNounDetail;
-
-export function posDetails(token: IpadicFeatures): string[] {
-    return [token.pos_detail_1, token.pos_detail_2, token.pos_detail_3];
-}

@@ -1,7 +1,8 @@
 import { IpadicFeatures } from "kuromoji";
 import { SymbolDetail, SymbolType } from "../symbol.js";
 import { PartOfSpeech } from "../word.js";
-import { IpadicWord, posDetails } from "./word.js";
+import { IpadicWord } from "./word.js";
+import { IpadicPOSDetails } from "./details.js";
 
 // string literals from kuromoji (Mecab IPADIC)
 export enum IpadicSymbolType {
@@ -21,8 +22,8 @@ export class IpadicSymbol extends IpadicWord {
 }
 
 function toSymbolType(token: IpadicFeatures) {
-    const details = posDetails(token);
-    const symbolType = Object.values(IpadicSymbolType).find(x => details.some((detail) => x === detail));
+    const details = new IpadicPOSDetails(token);
+    const symbolType = details.symbolType();
     if (symbolType) {
         switch (symbolType) {
             case IpadicSymbolType.Alphabet:

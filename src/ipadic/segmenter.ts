@@ -1,15 +1,16 @@
 import kuromoji from "kuromoji";
 import { ConjugatedForm } from "../conjugation.js";
 import { Sentence } from "../sentence.js";
-import { PartOfSpeech, Details, Word, SuffixType } from "../word.js";
+import { PartOfSpeech, Word } from "../word.js";
 import { IpadicAdjective, IpadicAdjectiveDetail } from "./adjective.js";
 import { IpadicNoun } from "./noun.js";
 import { IpadicSentence } from "./sentence.js";
 import { IpadicSymbol } from "./symbol.js";
 import { IpadicVerb, IpadicVerbDetail } from "./verb.js";
-import { posDetails, IpadicWord } from "./word.js";
+import { IpadicWord } from "./word.js";
 import { Segmenter } from "../segmenter.js";
 import { IpadicConjugatedForm, IpadicConjugatedType } from "./conjugation.js";
+import { IpadicPOSDetails, SuffixType } from "./details.js";
 
 class TokenCursor {
     private readonly tokens: kuromoji.IpadicFeatures[];
@@ -45,18 +46,14 @@ class TokenCursor {
     }
 }
 
-function isSuruVerb(token: kuromoji.IpadicFeatures) {
-    const details = posDetails(token);
-    return token.pos === PartOfSpeech.Noun && details.some((value) => value === SuffixType.SuruConjunction);
-}
-
 function handleSuffixedNoun(stem: kuromoji.IpadicFeatures, suffix: kuromoji.IpadicFeatures) {
     return new IpadicNoun(stem, suffix);
 }
 
 function handleNoun(cursor: TokenCursor) {
     const token = cursor.token();
-    if (isSuruVerb(token)) {
+    const details = new IpadicPOSDetails(token);
+    if (details.isSuruVerb(token)) {
         const next = cursor.next();
         if (next && next.token().basic_form === 'する') {
             const verb = handleVerbAdjective(next);
@@ -66,7 +63,7 @@ function handleNoun(cursor: TokenCursor) {
         }
     }
     const next = cursor.peek();
-    if (next && next.basic_form === Details.Suffix) {
+    if (next && details.isSuffix()) {
         return handleSuffixedNoun(token, next);
     }
     return new IpadicNoun(token);
@@ -143,9 +140,10 @@ function handleAuxillaryWord(cursor: TokenCursor | null): IpadicWord | null {
     if (!cursor) {
         return null;
     }
-    const details = posDetails(cursor.token());
-    if (cursor.token().pos === PartOfSpeech.AuxillaryVerb ||
-        details.some((value) => value === Details.NotIndependent)) {
+    const token = cursor.token();
+    const details = new IpadicPOSDetails(token);
+    if (token.pos === PartOfSpeech.AuxillaryVerb ||
+        details.isNotIndependent()) {
         const auxillary = nextWord(cursor);
         return auxillary;
     }
@@ -243,29 +241,37 @@ function handleContinuativeForm(cursor: TokenCursor) {
     return conjugatedWord(token, [...auxillaryVerb.tokens], detail.conjugatedForm, auxillaryVerb);
 }
 
+function handleSuffix(cursor: TokenCursor, conjugatedForm: ConjugatedForm): IpadicWord | null {
+    const token = cursor.token();
+    const next = cursor.next();
+    if (!next) {
+        return null;
+    }
+    const nextToken = next.token();
+    const details = new IpadicPOSDetails(nextToken);
+    if (!details.isSuffix()) {
+        return null;
+    }
+    if (details.isSuffixType(SuffixType.Special) || // ～さ
+        details.isSuffixType(SuffixType.AuxillaryVerbStem)) { // ～そう
+        const suffix = handleNoun(next);
+        return conjugatedWord(token, [nextToken], conjugatedForm, suffix);
+    }
+    return null;
+}
+
 function handleConjunctiveForm(cursor: TokenCursor, conjugatedForm: ConjugatedForm) {
     const token = cursor.token();
     const next = cursor.next();
     if (!next) {
         return conjugatedWord(token, [], conjugatedForm);
     }
-    switch (next.token().pos) {
-        case PartOfSpeech.Noun: {
-            const details = posDetails(next.token());
-            if (details.some((value) =>
-                value === SuffixType.Special || // ～さ
-                value === SuffixType.AuxillaryVerbStem)) { // ～そう
-                const suffix = handleNoun(next);
-                return conjugatedWord(token, [next.token()], conjugatedForm, suffix);
-            }
-            console.debug('unrecognized conjunctive form');
-            return conjugatedWord(token, [], conjugatedForm);
-        }
-        default: {
-            const auxillaryVerb = nextWord(next);
-            return conjugatedWord(token, [...auxillaryVerb.tokens], conjugatedForm, auxillaryVerb);
-        }
+    const suffixed = handleSuffix(cursor, conjugatedForm);
+    if (suffixed) {
+        return suffixed;
     }
+    const auxillaryVerb = nextWord(next);
+    return conjugatedWord(token, [...auxillaryVerb.tokens], conjugatedForm, auxillaryVerb);
 }
 
 function handleIrrealisForm(cursor: TokenCursor) {
