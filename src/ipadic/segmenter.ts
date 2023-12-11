@@ -126,14 +126,18 @@ function handleTaConjunction(cursor: TokenCursor): IpadicAdjective | IpadicVerb 
     const token = cursor.token();
     const next = cursor.peek();
     if (next) {
-        if (next.surface_form === 'たら') { // group 早かっ＋たら
-            return conjugatedWord(token, [next], ConjugatedForm.TaraConditional);
-        } else if (next.surface_form === 'た') { // group 早かっ＋た 
-            return conjugatedWord(token, [next], ConjugatedForm.PastForm);
-        } else if (next.surface_form === 'て') { // group 走っ＋て (五段 verbs have the same stem for て and た forms)
-            const teForm = handleTeForm(cursor);
-            if (teForm) {
-                return teForm;
+        switch (next.surface_form) {
+            case 'たら': // group 早かっ＋たら
+                return conjugatedWord(token, [next], ConjugatedForm.TaraConditional);
+            case 'た': // group 早かっ＋た 
+            case 'だ': // group 騒い＋だ 
+                return conjugatedWord(token, [next], ConjugatedForm.PastForm);
+            case 'て': // group 走っ＋て (五段 verbs have the same stem for て and た forms)
+            case 'で': {
+                const teForm = handleTeForm(cursor);
+                if (teForm) {
+                    return teForm;
+                }
             }
         }
     }
@@ -158,10 +162,15 @@ function handleAuxillaryWord(cursor: TokenCursor | null): IpadicWord | null {
 function handleTeForm(cursor: TokenCursor): IpadicAdjective | IpadicVerb | null {
     const token = cursor.token();
     const next = cursor.next();
-    if (next && next.token().surface_form === 'て') { // group 早く＋て
+    if (!next) {
+        return null;
+    }
+    const nextToken = next.token();
+    if (nextToken.surface_form === 'て' || // group 早く＋て
+        nextToken.surface_form === 'で') { // group 泳い＋で
         const auxillary = handleAuxillaryWord(next.next());
         const auxTokens = auxillary?.tokens ?? [];
-        return conjugatedWord(token, [next.token(), ...auxTokens], ConjugatedForm.TeForm, auxillary ?? undefined);
+        return conjugatedWord(token, [nextToken, ...auxTokens], ConjugatedForm.TeForm, auxillary ?? undefined);
     }
     return null;
 }

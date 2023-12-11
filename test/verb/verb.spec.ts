@@ -1,19 +1,21 @@
-//import * as irregularVerb from './irregularverb.spec.js'
+import * as irregularVerb from './irregularverb.spec.js'
 import * as ichidanVerb from './ichidanverb.js'
 import * as godanru from './godanru.js'
-import * as godanku from './godanru.js'
+import * as godanku from './godanku.js'
+import * as godangu from './godangu.js'
 import { TestContext } from "../context.js";
 import { runTest } from './common.js';
 import * as bunsetsu from "../../src/index.js"
 
 export function runTestSuite(context: TestContext) {
   describe('PartOfSpeech.Verb', function () {
-    //irregularVerb.runTestSuite(context);
+    irregularVerb.runTestSuite(context);
     ichidanVerb.runTestSuite(context);
 
     describe('VerbType.Godan', function () {
       godanru.runTestSuite(context);
       godanku.runTestSuite(context);
+      godangu.runTestSuite(context);
     });
 
     describe('ConjugatedForm.ProgressiveForm', function () {
