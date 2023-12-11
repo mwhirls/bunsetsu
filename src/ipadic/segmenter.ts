@@ -152,15 +152,21 @@ function handleAuxillaryWord(cursor: TokenCursor | null): IpadicWord | null {
     return null;
 }
 
-function handleTeConjunction(cursor: TokenCursor): IpadicAdjective | IpadicVerb {
+function handleTeForm(cursor: TokenCursor): IpadicAdjective | IpadicVerb | null {
+    const token = cursor.token();
+    const next = cursor.next();
+    if (next && next.token().surface_form === 'て') { // group 早く＋て
+        const auxillary = handleAuxillaryWord(next.next());
+        const auxTokens = auxillary?.tokens ?? [];
+        return conjugatedWord(token, [next.token(), ...auxTokens], ConjugatedForm.TeForm, auxillary ?? undefined);
+    }
+    return null;
+}
+
+function handleAdverbialForm(cursor: TokenCursor): IpadicAdjective | null {
     const token = cursor.token();
     const next = cursor.next();
     if (next) {
-        if (next.token().surface_form === 'て') { // group 早く＋て
-            const auxillary = handleAuxillaryWord(next.next());
-            const auxTokens = auxillary?.tokens ?? [];
-            return conjugatedWord(token, [next.token(), ...auxTokens], ConjugatedForm.TeForm, auxillary ?? undefined);
-        }
         switch (next.token().pos) {
             case PartOfSpeech.AuxillaryVerb: { // group 早く＋ない
                 const auxillaryVerb = handleVerbAdjective(next);
@@ -171,58 +177,70 @@ function handleTeConjunction(cursor: TokenCursor): IpadicAdjective | IpadicVerb 
     if (token.pos === PartOfSpeech.iAdjective) { // 早く
         return conjugatedWord(token, [], ConjugatedForm.Adverbial);
     }
-    console.warn('unrecognized conjugation found');
-    return conjugatedWord(token, [], ConjugatedForm.Unknown);
+    return null;
 }
 
-function handleMasuStem(curr: TokenCursor, next: TokenCursor) {
-    const token = curr.token();
-    const auxillaryVerb = handleVerbAdjective(next);
-    switch (next.token().conjugated_type) {
-        case IpadicConjugatedType.Masu: // 来ます
-            return conjugatedWord(token, [...auxillaryVerb.tokens], ConjugatedForm.PoliteForm, auxillaryVerb);
-        case IpadicConjugatedType.Ta: // 来ました
-            return handleTaConjunction(curr);
+function handleTeConjunction(cursor: TokenCursor): IpadicAdjective | IpadicVerb {
+    const word = handleTeForm(cursor) ?? handleAdverbialForm(cursor);
+    return word ?? conjugatedWord(cursor.token(), [], ConjugatedForm.Unknown);
+}
+
+function consumeNextParticle(cursor: TokenCursor): IpadicAdjective | IpadicVerb | null {
+    const token = cursor.token();
+    const particle = cursor.next()?.token();
+    if (particle?.pos !== PartOfSpeech.Particle) {
+        return null;
     }
-    const detail = auxillaryVerb.detail;
-    if (detail?.type !== PartOfSpeech.Verb &&
-        detail?.type !== PartOfSpeech.iAdjective) {
-        throw Error('unrecognized continuative form');
+    switch (particle.basic_form) {
+        case 'て': // 来まし（て）
+            return handleTeForm(cursor);
+        case 'な': // し（な）よ 
+            return conjugatedWord(token, [particle], ConjugatedForm.Imperative);
+        default:
+            console.debug('unrecognized particle');
+            return conjugatedWord(token, [], ConjugatedForm.Continuative);
     }
-    return conjugatedWord(token, [...auxillaryVerb.tokens], detail.conjugatedForm, auxillaryVerb);
+}
+
+function handleIchidanKureru(cursor: TokenCursor): IpadicVerb | null {
+    const token = cursor.token();
+    if (token.conjugated_type === IpadicConjugatedType.IchidanKureru &&
+        token.surface_form === 'くれ') { // irregular imperative of くれる can be miscategorized as continuative form
+        const next = cursor.next()?.token();
+        if (!next || next.pos === PartOfSpeech.Particle) {
+            return conjugatedWord(token, [], ConjugatedForm.Imperative);
+        }
+    }
+    return null;
 }
 
 function handleContinuativeForm(cursor: TokenCursor) {
     const token = cursor.token();
+    const kureru = handleIchidanKureru(cursor);
+    if (kureru) {
+        return kureru;
+    }
     const next = cursor.next();
     if (!next) {
-        if (token.conjugated_type === IpadicConjugatedType.IchidanKureru &&
-            token.surface_form === 'くれ') { // irregular imperative of くれる can be miscategorized
-            return conjugatedWord(token, [], ConjugatedForm.Imperative);
-        }
-        console.debug('recognized continuative form');
         return conjugatedWord(token, [], ConjugatedForm.Continuative);
     }
-    switch (next.token().pos) {
-        case PartOfSpeech.Verb:
-        case PartOfSpeech.AuxillaryVerb: {
-            return handleMasuStem(cursor, next);
-        }
-        case PartOfSpeech.Particle: {
-            switch (next.token().basic_form) {
-                case 'て': // 来まして
-                    return handleTeConjunction(cursor);
-                case 'な': // し（な）よ 
-                    return conjugatedWord(token, [next.token()], ConjugatedForm.Imperative);
-                default:
-                    console.debug('recognized continuative form');
-                    return conjugatedWord(token, [], ConjugatedForm.Continuative);
-            }
-        }
-        default:
-            console.debug('recognized continuative form');
-            return conjugatedWord(token, [], ConjugatedForm.Continuative);
+    const compound = consumeNextParticle(cursor);
+    if (compound) {
+        return compound;
     }
+    const auxillaryVerb = handleVerbAdjective(next);
+    switch (next.token().conjugated_type) {
+        case IpadicConjugatedType.Masu: // （来）ます
+            return conjugatedWord(token, [...auxillaryVerb.tokens], ConjugatedForm.PoliteForm, auxillaryVerb);
+        case IpadicConjugatedType.Ta: //（まし）た
+            return handleTaConjunction(cursor);
+    }
+    const detail = auxillaryVerb.detail;
+    if (detail?.type !== PartOfSpeech.Verb &&
+        detail?.type !== PartOfSpeech.iAdjective) {
+        return conjugatedWord(token, [...auxillaryVerb.tokens], ConjugatedForm.Continuative, auxillaryVerb);
+    }
+    return conjugatedWord(token, [...auxillaryVerb.tokens], detail.conjugatedForm, auxillaryVerb);
 }
 
 function handleConjunctiveForm(cursor: TokenCursor, conjugatedForm: ConjugatedForm) {
@@ -232,12 +250,6 @@ function handleConjunctiveForm(cursor: TokenCursor, conjugatedForm: ConjugatedFo
         return conjugatedWord(token, [], conjugatedForm);
     }
     switch (next.token().pos) {
-        case PartOfSpeech.Verb:
-        case PartOfSpeech.AuxillaryVerb:
-        case PartOfSpeech.iAdjective: {
-            const auxillaryVerb = handleVerbAdjective(next);
-            return conjugatedWord(token, [...auxillaryVerb.tokens], conjugatedForm, auxillaryVerb);
-        }
         case PartOfSpeech.Noun: {
             const details = posDetails(next.token());
             if (details.some((value) =>
@@ -249,9 +261,10 @@ function handleConjunctiveForm(cursor: TokenCursor, conjugatedForm: ConjugatedFo
             console.debug('unrecognized conjunctive form');
             return conjugatedWord(token, [], conjugatedForm);
         }
-        default:
-            console.debug('unrecognized conjunctive form');
-            return conjugatedWord(token, [], conjugatedForm);
+        default: {
+            const auxillaryVerb = nextWord(next);
+            return conjugatedWord(token, [...auxillaryVerb.tokens], conjugatedForm, auxillaryVerb);
+        }
     }
 }
 
@@ -330,6 +343,7 @@ function nextWord(cursor: TokenCursor): IpadicWord {
         case PartOfSpeech.Symbol:
             return handleSymbol(cursor);
         case PartOfSpeech.Verb:
+        case PartOfSpeech.AuxillaryVerb:
         case PartOfSpeech.iAdjective:
             return handleVerbAdjective(cursor);
         case PartOfSpeech.Noun:
