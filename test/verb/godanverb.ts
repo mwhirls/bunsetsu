@@ -165,6 +165,42 @@ export function runTestSuite(context: TestContext) {
         ];
         runTest(verbs, bunsetsu.ConjugatedForm.PoliteForm, context);
       });
+
+      describe('ConjugatedForm.Passive', function () {
+        const verbs = [
+          { surfaceForm: '殴られる', basicForm: '殴る', reading: 'ナグラレル' },
+          { surfaceForm: 'なられる', basicForm: 'なる', reading: 'ナラレル' },
+          { surfaceForm: '走られる', basicForm: '走る', reading: 'ハシラレル' },
+          { surfaceForm: '作られる', basicForm: '作る', reading: 'ツクラレル' },
+          { surfaceForm: '乗られる', basicForm: '乗る', reading: 'ノラレル' },
+          { surfaceForm: '終わられる', basicForm: '終わる', reading: 'オワラレル' },
+        ];
+        runTest(verbs, bunsetsu.ConjugatedForm.Passive, context);
+      });
+
+      describe('ConjugatedForm.Causative', function () {
+        const verbs = [
+          { surfaceForm: '殴らせる', basicForm: '殴る', reading: 'ナグラセル' },
+          { surfaceForm: 'ならせる', basicForm: 'なる', reading: 'ナラセル' },
+          { surfaceForm: '走らせる', basicForm: '走る', reading: 'ハシラセル' },
+          { surfaceForm: '作らせる', basicForm: '作る', reading: 'ツクラセル' },
+          { surfaceForm: '乗らせる', basicForm: '乗る', reading: 'ノラセル' },
+          { surfaceForm: '終わらせる', basicForm: '終わる', reading: 'オワラセル' },
+        ];
+        runTest(verbs, bunsetsu.ConjugatedForm.Causative, context);
+      });
+
+      describe('ConjugatedForm.CausativePassive', function () {
+        const verbs = [
+          { surfaceForm: '殴らせられる', basicForm: '殴る', reading: 'ナグラセラレル' },
+          { surfaceForm: 'ならせられる', basicForm: 'なる', reading: 'ナラセラレル' },
+          { surfaceForm: '走らせられる', basicForm: '走る', reading: 'ハシラセラレル' },
+          { surfaceForm: '作らせられる', basicForm: '作る', reading: 'ツクラセラレル' },
+          { surfaceForm: '乗らせられる', basicForm: '乗る', reading: 'ノラセラレル' },
+          { surfaceForm: '終わらせられる', basicForm: '終わる', reading: 'オワラセラレル' },
+        ];
+        runTest(verbs, bunsetsu.ConjugatedForm.CausativePassive, context);
+      });
     });
   });
 }

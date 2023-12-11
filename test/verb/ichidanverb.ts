@@ -85,6 +85,27 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.PastForm, context);
     });
+
+    describe('ConjugatedForm.Passive', function () {
+      const verbs = [
+        { surfaceForm: '食べられる', basicForm: '食べる', reading: 'タベラレル' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Passive, context);
+    });
+
+    describe('ConjugatedForm.Causative', function () {
+      const verbs = [
+        { surfaceForm: '食べさせる', basicForm: '食べる', reading: 'タベサセル' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Causative, context);
+    });
+
+    describe('ConjugatedForm.CausativePassive', function () {
+      const verbs = [
+        { surfaceForm: '食べさせられる', basicForm: '食べる', reading: 'タベサセラレル' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.CausativePassive, context);
+    });
   });
 
   // くれる is generally treated as 一段, but has a few irregularities

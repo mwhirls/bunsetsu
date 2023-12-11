@@ -279,9 +279,40 @@ function handleConjunctiveForm(cursor: TokenCursor, conjugatedForm: ConjugatedFo
     return conjugatedWord(token, [...auxillaryVerb.tokens], conjugatedForm, auxillaryVerb);
 }
 
+function handleReruForm(cursor: TokenCursor) {
+    // される, させる、させられる
+    const token = cursor.token();
+    const next = cursor.next();
+    if (!next) {
+        return conjugatedWord(token, [], ConjugatedForm.Passive);
+    }
+    const auxillaryVerb = nextWord(next);
+    const nextToken = next.token();
+    const auxDetails = new IpadicPOSDetails(nextToken);
+    if (auxDetails.isSuffix() && nextToken.basic_form === 'せる' ||
+        nextToken.basic_form === 'させる') {
+        const d = auxillaryVerb.detail;
+        if (d?.type === PartOfSpeech.Verb || d?.type === PartOfSpeech.iAdjective) {
+            const rareru = d.auxillaryWord;
+            if (rareru?.basicForm === 'られる') {
+                return conjugatedWord(token, [...auxillaryVerb.tokens], ConjugatedForm.CausativePassive, auxillaryVerb);
+            }
+        }
+        return conjugatedWord(token, [...auxillaryVerb.tokens], ConjugatedForm.Causative, auxillaryVerb);
+    }
+    return conjugatedWord(token, [...auxillaryVerb.tokens], ConjugatedForm.Passive, auxillaryVerb);
+}
+
 function handleIrrealisForm(cursor: TokenCursor) {
-    // 感じない, 逃げない, 走らない, 来ない、しない, etc
-    return handleConjunctiveForm(cursor, ConjugatedForm.NaiForm);
+    const token = cursor.token();
+    const next = cursor.peek();
+    if (!next) {
+        return conjugatedWord(token, [], ConjugatedForm.Unknown);
+    }
+    if (next.basic_form === 'ない') {
+        return conjugatedWord(token, [next], ConjugatedForm.NaiForm);
+    }
+    return handleReruForm(cursor);
 }
 
 function handleIrrealisUConjunction(cursor: TokenCursor) {
@@ -319,6 +350,8 @@ function handleVerbAdjective(cursor: TokenCursor): IpadicAdjective | IpadicVerb 
             return handleIrrealisForm(cursor);
         case IpadicConjugatedForm.IrrealisNuConjunction:
             return handleConjunctiveForm(cursor, ConjugatedForm.IrrealisNuForm);
+        case IpadicConjugatedForm.IrrealisReruConjunction:
+            return handleReruForm(cursor);
         case IpadicConjugatedForm.IrrealisUConjunction:
             return handleIrrealisUConjunction(cursor);
         case IpadicConjugatedForm.SpecialIrrealis:

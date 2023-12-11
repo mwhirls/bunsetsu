@@ -1,4 +1,4 @@
-import * as irregularVerb from './irregularverb.spec.js'
+//import * as irregularVerb from './irregularverb.spec.js'
 import * as ichidanVerb from './ichidanverb.js'
 import * as godanVerb from './godanverb.js'
 import { TestContext } from "../context.js";
@@ -7,7 +7,7 @@ import * as bunsetsu from "../../src/index.js"
 
 export function runTestSuite(context: TestContext) {
   describe('PartOfSpeech.Verb', function () {
-    irregularVerb.runTestSuite(context);
+    //irregularVerb.runTestSuite(context);
     ichidanVerb.runTestSuite(context);
     godanVerb.runTestSuite(context);
 

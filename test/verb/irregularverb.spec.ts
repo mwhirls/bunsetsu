@@ -107,6 +107,27 @@ export function runTestSuite(context: TestContext) {
       ];
       runWordTestCase(verbs, bunsetsu.ConjugatedForm.TeForm);
     });
+
+    describe('ConjugatedForm.Passive', function () {
+      const verbs = [
+        { surfaceForm: '来られる', reading: 'コラレル' },
+      ];
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Passive);
+    });
+
+    describe('ConjugatedForm.Causative', function () {
+      const verbs = [
+        { surfaceForm: '来させる', reading: 'コサセル' },
+      ];
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Causative);
+    });
+
+    describe('ConjugatedForm.CausativePassive', function () {
+      const verbs = [
+        { surfaceForm: '来させられる', reading: 'コサセラレル' },
+      ];
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.CausativePassive);
+    });
   });
 
 
@@ -220,6 +241,27 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: 'して', reading: 'シテ' },
       ];
       runWordTestCase(verbs, bunsetsu.ConjugatedForm.TeForm);
+    });
+
+    describe('ConjugatedForm.Passive', function () {
+      const verbs = [
+        { surfaceForm: 'される', reading: 'サレル' },
+      ];
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Passive);
+    });
+
+    describe('ConjugatedForm.Causative', function () {
+      const verbs = [
+        { surfaceForm: 'させる', reading: 'サセル' },
+      ];
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Causative);
+    });
+
+    describe('ConjugatedForm.CausativePassive', function () {
+      const verbs = [
+        { surfaceForm: 'させられる', reading: 'サセラレル' },
+      ];
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.CausativePassive);
     });
   });
 
