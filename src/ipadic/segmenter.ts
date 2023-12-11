@@ -130,6 +130,11 @@ function handleTaConjunction(cursor: TokenCursor): IpadicAdjective | IpadicVerb 
             return conjugatedWord(token, [next], ConjugatedForm.TaraConditional);
         } else if (next.surface_form === 'た') { // group 早かっ＋た 
             return conjugatedWord(token, [next], ConjugatedForm.PastForm);
+        } else if (next.surface_form === 'て') { // group 走っ＋て (五段 verbs have the same stem for て and た forms)
+            const teForm = handleTeForm(cursor);
+            if (teForm) {
+                return teForm;
+            }
         }
     }
     console.warn('unrecognized conjugation found');

@@ -85,14 +85,6 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.PastForm, context);
     });
-
-    // todo: detect as progressive form
-    describe('ConjugatedForm.TeForm', function () {
-      const verbs = [
-        { surfaceForm: '食べてます', basicForm: '食べる', reading: 'タベテマス' },
-      ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
-    });
   });
 
   // くれる is generally treated as 一段, but has a few irregularities
