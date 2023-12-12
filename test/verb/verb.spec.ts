@@ -1,6 +1,7 @@
 import * as irregularVerb from './irregularverb.spec.js'
 import * as ichidanVerb from './ichidanverb.js'
 import * as godanru from './godanru.js'
+import * as godanbu from './godanbu.js'
 import * as godanku from './godanku.js'
 import * as godangu from './godangu.js'
 import * as godanmu from './godannu.js'
@@ -19,6 +20,7 @@ export function runTestSuite(context: TestContext) {
 
     describe('VerbType.Godan', function () {
       godanru.runTestSuite(context);
+      godanbu.runTestSuite(context);
       godanku.runTestSuite(context);
       godangu.runTestSuite(context);
       godanmu.runTestSuite(context);
