@@ -3,6 +3,7 @@ import * as ichidanVerb from './ichidanverb.js'
 import * as godanru from './godanru.js'
 import * as godanku from './godanku.js'
 import * as godangu from './godangu.js'
+import * as godansu from './godansu.js'
 import * as godanwa from './godanwa.js'
 import { TestContext } from "../context.js";
 import { runTest } from './common.js';
@@ -17,6 +18,7 @@ export function runTestSuite(context: TestContext) {
       godanru.runTestSuite(context);
       godanku.runTestSuite(context);
       godangu.runTestSuite(context);
+      godansu.runTestSuite(context);
       godanwa.runTestSuite(context);
     });
 
