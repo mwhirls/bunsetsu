@@ -18,12 +18,12 @@ export function runTestSuite(context: TestContext) {
 
     describe('ConjugatedForm.ConditionalContraction', function () {
       const verbs = [
-        { surfaceForm: '話せば', basicForm: '話す', reading: 'ハナセバ' },
-        { surfaceForm: '出せば', basicForm: '出す', reading: 'ダセバ' },
-        { surfaceForm: '返せば', basicForm: '返す', reading: 'カエセバ' },
-        { surfaceForm: '押せば', basicForm: '押す', reading: 'オセバ' },
-        { surfaceForm: '渡せば', basicForm: '渡す', reading: 'ワタセバ' },
-        { surfaceForm: '貸せば', basicForm: '貸す', reading: 'カセバ' },
+        { surfaceForm: '話しゃ', basicForm: '話す', reading: 'ハナセバ' },
+        { surfaceForm: '出しゃ', basicForm: '出す', reading: 'ダセバ' },
+        { surfaceForm: '返しゃ', basicForm: '返す', reading: 'カエセバ' },
+        { surfaceForm: '押しゃ', basicForm: '押す', reading: 'オセバ' },
+        { surfaceForm: '渡しゃ', basicForm: '渡す', reading: 'ワタセバ' },
+        { surfaceForm: '貸しゃ', basicForm: '貸す', reading: 'カセバ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction, context);
     });
