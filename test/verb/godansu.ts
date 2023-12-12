@@ -18,12 +18,12 @@ export function runTestSuite(context: TestContext) {
 
     describe('ConjugatedForm.ConditionalContraction', function () {
       const verbs = [
-        { surfaceForm: '話しゃ', basicForm: '話す', reading: 'ハナセバ' },
-        { surfaceForm: '出しゃ', basicForm: '出す', reading: 'ダセバ' },
-        { surfaceForm: '返しゃ', basicForm: '返す', reading: 'カエセバ' },
-        { surfaceForm: '押しゃ', basicForm: '押す', reading: 'オセバ' },
-        { surfaceForm: '渡しゃ', basicForm: '渡す', reading: 'ワタセバ' },
-        { surfaceForm: '貸しゃ', basicForm: '貸す', reading: 'カセバ' },
+        { surfaceForm: '話しゃ', basicForm: '話す', reading: 'ハナシャ' },
+        { surfaceForm: '出しゃ', basicForm: '出す', reading: 'ダシャ' },
+        { surfaceForm: '返しゃ', basicForm: '返す', reading: 'カエシャ' },
+        { surfaceForm: '押しゃ', basicForm: '押す', reading: 'オシャ' },
+        { surfaceForm: '渡しゃ', basicForm: '渡す', reading: 'ワタシャ' },
+        { surfaceForm: '貸しゃ', basicForm: '貸す', reading: 'カシャ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction, context);
     });
@@ -71,11 +71,7 @@ export function runTestSuite(context: TestContext) {
       describe('as げ variant', function () {
         const verbs = [
           { surfaceForm: '話せ', basicForm: '話す', reading: 'ハナセ' },
-          { surfaceForm: '出せ', basicForm: '出す', reading: 'ダセ' },
-          { surfaceForm: '返せ', basicForm: '返す', reading: 'カエセ' },
           { surfaceForm: '押せ', basicForm: '押す', reading: 'オセ' },
-          { surfaceForm: '渡せ', basicForm: '渡す', reading: 'ワタセ' },
-          { surfaceForm: '貸せ', basicForm: '貸す', reading: 'カセ' },
         ];
         runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
       });

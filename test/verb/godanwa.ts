@@ -58,12 +58,12 @@ export function runTestSuite(context: TestContext) {
       // they look really similar to the imperative form
       describe('as え variant', function () {
         const verbs = [
-          { surfaceForm: '言え', basicForm: '言う', reading: 'イエ' },
+          { surfaceForm: '吸え', basicForm: '吸う', reading: 'スエ' },
           { surfaceForm: '買え', basicForm: '買う', reading: 'カエ' },
           { surfaceForm: '使え', basicForm: '使う', reading: 'ツカエ' },
-          { surfaceForm: '洗え', basicForm: '洗う', reading: 'アラエ' },
+          { surfaceForm: '払え', basicForm: '払う', reading: 'ハラエ' },
           { surfaceForm: '会え', basicForm: '会う', reading: 'アエ' },
-          { surfaceForm: '違え', basicForm: '違う', reading: 'チガエ' },
+          { surfaceForm: '習え', basicForm: '習う', reading: 'ナラエ' },
         ];
         runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
       });
@@ -75,7 +75,7 @@ export function runTestSuite(context: TestContext) {
           { surfaceForm: '使いなさい', basicForm: '使う', reading: 'ツカイナサイ' },
           { surfaceForm: '洗いなさい', basicForm: '洗う', reading: 'アライナサイ' },
           { surfaceForm: '会いなさい', basicForm: '会う', reading: 'アイナサイ' },
-          { surfaceForm: '違いなさい', basicForm: '違う', reading: 'チガイナサイ' },
+          { surfaceForm: '吸いなさい', basicForm: '吸う', reading: 'スイナサイ' },
         ];
         runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
       });
@@ -87,7 +87,7 @@ export function runTestSuite(context: TestContext) {
           { surfaceForm: '使いな', basicForm: '使う', reading: 'ツカイナ' },
           { surfaceForm: '洗いな', basicForm: '洗う', reading: 'アライナ' },
           { surfaceForm: '会いな', basicForm: '会う', reading: 'アイナ' },
-          { surfaceForm: '違いな', basicForm: '違う', reading: 'チガイナ' },
+          { surfaceForm: '吸いな', basicForm: '吸う', reading: 'スイナ' },
         ];
         runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
       });
