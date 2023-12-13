@@ -1,33 +1,11 @@
-import { IpadicFeatures } from "kuromoji";
-import { PartOfSpeech, Token, TokenDetail, Word } from "../word.js";
-import { IpadicAdjectiveDetail } from "./adjective.js";
-import { IpadicSymbolDetail } from "./symbol.js";
-import { IpadicVerbDetail } from "./verb.js";
-import { IpadicAuxillaryVerbDetail } from "./auxillaryVerb.js";
-
-export class IpadicTokenNode {
-    pos: PartOfSpeech;
-    token: IpadicFeatures;
-    detail?: TokenDetail;
-    next?: IpadicTokenNode;
-
-    constructor(pos: PartOfSpeech, token: IpadicFeatures);
-    constructor(pos: PartOfSpeech, token: IpadicFeatures, detail?: IpadicTokenDetail);
-    constructor(pos: PartOfSpeech, token: IpadicFeatures, detail?: IpadicTokenDetail, next?: IpadicTokenNode);
-    constructor(pos: PartOfSpeech, token: IpadicFeatures, detail?: IpadicTokenDetail, next?: IpadicTokenNode) {
-        this.pos = pos;
-        this.token = token;
-        this.detail = detail;
-        this.next = next;
-    }
-}
-
-export type IpadicTokenDetail = IpadicSymbolDetail | IpadicAdjectiveDetail | IpadicVerbDetail | IpadicAuxillaryVerbDetail;
+import { Token, PartOfSpeech } from "../token.js";
+import { Sentence, Word } from "../word.js";
+import { IpadicNode } from "./token.js";
 
 export class IpadicWord implements Word {
     tokens: Token[];
 
-    constructor(root: IpadicTokenNode) {
+    constructor(root: IpadicNode) {
         this.tokens = flatten(root);
     }
 
@@ -56,9 +34,9 @@ export class IpadicWord implements Word {
     }
 }
 
-function flatten(root: IpadicTokenNode): Token[] {
+function flatten(root: IpadicNode): Token[] {
     const result: Token[] = [];
-    let node: IpadicTokenNode | undefined = root;
+    let node: IpadicNode | undefined = root;
     while (node) {
         const token = {
             pos: node.pos,
@@ -66,10 +44,23 @@ function flatten(root: IpadicTokenNode): Token[] {
             basicForm: node.token.basic_form,
             reading: node.token.reading,
             pronunciation: node.token.pronunciation,
+            role: node.role,
             detail: node.detail,
         };
         result.push(token);
         node = node.next;
     }
     return result;
+}
+
+export class IpadicSentence implements Sentence {
+    words: Word[];
+    start: number;
+    end: number;
+
+    constructor(words: Word[], start: number, end: number) {
+        this.words = words;
+        this.start = start;
+        this.end = end;
+    }
 }

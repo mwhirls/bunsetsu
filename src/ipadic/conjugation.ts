@@ -1,7 +1,8 @@
 // string literals from kuromoji (MeCab IPADIC)
 
 import { IpadicFeatures } from "kuromoji";
-import { ConjugatedForm } from "../conjugation.js";
+import { IpadicNode } from "./token.js";
+import { ConjugatedForm, ConjugationDetail, DetailType, GrammaticalRole, PartOfSpeech } from "../token.js";
 
 // https://qiita.com/ensan_hcl/items/885588c7d2d99de85b44
 export enum IpadicConjugatedForm {
@@ -85,5 +86,27 @@ export function getConjugatedForm(token: IpadicFeatures) {
             return ConjugatedForm.TeConjunction;
         default:
             throw new Error("unhandled verb/adjective conjugation");
+    }
+}
+
+export class IpadicConjugation extends IpadicNode {
+    constructor(token: IpadicFeatures, role: GrammaticalRole, detail: IpadicConjugationDetail);
+    constructor(token: IpadicFeatures, role: GrammaticalRole, detail: IpadicConjugationDetail, auxillary?: IpadicNode);
+    constructor(token: IpadicFeatures, role: GrammaticalRole, detail: IpadicConjugationDetail, auxillary?: IpadicNode) {
+        const pos = Object.values(PartOfSpeech).find(x => x === token.pos);
+        if (!pos) {
+            throw new Error('unrecognized part of speech');
+        }
+        super(pos, token, role, detail, auxillary);
+    }
+}
+
+export class IpadicConjugationDetail implements ConjugationDetail {
+    type: DetailType.ConjugationDetail;
+    conjugatedForm: ConjugatedForm
+
+    constructor(conjugatedForm: ConjugatedForm) {
+        this.type = DetailType.ConjugationDetail;
+        this.conjugatedForm = conjugatedForm;
     }
 }

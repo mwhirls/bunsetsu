@@ -1,5 +1,5 @@
 import { IpadicFeatures } from "kuromoji";
-import { PartOfSpeech } from "../word.js";
+import { PartOfSpeech } from "../token.js";
 import { IpadicSymbolType } from "./symbol.js";
 
 export enum IpadicDetailsType {

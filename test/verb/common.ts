@@ -36,8 +36,8 @@ export function runTest(testCases: VerbTestCase[], conjugatedForm: bunsetsu.Conj
             assert.ok(word.tokens.length >= 1);
             const token = word.tokens[0];
             assert.ok(token.detail);
-            assert.equal(token.detail!.type, bunsetsu.PartOfSpeech.Verb);
-            const detail = token.detail as bunsetsu.VerbDetail;
+            assert.equal(token.detail!.type, bunsetsu.DetailType.ConjugationDetail);
+            const detail = token.detail as bunsetsu.ConjugationDetail;
             assert.equal(detail.conjugatedForm, conjugatedForm);
 
             if (expected.auxillary && expected.auxillaryIndex) {
@@ -64,8 +64,8 @@ export function runTestOnPhrase(testCases: PhraseTestCase[], conjugatedForm: bun
             assert.ok(word.tokens.length >= 1);
             const token = word.tokens[0];
             assert.ok(token.detail);
-            assert.equal(token.detail!.type, bunsetsu.PartOfSpeech.Verb);
-            const detail = token.detail as bunsetsu.VerbDetail;
+            assert.equal(token.detail!.type, bunsetsu.DetailType.ConjugationDetail);
+            const detail = token.detail as bunsetsu.ConjugationDetail;
             assert.equal(detail.conjugatedForm, conjugatedForm);
 
             if (expected.auxillary && expected.auxillaryIndex) {

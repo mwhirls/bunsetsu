@@ -1,17 +1,13 @@
 import kuromoji, { IpadicFeatures } from "kuromoji";
-import { AuxillaryVerbType } from "../auxillaryVerb.js";
-import { ConjugatedForm } from "../conjugation.js";
 import { Segmenter } from "../segmenter.js";
-import { Sentence } from "../sentence.js";
-import { PartOfSpeech, Word } from "../word.js";
-import { IpadicAdjectiveDetail, IpadicAdjective } from "./adjective.js";
-import { IpadicAuxillaryVerbDetail, IpadicAuxillaryVerb } from "./auxillaryVerb.js";
-import { IpadicConjugatedForm, IpadicConjugatedType, getConjugatedForm } from "./conjugation.js";
+import { PartOfSpeech, ConjugatedForm, GrammaticalRole, DetailType } from "../token.js";
+import { Sentence, Word } from "../word.js";
+import { IpadicConjugatedType, IpadicConjugatedForm, getConjugatedForm, IpadicConjugation, IpadicConjugationDetail } from "./conjugation.js";
 import { IpadicPOSDetails } from "./details.js";
-import { IpadicSentence } from "./sentence.js";
 import { IpadicSymbol } from "./symbol.js";
-import { IpadicVerb, IpadicVerbDetail } from "./verb.js";
-import { IpadicTokenNode, IpadicWord } from "./word.js";
+import { IpadicNode } from "./token.js";
+import { IpadicSentence, IpadicWord } from "./word.js";
+
 
 
 class TokenCursor {
@@ -55,12 +51,12 @@ function handleNoun(cursor: TokenCursor) {
         const next = cursor.next();
         if (next && next.token().basic_form === 'する') {
             const verb = handleVerbAdjective(next);
-            if (verb.detail && verb.detail.type === PartOfSpeech.Verb) {
-                return new IpadicTokenNode(PartOfSpeech.Noun, token, undefined, verb);
+            if (verb.detail && verb.detail.type === DetailType.ConjugationDetail) {
+                return new IpadicNode(PartOfSpeech.Noun, token, GrammaticalRole.Unknown, undefined, verb);
             }
         }
     }
-    return new IpadicTokenNode(PartOfSpeech.Noun, token);
+    return new IpadicNode(PartOfSpeech.Noun, token, GrammaticalRole.Unknown);
 }
 
 function handleFiller(cursor: TokenCursor) {
@@ -71,11 +67,11 @@ function handleFiller(cursor: TokenCursor) {
         const compound = `${token.basic_form}${next.token().basic_form}`;
         if (specialCases.some((value) => compound === value)) {
             const aux = nextWord(next);
-            return new IpadicTokenNode(PartOfSpeech.Filler, token, undefined, aux);
+            return new IpadicNode(PartOfSpeech.Filler, token, GrammaticalRole.Unknown, undefined, aux);
         }
     }
     if (token.pos === PartOfSpeech.Filler) {
-        return new IpadicTokenNode(PartOfSpeech.Filler, token);
+        return new IpadicNode(PartOfSpeech.Filler, token, GrammaticalRole.Unknown);
     }
     return null;
 }
@@ -83,7 +79,7 @@ function handleFiller(cursor: TokenCursor) {
 function handleInterjection(cursor: TokenCursor) {
     const token = cursor.token();
     const filler = handleFiller(cursor); // sometimes pieces of fillers are categorized as interjections
-    return filler ?? new IpadicTokenNode(PartOfSpeech.Interjection, token);
+    return filler ?? new IpadicNode(PartOfSpeech.Interjection, token, GrammaticalRole.Unknown);
 }
 
 function handleSymbol(cursor: TokenCursor) {
@@ -91,27 +87,12 @@ function handleSymbol(cursor: TokenCursor) {
     return new IpadicSymbol(token);
 }
 
-function conjugatedWord(stem: kuromoji.IpadicFeatures, conjugatedForm: ConjugatedForm, auxillary?: IpadicTokenNode): IpadicAdjective | IpadicVerb | IpadicAuxillaryVerb {
-    switch (stem.pos) {
-        case PartOfSpeech.Verb: {
-            const detail = new IpadicVerbDetail(conjugatedForm);
-            return new IpadicVerb(stem, detail, auxillary);
-        }
-        case PartOfSpeech.AuxillaryVerb: {
-            const type = getAuxillaryVerbType(stem);
-            const detail = new IpadicAuxillaryVerbDetail(conjugatedForm, type);
-            return new IpadicAuxillaryVerb(stem, detail, auxillary);
-        }
-        case PartOfSpeech.iAdjective: {
-            const detail = new IpadicAdjectiveDetail(conjugatedForm);
-            return new IpadicAdjective(stem, detail, auxillary);
-        }
-        default:
-            throw new Error('unrecognized conjugated word');
-    }
+function conjugatedWord(stem: kuromoji.IpadicFeatures, conjugatedForm: ConjugatedForm, auxillary?: IpadicNode): IpadicConjugation {
+    const detail = new IpadicConjugationDetail(conjugatedForm);
+    return new IpadicConjugation(stem, GrammaticalRole.Unknown, detail, auxillary);
 }
 
-function handleConditional(cursor: TokenCursor): IpadicAdjective | IpadicVerb {
+function handleConditional(cursor: TokenCursor): IpadicConjugation {
     const token = cursor.token();
     const form = ConjugatedForm.Conditional;
     const next = cursor.next();
@@ -188,7 +169,7 @@ function handleNasaiContraction(cursor: TokenCursor) {
     }
 }
 
-function handleSuffix(cursor: TokenCursor, conjugatedForm: ConjugatedForm): IpadicTokenNode | null {
+function handleSuffix(cursor: TokenCursor, conjugatedForm: ConjugatedForm): IpadicNode | null {
     const token = cursor.token();
     const next = cursor.next();
     if (!next) {
@@ -199,66 +180,60 @@ function handleSuffix(cursor: TokenCursor, conjugatedForm: ConjugatedForm): Ipad
     if (!details.isSuffix()) {
         return null;
     }
-    /*
-    if (details.isSuffixType(SuffixType.Special) || // ～さ
-        details.isSuffixType(SuffixType.AuxillaryVerbStem)) { // ～そう
-        const suffix = handleNoun(next);
-        return conjugatedWord(token, conjugatedForm, suffix);
-    }
-    */
     const suffix = nextWord(next);
     return conjugatedWord(token, conjugatedForm, suffix);
 }
 
-function getAuxillaryVerbType(token: IpadicFeatures) {
+function getGrammaticalRole(token: IpadicFeatures) {
     switch (token.basic_form) {
         case 'ない':
-            return AuxillaryVerbType.Negation;
+            return GrammaticalRole.Negation;
         case 'だ':
-            return AuxillaryVerbType.Copula;
+            return GrammaticalRole.Copula;
         case 'です':
-            return AuxillaryVerbType.CopulaPolite;
+            return GrammaticalRole.CopulaPolite;
         case 'たい':
-            return AuxillaryVerbType.Desire;
+            return GrammaticalRole.Desire;
         case 'まい':
-            return AuxillaryVerbType.NegativeInference;
+            return GrammaticalRole.NegativeInference;
         case 'た': {
             if (token.surface_form === 'たら') {
-                return AuxillaryVerbType.TaraConditional;
+                return GrammaticalRole.TaraConditional;
             }
-            return AuxillaryVerbType.Past;
+            return GrammaticalRole.Past;
         }
         case 'ます':
-            return AuxillaryVerbType.Polite;
+            return GrammaticalRole.Polite;
         case 'そう':
-            return AuxillaryVerbType.Hearsay1;
+            return GrammaticalRole.Hearsay1;
         case 'らしい':
-            return AuxillaryVerbType.Hearsay2;
+            return GrammaticalRole.Hearsay2;
         case 'う':
-            return AuxillaryVerbType.Volitional;
+            return GrammaticalRole.Volitional;
         case 'よう':
-            return AuxillaryVerbType.Similarity;
+            return GrammaticalRole.Similarity;
         case 'べし':
-            return AuxillaryVerbType.Certainty;
+            return GrammaticalRole.Certainty;
         case 'やる': {
             // todo:
-            return AuxillaryVerbType.Disdain;
+            return GrammaticalRole.Disdain;
         }
         case 'させる':
-            return AuxillaryVerbType.Causative;
+            return GrammaticalRole.Causative;
         case 'られる':
-            return AuxillaryVerbType.Passive;
+            return GrammaticalRole.PassivePotential;
     }
     const auxDetails = new IpadicPOSDetails(token);
     if (auxDetails.isSuffix()) {
         if (token.basic_form === 'せる') {
-            return AuxillaryVerbType.Causative;
+            return GrammaticalRole.Causative;
         } else if (token.basic_form === 'れる') {
-            return AuxillaryVerbType.Passive;
+            return GrammaticalRole.Passive;
         }
     }
-    return AuxillaryVerbType.Unknown;
+    return GrammaticalRole.Unknown;
 }
+getGrammaticalRole; // TODO
 
 function handleAuxillaryVerb(cursor: TokenCursor | null) {
     if (!cursor) {
@@ -324,7 +299,7 @@ function handleStemAuxillaryForm(cursor: TokenCursor, form: ConjugatedForm) {
     return conjugatedWord(token, form, auxillary);
 }
 
-function handleVerbAdjective(cursor: TokenCursor): IpadicAdjective | IpadicVerb {
+function handleVerbAdjective(cursor: TokenCursor): IpadicConjugation {
     const token = cursor.token();
     const filler = handleFiller(cursor); // sometimes pieces of fillers are categorized as adjectives
     if (filler) {
@@ -353,11 +328,11 @@ function handleVerbAdjective(cursor: TokenCursor): IpadicAdjective | IpadicVerb 
     }
 }
 
-function nextWord(cursor: TokenCursor): IpadicTokenNode {
+function nextWord(cursor: TokenCursor): IpadicNode {
     const token = cursor.token();
     switch (token.pos) {
         case PartOfSpeech.Filler:
-            return handleFiller(cursor) ?? new IpadicTokenNode(PartOfSpeech.Filler, token);
+            return handleFiller(cursor) ?? new IpadicNode(PartOfSpeech.Filler, token, GrammaticalRole.Unknown);
         case PartOfSpeech.Interjection:
             return handleInterjection(cursor);
         case PartOfSpeech.Symbol:
@@ -369,7 +344,7 @@ function nextWord(cursor: TokenCursor): IpadicTokenNode {
         case PartOfSpeech.Noun:
             return handleNoun(cursor);
         default:
-            return new IpadicTokenNode(PartOfSpeech[token.pos as keyof typeof PartOfSpeech], token);
+            return new IpadicNode(PartOfSpeech[token.pos as keyof typeof PartOfSpeech], token, GrammaticalRole.Unknown);
     }
 }
 

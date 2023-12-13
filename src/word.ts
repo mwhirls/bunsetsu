@@ -1,30 +1,4 @@
-import { AdjectiveDetail } from "./adjective.js";
-import { AuxillaryVerbDetail } from "./auxillaryVerb.js";
-import { NounDetail } from "./noun.js";
-import { SymbolDetail } from "./symbol.js";
-import { VerbDetail } from "./verb.js";
-
-// https://qiita.com/ensan_hcl/items/885588c7d2d99de85b44
-export enum PartOfSpeech {
-    Filler = 'フィラー', // 「あのー」「えーと」
-    Interjection = '感動詞',
-    Symbol = '記号',
-    iAdjective = '形容詞',
-    Noun = '名詞',
-    Verb = '動詞',
-    Particle = '助詞',
-    AuxillaryVerb = '助動詞',
-    Conjunction = '接続詞'
-}
-
-export interface Token {
-    pos: PartOfSpeech;
-    surfaceForm: string;
-    basicForm: string;
-    reading: string | undefined;
-    pronunciation: string | undefined;
-    detail?: TokenDetail;
-}
+import { PartOfSpeech, Token } from "./token.js";
 
 export interface Word {
     tokens: Token[];
@@ -36,4 +10,6 @@ export interface Word {
     pronunciation(): string | undefined;
 }
 
-export type TokenDetail = SymbolDetail | AdjectiveDetail | VerbDetail | AuxillaryVerbDetail | NounDetail;
+export interface Sentence {
+    words: Word[];
+}

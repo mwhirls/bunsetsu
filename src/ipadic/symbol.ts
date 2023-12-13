@@ -1,8 +1,7 @@
 import { IpadicFeatures } from "kuromoji";
-import { SymbolDetail, SymbolType } from "../symbol.js";
-import { PartOfSpeech } from "../word.js";
-import { IpadicTokenNode } from "./word.js";
 import { IpadicPOSDetails } from "./details.js";
+import { PartOfSpeech, SymbolType, SymbolDetail, GrammaticalRole, DetailType } from "../token.js";
+import { IpadicNode } from "./token.js";
 
 // string literals from kuromoji (Mecab IPADIC)
 export enum IpadicSymbolType {
@@ -14,10 +13,10 @@ export enum IpadicSymbolType {
     Comma = '読点',
 }
 
-export class IpadicSymbol extends IpadicTokenNode {
+export class IpadicSymbol extends IpadicNode {
     constructor(token: IpadicFeatures) {
         const detail = new IpadicSymbolDetail(token);
-        super(PartOfSpeech.Symbol, token, detail);
+        super(PartOfSpeech.Symbol, token, GrammaticalRole.Unknown, detail);
     }
 }
 
@@ -55,11 +54,11 @@ function toSymbolType(token: IpadicFeatures) {
 }
 
 export class IpadicSymbolDetail implements SymbolDetail {
-    type: PartOfSpeech.Symbol;
+    type: DetailType.SymbolDetail;
     symbolType: SymbolType;
 
     constructor(token: IpadicFeatures) {
-        this.type = PartOfSpeech.Symbol;
+        this.type = DetailType.SymbolDetail;
         this.symbolType = toSymbolType(token);
     }
 }
