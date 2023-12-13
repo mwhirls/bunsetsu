@@ -3,53 +3,43 @@ import { TestContext } from "../context.js";
 import { runTest } from "./common.js";
 
 export function runTestSuite(context: TestContext) {
-  describe('ConjugatedType.Ku', function () {
-    describe('ConjugatedForm.ConditionalForm', function () {
+  describe('godan verbs that end in く', function () {
+    describe('conditional form', function () {
       const verbs = [
         { surfaceForm: '死ねば', basicForm: '死ぬ', reading: 'シネバ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Conditional, context);
     });
 
-    describe('ConjugatedForm.ConditionalContraction', function () {
+    describe('contracted conditional form', function () {
       const verbs = [
         { surfaceForm: '死にゃ', basicForm: '死ぬ', reading: 'シニャ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction, context);
     });
 
-    describe('ConjugatedForm.PlainForm', function () {
+    describe('plain form', function () {
       const verbs = [
         { surfaceForm: '死ぬ', basicForm: '死ぬ', reading: 'シヌ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.PlainForm, context);
     });
 
-    describe('ConjugatedForm.Volitional', function () {
+    describe('volitional form', function () {
       const verbs = [
         { surfaceForm: '死のう', basicForm: '死ぬ', reading: 'シノウ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
-    describe('ConjugatedForm.NaiForm', function () {
+    describe('nai-form', function () {
       const verbs = [
         { surfaceForm: '死なない', basicForm: '死ぬ', reading: 'シナナイ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
-    describe('ConjugatedForm.Imperative', function () {
-      /* 
-      // TODO: tricky to test because 死ねる has its own dictionary entry
-      describe('as ね variant', function () {
-        const verbs = [
-          { surfaceForm: '死ね', basicForm: '死ぬ', reading: 'シネ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
-      */
-    });
+    // TODO: tricky to test imperative form because 死ねる has its own dictionary entry
 
     describe('なさい', function () {
       const verbs = [
@@ -65,42 +55,42 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
-    describe('ConjugatedForm.TeForm', function () {
+    describe('te-form', function () {
       const verbs = [
         { surfaceForm: '死んで', basicForm: '死ぬ', reading: 'シンデ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
 
-    describe('ConjugatedForm.PastForm', function () {
+    describe('past form', function () {
       const verbs = [
         { surfaceForm: '死んだ', basicForm: '死ぬ', reading: 'シンダ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
-    describe('ConjugatedForm.PoliteForm', function () {
+    describe('polite form', function () {
       const verbs = [
         { surfaceForm: '死にます', basicForm: '死ぬ', reading: 'シニマス' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
-    describe('ConjugatedForm.Passive', function () {
+    describe('passive form', function () {
       const verbs = [
         { surfaceForm: '死なれる', basicForm: '死ぬ', reading: 'シナレル' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
-    describe('ConjugatedForm.Causative', function () {
+    describe('causative form', function () {
       const verbs = [
         { surfaceForm: '死なせる', basicForm: '死ぬ', reading: 'シナセル' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
-    describe('ConjugatedForm.CausativePassive', function () {
+    describe('causative-passive form', function () {
       const verbs = [
         { surfaceForm: '死なせられる', basicForm: '死ぬ', reading: 'シナセラレル' },
       ];

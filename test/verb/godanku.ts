@@ -4,7 +4,7 @@ import { runTest } from "./common.js";
 
 export function runTestSuite(context: TestContext) {
   describe('ConjugatedType.Ku', function () {
-    describe('ConjugatedForm.ConditionalForm', function () {
+    describe('conditional form', function () {
       const verbs = [
         { surfaceForm: '聞けば', basicForm: '聞く', reading: 'キケバ' },
         { surfaceForm: '書けば', basicForm: '書く', reading: 'カケバ' },
@@ -16,7 +16,7 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Conditional, context);
     });
 
-    describe('ConjugatedForm.ConditionalContraction', function () {
+    describe('contracted conditional form', function () {
       const verbs = [
         { surfaceForm: '聞きゃ', basicForm: '聞く', reading: 'キキャ' },
         { surfaceForm: '書きゃ', basicForm: '書く', reading: 'カキャ' },
@@ -28,7 +28,7 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction, context);
     });
 
-    describe('ConjugatedForm.PlainForm', function () {
+    describe('plain form', function () {
       const verbs = [
         { surfaceForm: '聞く', basicForm: '聞く', reading: 'キク' },
         { surfaceForm: '書く', basicForm: '書く', reading: 'カク' },
@@ -40,7 +40,7 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.PlainForm, context);
     });
 
-    describe('ConjugatedForm.Volitional', function () {
+    describe('volitional form', function () {
       const verbs = [
         { surfaceForm: '聞こう', basicForm: '聞く', reading: 'キコウ' },
         { surfaceForm: '書こう', basicForm: '書く', reading: 'カコウ' },
@@ -52,7 +52,7 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
-    describe('ConjugatedForm.NaiForm', function () {
+    describe('nai-form', function () {
       const verbs = [
         { surfaceForm: '聞かない', basicForm: '聞く', reading: 'キカナイ' },
         { surfaceForm: '書かない', basicForm: '書く', reading: 'カカナイ' },
@@ -64,24 +64,9 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
-    describe('ConjugatedForm.Imperative', function () {
-      // TODO: hard to test this because potential forms have their own
-      // dictionary entries, and when they're in their continuative form
-      // they look really similar to the imperative form
-      /* 
-      describe('as け variant', function () {
-        const verbs = [
-          { surfaceForm: '聞け', basicForm: '聞く', reading: 'キケ' },
-          { surfaceForm: '書け', basicForm: '書く', reading: 'カケ' },
-          { surfaceForm: '置け', basicForm: '置く', reading: 'オケ' },
-          { surfaceForm: '歩け', basicForm: '歩く', reading: 'アルケ' },
-          { surfaceForm: '働け', basicForm: '働く', reading: 'ハタラケ' },
-          { surfaceForm: '着け', basicForm: '着く', reading: 'ツクケ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
-      */
-    });
+    // TODO: hard to test imperative because potential forms have their own
+    // dictionary entries, and when they're in their continuative form
+    // they look really similar to the imperative form
 
     describe('なさい', function () {
       const verbs = [
@@ -107,7 +92,7 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
-    describe('ConjugatedForm.TeForm', function () {
+    describe('te-form', function () {
       const verbs = [
         { surfaceForm: '聞いて', basicForm: '聞く', reading: 'キイテ' },
         { surfaceForm: '書いて', basicForm: '書く', reading: 'カイテ' },
@@ -119,7 +104,7 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
 
-    describe('ConjugatedForm.PastForm', function () {
+    describe('past form', function () {
       const verbs = [
         { surfaceForm: '聞いた', basicForm: '聞く', reading: 'キイタ' },
         { surfaceForm: '書いた', basicForm: '書く', reading: 'カイタ' },
@@ -131,7 +116,7 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
-    describe('ConjugatedForm.PoliteForm', function () {
+    describe('polite form', function () {
       const verbs = [
         { surfaceForm: '聞きます', basicForm: '聞く', reading: 'キキマス' },
         { surfaceForm: '書きます', basicForm: '書く', reading: 'カキマス' },
@@ -143,7 +128,7 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
-    describe('ConjugatedForm.Passive', function () {
+    describe('passive form', function () {
       const verbs = [
         { surfaceForm: '聞かれる', basicForm: '聞く', reading: 'キカレル' },
         { surfaceForm: '書かれる', basicForm: '書く', reading: 'カカレル' },
@@ -155,7 +140,7 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
-    describe('ConjugatedForm.Causative', function () {
+    describe('causative form', function () {
       // can be a bit tricky to test because some causative forms are considered
       // their own separate word
       const verbs = [
@@ -169,7 +154,7 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
-    describe('ConjugatedForm.CausativePassive', function () {
+    describe('causative-passive form', function () {
       const verbs = [
         { surfaceForm: '聞かせられる', basicForm: '聞く', reading: 'キカセラレル' },
         { surfaceForm: '書かせられる', basicForm: '書く', reading: 'カカセラレル' },
