@@ -13,7 +13,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '勝てば', basicForm: '勝つ', reading: 'カテバ' },
         { surfaceForm: '育てば', basicForm: '育つ', reading: 'ソダテバ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Conditional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalForm, context);
     });
 
     describe('contracted conditional form', function () {
@@ -25,7 +25,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '勝ちゃ', basicForm: '勝つ', reading: 'カチャ' },
         { surfaceForm: '育ちゃ', basicForm: '育つ', reading: 'ソダチャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction1, context);
     });
 
     describe('plain form', function () {
@@ -49,7 +49,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '勝とう', basicForm: '勝つ', reading: 'カトウ' },
         { surfaceForm: '育とう', basicForm: '育つ', reading: 'ソダトウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.IrrealisUConjunction, context);
     });
 
     describe('nai-form', function () {

@@ -44,7 +44,6 @@ function flatten(root: IpadicNode): Token[] {
             basicForm: node.token.basic_form,
             reading: node.token.reading,
             pronunciation: node.token.pronunciation,
-            role: node.role,
             detail: node.detail,
         };
         result.push(token);

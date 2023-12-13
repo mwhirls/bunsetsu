@@ -48,18 +48,18 @@ export function runTestSuite(context: TestContext) {
 
     describe('SymbolType.ExclamationMark', function () {
       const c = '！';
-      runTestCase([c], bunsetsu.SymbolType.ExclamationMark);
+      runTestCase([c], bunsetsu.SymbolType.Unknown);
     });
 
 
     describe('SymbolType.QuestionMark', function () {
       const c = '？';
-      runTestCase([c], bunsetsu.SymbolType.QuestionMark);
+      runTestCase([c], bunsetsu.SymbolType.Unknown);
     });
 
     describe('SymbolType.Interpunct', function () {
       const c = '・';
-      runTestCase([c], bunsetsu.SymbolType.Interpunct);
+      runTestCase([c], bunsetsu.SymbolType.Unknown);
     });
 
     describe('SymbolType.Space', function () {

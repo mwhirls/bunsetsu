@@ -1,11 +1,9 @@
-import kuromoji, { IpadicFeatures } from "kuromoji";
+import kuromoji from "kuromoji";
 import { Segmenter } from "../segmenter.js";
-import { PartOfSpeech, ConjugatedForm, GrammaticalRole, DetailType } from "../token.js";
+import { PartOfSpeech, DetailType, ConjugatedForm, IpadicConjugatedType } from "../token.js";
 import { Sentence, Word } from "../word.js";
-import { IpadicConjugatedType, IpadicConjugatedForm, getConjugatedForm, IpadicConjugation, IpadicConjugationDetail } from "./conjugation.js";
-import { IpadicPOSDetails } from "./details.js";
-import { IpadicSymbol } from "./symbol.js";
-import { IpadicNode } from "./token.js";
+import { IpadicPOSDetails } from "../details.js";
+import { IpadicConjugation, IpadicConjugationDetail, IpadicNode, IpadicSymbol } from "./token.js";
 import { IpadicSentence, IpadicWord } from "./word.js";
 
 
@@ -52,11 +50,11 @@ function handleNoun(cursor: TokenCursor) {
         if (next && next.token().basic_form === 'する') {
             const verb = handleVerbAdjective(next);
             if (verb.detail && verb.detail.type === DetailType.ConjugationDetail) {
-                return new IpadicNode(PartOfSpeech.Noun, token, GrammaticalRole.Unknown, undefined, verb);
+                return new IpadicNode(PartOfSpeech.Noun, token, undefined, verb);
             }
         }
     }
-    return new IpadicNode(PartOfSpeech.Noun, token, GrammaticalRole.Unknown);
+    return new IpadicNode(PartOfSpeech.Noun, token);
 }
 
 function handleFiller(cursor: TokenCursor) {
@@ -67,11 +65,11 @@ function handleFiller(cursor: TokenCursor) {
         const compound = `${token.basic_form}${next.token().basic_form}`;
         if (specialCases.some((value) => compound === value)) {
             const aux = nextWord(next);
-            return new IpadicNode(PartOfSpeech.Filler, token, GrammaticalRole.Unknown, undefined, aux);
+            return new IpadicNode(PartOfSpeech.Filler, token, undefined, aux);
         }
     }
     if (token.pos === PartOfSpeech.Filler) {
-        return new IpadicNode(PartOfSpeech.Filler, token, GrammaticalRole.Unknown);
+        return new IpadicNode(PartOfSpeech.Filler, token);
     }
     return null;
 }
@@ -79,7 +77,7 @@ function handleFiller(cursor: TokenCursor) {
 function handleInterjection(cursor: TokenCursor) {
     const token = cursor.token();
     const filler = handleFiller(cursor); // sometimes pieces of fillers are categorized as interjections
-    return filler ?? new IpadicNode(PartOfSpeech.Interjection, token, GrammaticalRole.Unknown);
+    return filler ?? new IpadicNode(PartOfSpeech.Interjection, token);
 }
 
 function handleSymbol(cursor: TokenCursor) {
@@ -89,12 +87,12 @@ function handleSymbol(cursor: TokenCursor) {
 
 function conjugatedWord(stem: kuromoji.IpadicFeatures, conjugatedForm: ConjugatedForm, auxillary?: IpadicNode): IpadicConjugation {
     const detail = new IpadicConjugationDetail(conjugatedForm);
-    return new IpadicConjugation(stem, GrammaticalRole.Unknown, detail, auxillary);
+    return new IpadicConjugation(stem, detail, auxillary);
 }
 
 function handleConditional(cursor: TokenCursor): IpadicConjugation {
     const token = cursor.token();
-    const form = ConjugatedForm.Conditional;
+    const form = ConjugatedForm.ConditionalForm;
     const next = cursor.next();
     if (next && next.token().surface_form === 'ば') { // group 来れ+ば
         const particle = nextWord(next);
@@ -141,7 +139,7 @@ function handleIchidanKureru(cursor: TokenCursor) {
         token.surface_form === 'くれ') { // irregular imperative of くれる can be miscategorized as continuative form
         const next = cursor.next()?.token();
         if (!next || next.pos === PartOfSpeech.Particle) {
-            return conjugatedWord(token, ConjugatedForm.Imperative);
+            return conjugatedWord(token, ConjugatedForm.ImperativeE);
         }
     }
     return null;
@@ -155,7 +153,7 @@ function handleNasaiContraction(cursor: TokenCursor) {
         token.pos !== PartOfSpeech.AuxillaryVerb) {
         return null;
     }
-    if (token.conjugated_form !== IpadicConjugatedForm.Continuative) {
+    if (token.conjugated_form !== ConjugatedForm.Continuative) {
         return null;
     }
     const next = cursor.next();
@@ -184,57 +182,6 @@ function handleSuffix(cursor: TokenCursor, conjugatedForm: ConjugatedForm): Ipad
     return conjugatedWord(token, conjugatedForm, suffix);
 }
 
-function getGrammaticalRole(token: IpadicFeatures) {
-    switch (token.basic_form) {
-        case 'ない':
-            return GrammaticalRole.Negation;
-        case 'だ':
-            return GrammaticalRole.Copula;
-        case 'です':
-            return GrammaticalRole.CopulaPolite;
-        case 'たい':
-            return GrammaticalRole.Desire;
-        case 'まい':
-            return GrammaticalRole.NegativeInference;
-        case 'た': {
-            if (token.surface_form === 'たら') {
-                return GrammaticalRole.TaraConditional;
-            }
-            return GrammaticalRole.Past;
-        }
-        case 'ます':
-            return GrammaticalRole.Polite;
-        case 'そう':
-            return GrammaticalRole.Hearsay1;
-        case 'らしい':
-            return GrammaticalRole.Hearsay2;
-        case 'う':
-            return GrammaticalRole.Volitional;
-        case 'よう':
-            return GrammaticalRole.Similarity;
-        case 'べし':
-            return GrammaticalRole.Certainty;
-        case 'やる': {
-            // todo:
-            return GrammaticalRole.Disdain;
-        }
-        case 'させる':
-            return GrammaticalRole.Causative;
-        case 'られる':
-            return GrammaticalRole.PassivePotential;
-    }
-    const auxDetails = new IpadicPOSDetails(token);
-    if (auxDetails.isSuffix()) {
-        if (token.basic_form === 'せる') {
-            return GrammaticalRole.Causative;
-        } else if (token.basic_form === 'れる') {
-            return GrammaticalRole.Passive;
-        }
-    }
-    return GrammaticalRole.Unknown;
-}
-getGrammaticalRole; // TODO
-
 function handleAuxillaryVerb(cursor: TokenCursor | null) {
     if (!cursor) {
         return undefined;
@@ -245,7 +192,7 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
         !tokend.isNotIndependent()) {
         return undefined;
     }
-    const form = getConjugatedForm(token);
+    const form = token.conjugated_form as ConjugatedForm; // todo
     const next = cursor.next();
     if (next) {
         const nextd = new IpadicPOSDetails(next.token());
@@ -254,17 +201,16 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
             const auxillary = nextWord(next);
             return conjugatedWord(token, form, auxillary);
         }
-        const nextForm = getConjugatedForm(token);
         const stemForms = [
-            ConjugatedForm.Conditional,
+            ConjugatedForm.ConditionalForm,
             ConjugatedForm.Continuative,
-            ConjugatedForm.GaruForm,
-            ConjugatedForm.GozaiForm,
+            ConjugatedForm.GaruConjunction,
+            ConjugatedForm.GozaiConjunction,
             ConjugatedForm.Irrealis,
             ConjugatedForm.TaConjunction,
             ConjugatedForm.TeConjunction
         ];
-        const isStem = stemForms.some(x => x === nextForm);
+        const isStem = stemForms.some(x => x === token.conjugated_form);
         if (isStem) {
             const auxillary = nextWord(next);
             return conjugatedWord(token, form, auxillary);
@@ -273,13 +219,14 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
     return conjugatedWord(token, form);
 }
 
-function handleStemAuxillaryForm(cursor: TokenCursor, form: ConjugatedForm) {
+function handleStemAuxillaryForm(cursor: TokenCursor) {
     const token = cursor.token();
     const next = cursor.peek();
     const kureru = handleIchidanKureru(cursor);
     if (kureru) {
         return kureru;
     }
+    const form = token.conjugated_form as ConjugatedForm;
     if (!next) {
         return conjugatedWord(token, form);
     }
@@ -305,22 +252,31 @@ function handleVerbAdjective(cursor: TokenCursor): IpadicConjugation {
     if (filler) {
         return filler;
     }
-    const form = getConjugatedForm(token);
-    switch (form) {
+    switch (token.conjugated_form) {
         case ConjugatedForm.PlainForm:
-        case ConjugatedForm.ConditionalContraction:
-        case ConjugatedForm.Imperative:
-        case ConjugatedForm.IndeclinableNominal:
+        case ConjugatedForm.ConditionalContraction1:
+        case ConjugatedForm.ConditionalContraction2:
+        case ConjugatedForm.ImperativeE:
+        case ConjugatedForm.ImperativeI:
+        case ConjugatedForm.ImperativeRo:
+        case ConjugatedForm.ImperativeYo:
+        case ConjugatedForm.IndeclinableNominalConjunction:
+        case ConjugatedForm.SpecialIndeclinableNominalConjunction1:
+        case ConjugatedForm.SpecialIndeclinableNominalConjunction2:
         case ConjugatedForm.ClassicalPlainForm:
-            return conjugatedWord(token, form);
-        case ConjugatedForm.Conditional:
+            return conjugatedWord(token, token.conjugated_form);
+        case ConjugatedForm.ConditionalForm:
             return handleConditional(cursor);
         case ConjugatedForm.Continuative:
-        case ConjugatedForm.GaruForm:
-        case ConjugatedForm.GozaiForm:
+        case ConjugatedForm.GaruConjunction:
+        case ConjugatedForm.GozaiConjunction:
         case ConjugatedForm.Irrealis:
+        case ConjugatedForm.IrrealisUConjunction:
+        case ConjugatedForm.IrrealisNuConjunction:
+        case ConjugatedForm.IrrealisReruConjunction:
+        case ConjugatedForm.SpecialIrrealis:
         case ConjugatedForm.TaConjunction:
-            return handleStemAuxillaryForm(cursor, form);
+            return handleStemAuxillaryForm(cursor);
         case ConjugatedForm.TeConjunction:
             return handleTeConjunction(cursor);
         default:
@@ -332,7 +288,7 @@ function nextWord(cursor: TokenCursor): IpadicNode {
     const token = cursor.token();
     switch (token.pos) {
         case PartOfSpeech.Filler:
-            return handleFiller(cursor) ?? new IpadicNode(PartOfSpeech.Filler, token, GrammaticalRole.Unknown);
+            return handleFiller(cursor) ?? new IpadicNode(PartOfSpeech.Filler, token);
         case PartOfSpeech.Interjection:
             return handleInterjection(cursor);
         case PartOfSpeech.Symbol:
@@ -344,7 +300,7 @@ function nextWord(cursor: TokenCursor): IpadicNode {
         case PartOfSpeech.Noun:
             return handleNoun(cursor);
         default:
-            return new IpadicNode(PartOfSpeech[token.pos as keyof typeof PartOfSpeech], token, GrammaticalRole.Unknown);
+            return new IpadicNode(PartOfSpeech[token.pos as keyof typeof PartOfSpeech], token);
     }
 }
 

@@ -13,7 +13,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '乗れば', basicForm: '乗る', reading: 'ノレバ' },
         { surfaceForm: '終われば', basicForm: '終わる', reading: 'オワレバ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Conditional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalForm, context);
     });
 
     describe('contracted conditional form', function () {
@@ -25,7 +25,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '乗りゃ', basicForm: '乗る', reading: 'ノリャ' },
         { surfaceForm: '終わりゃ', basicForm: '終わる', reading: 'オワリャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction1, context);
     });
 
     describe('plain form', function () {
@@ -51,11 +51,11 @@ export function runTestSuite(context: TestContext) {
           { phrase: '乗んの？', index: 0, wordSurfaceForm: '乗ん', basicForm: '乗る', reading: 'ノン' },
           { phrase: '終わんの？', index: 0, wordSurfaceForm: '終わん', basicForm: '終わる', reading: 'オワン' },
         ];
-        runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.IndeclinableNominal, context);
+        runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.SpecialIndeclinableNominalConjunction1, context);
       });
 
       describe('when followed by ない', function () {
-        // need full sentence context to differentiate between this case and の ending clausce, e.g. 乗んの？
+        // need full sentence context to differentiate between this case and の ending clause, e.g. 乗んの？
         const phrases = [
           { phrase: '殴んない', index: 0, wordSurfaceForm: '殴んない', basicForm: '殴る', reading: 'ナグンナイ' },
           { phrase: '成んない', index: 0, wordSurfaceForm: '成んない', basicForm: '成る', reading: 'ナンナイ' },
@@ -64,7 +64,7 @@ export function runTestSuite(context: TestContext) {
           { phrase: '乗んない', index: 0, wordSurfaceForm: '乗んない', basicForm: '乗る', reading: 'ノンナイ' },
           { phrase: '終わんない', index: 0, wordSurfaceForm: '終わんない', basicForm: '終わる', reading: 'オワンナイ' },
         ];
-        runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.Irrealis, context);
+        runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.SpecialIrrealis, context);
       });
     });
 
@@ -76,7 +76,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '作ろう', basicForm: '作る', reading: 'ツクロウ' },
         { surfaceForm: '乗ろう', basicForm: '乗る', reading: 'ノロウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.IrrealisUConjunction, context);
     });
 
     describe('nai-form', function () {
@@ -91,7 +91,7 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
-    describe('as れ variant', function () {
+    describe('imperative as れ variant', function () {
       const verbs = [
         { surfaceForm: '殴れ', basicForm: '殴る', reading: 'ナグレ' },
         { surfaceForm: 'なれ', basicForm: 'なる', reading: 'ナレ' },
@@ -100,7 +100,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '乗れ', basicForm: '乗る', reading: 'ノレ' },
         { surfaceForm: '終われ', basicForm: '終わる', reading: 'オワレ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ImperativeE, context);
     });
 
     describe('なさい', function () {

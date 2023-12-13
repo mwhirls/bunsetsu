@@ -13,7 +13,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡せば', basicForm: '渡す', reading: 'ワタセバ' },
         { surfaceForm: '貸せば', basicForm: '貸す', reading: 'カセバ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Conditional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalForm, context);
     });
 
     describe('contracted conditional form', function () {
@@ -25,7 +25,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡しゃ', basicForm: '渡す', reading: 'ワタシャ' },
         { surfaceForm: '貸しゃ', basicForm: '貸す', reading: 'カシャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction1, context);
     });
 
     describe('plain form', function () {
@@ -49,7 +49,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡そう', basicForm: '渡す', reading: 'ワタソウ' },
         { surfaceForm: '貸そう', basicForm: '貸す', reading: 'カソウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.IrrealisUConjunction, context);
     });
 
     describe('nai-form', function () {

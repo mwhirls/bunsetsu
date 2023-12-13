@@ -21,7 +21,7 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '来れば', reading: 'クレバ' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Conditional);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.ConditionalForm);
     });
 
     describe('contracted conditional form', function () {
@@ -30,7 +30,7 @@ export function runTestSuite(context: TestContext) {
       const phrases = [
         { phrase: '来りゃいい', index: 0, wordSurfaceForm: '来りゃ', reading: 'クリャ' },
       ];
-      runPhraseTestCase(phrases, bunsetsu.ConjugatedForm.ConditionalContraction);
+      runPhraseTestCase(phrases, bunsetsu.ConjugatedForm.ConditionalContraction1);
     });
 
     describe('plain form', function () {
@@ -46,17 +46,17 @@ export function runTestSuite(context: TestContext) {
       const phrases = [
         { phrase: '今日来んの?', index: 1, wordSurfaceForm: '来ん', reading: 'クン' },
       ];
-      runPhraseTestCase(phrases, bunsetsu.ConjugatedForm.IndeclinableNominal);
+      runPhraseTestCase(phrases, bunsetsu.ConjugatedForm.SpecialIndeclinableNominalConjunction1);
     });
 
-    describe('ConjugatedForm.Irrealis', function () {
+    describe('volitional form', function () {
       const verbs = [
         { surfaceForm: '来よう', reading: 'コヨウ' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Irrealis);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.IrrealisUConjunction);
     });
 
-    describe('ConjugatedForm.Irrealis', function () {
+    describe('nai-form', function () {
       const verbs = [
         { surfaceForm: '来ない', reading: 'コナイ' },
       ];
@@ -67,14 +67,14 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '来い', reading: 'コイ' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.ImperativeI);
     });
 
     describe('imperative as よ variant', function () {
       const verbs = [
         { surfaceForm: '来よ', reading: 'コヨ' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.ImperativeYo);
     });
 
     describe('ConjugatedForm.Continuative', function () {
@@ -137,14 +137,14 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: 'すれば', reading: 'スレバ' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Conditional);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.ConditionalForm);
     });
 
     describe('contracted conditional form', function () {
       const verbs = [
         { surfaceForm: 'すりゃ', reading: 'スリャ' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.ConditionalContraction);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.ConditionalContraction1);
     });
 
     describe('plain form', function () {
@@ -159,7 +159,7 @@ export function runTestSuite(context: TestContext) {
       const phrases = [
         { phrase: 'ゲームすんの？', index: 1, wordSurfaceForm: 'すん', reading: 'スン' },
       ];
-      runPhraseTestCase(phrases, bunsetsu.ConjugatedForm.IndeclinableNominal);
+      runPhraseTestCase(phrases, bunsetsu.ConjugatedForm.SpecialIndeclinableNominalConjunction1);
     });
 
     describe('classical plain form', function () {
@@ -174,7 +174,7 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: 'しよう', reading: 'シヨウ' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Irrealis);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.IrrealisUConjunction);
     });
 
     describe('nai-form', function () {
@@ -188,14 +188,14 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: 'しろ', reading: 'シロ' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.ImperativeRo);
     });
 
     describe('imperative as よ variant', function () {
       const verbs = [
         { surfaceForm: 'せよ', reading: 'セヨ' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Imperative);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.ImperativeYo);
     });
 
     describe('polite form', function () {
@@ -225,21 +225,21 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: 'される', reading: 'サレル' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Irrealis);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.IrrealisReruConjunction);
     });
 
     describe('causative form', function () {
       const verbs = [
         { surfaceForm: 'させる', reading: 'サセル' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Irrealis);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.IrrealisReruConjunction);
     });
 
     describe('causative-passive form', function () {
       const verbs = [
         { surfaceForm: 'させられる', reading: 'サセラレル' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Irrealis);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.IrrealisReruConjunction);
     });
 
     describe('なさい', function () {
@@ -271,14 +271,14 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '愛すれば', basicForm: '愛する', reading: 'アイスレバ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Conditional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalForm, context);
     });
 
     describe('contracted conditional form', function () {
       const verbs = [
         { surfaceForm: '愛すりゃ', basicForm: '愛する', reading: 'アイスリャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction1, context);
     });
 
     describe('plain form', function () {
@@ -292,7 +292,7 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '愛しよう', basicForm: '愛する', reading: 'アイシヨウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.IrrealisUConjunction, context);
     });
 
     describe('nai-form', function () {
@@ -306,7 +306,7 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '反しろ', basicForm: '反する', reading: 'ハンシロ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ImperativeRo, context);
     });
   });
 
@@ -322,14 +322,14 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '信ずれば', basicForm: '信ずる', reading: 'シンズレバ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Conditional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalForm, context);
     });
 
     describe('contracted conditional form', function () {
       const verbs = [
         { surfaceForm: '信ずりゃ', basicForm: '信ずる', reading: 'シンズリャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction1, context);
     });
 
     describe('plain form', function () {
@@ -350,7 +350,7 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '信ぜよ', basicForm: '信ずる', reading: 'シンゼヨ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ImperativeYo, context);
     });
   });
 }

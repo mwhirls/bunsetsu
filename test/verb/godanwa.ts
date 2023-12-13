@@ -13,7 +13,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '会えば', basicForm: '会う', reading: 'アエバ' },
         { surfaceForm: '違えば', basicForm: '違う', reading: 'チガエバ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Conditional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalForm, context);
     });
 
     describe('plain form', function () {
@@ -37,7 +37,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '会おう', basicForm: '会う', reading: 'アオウ' },
         { surfaceForm: '違おう', basicForm: '違う', reading: 'チガオウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.IrrealisUConjunction, context);
     });
 
     describe('nai-form', function () {

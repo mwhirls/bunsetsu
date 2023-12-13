@@ -8,14 +8,14 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '死ねば', basicForm: '死ぬ', reading: 'シネバ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Conditional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalForm, context);
     });
 
     describe('contracted conditional form', function () {
       const verbs = [
         { surfaceForm: '死にゃ', basicForm: '死ぬ', reading: 'シニャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction1, context);
     });
 
     describe('plain form', function () {
@@ -29,7 +29,7 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '死のう', basicForm: '死ぬ', reading: 'シノウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.IrrealisUConjunction, context);
     });
 
     describe('nai-form', function () {

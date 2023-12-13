@@ -8,14 +8,14 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '食べれば', basicForm: '食べる', reading: 'タベレバ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Conditional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalForm, context);
     });
 
     describe('contracted conditional form', function () {
       const verbs = [
         { surfaceForm: '見りゃ', basicForm: '見る', reading: 'ミリャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ConditionalContraction1, context);
     });
 
     describe('plain form', function () {
@@ -30,14 +30,14 @@ export function runTestSuite(context: TestContext) {
       const phrases = [
         { phrase: 'これ食べんの？', index: 1, wordSurfaceForm: '食べん', basicForm: '食べる', reading: 'タベン' },
       ];
-      runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.IndeclinableNominal, context);
+      runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.SpecialIndeclinableNominalConjunction1, context);
     });
 
     describe('volitional form', function () {
       const verbs = [
         { surfaceForm: '着よう', basicForm: '着る', reading: 'キヨウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.IrrealisUConjunction, context);
     });
 
     describe('nai-form', function () {
@@ -51,7 +51,7 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '着ろ', basicForm: '着る', reading: 'キロ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.ImperativeRo, context);
     });
 
     describe('imperative as よ variant', function () {
@@ -59,7 +59,7 @@ export function runTestSuite(context: TestContext) {
       const phrases = [
         { phrase: 'これを見よ', index: 2, wordSurfaceForm: '見よ', basicForm: '見る', reading: 'ミヨ' },
       ];
-      runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.Imperative, context);
+      runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.ImperativeYo, context);
     });
 
     describe('te-form', function () {
@@ -118,14 +118,14 @@ export function runTestSuite(context: TestContext) {
       const phrases = [
         { phrase: 'これをくれ', index: 2, wordSurfaceForm: 'くれ', basicForm: 'くれる', reading: 'クレ' },
       ];
-      runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.Imperative, context);
+      runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.ImperativeE, context);
     });
 
     describe('contracted form', function () {
       const verbs = [
         { surfaceForm: 'くんない', basicForm: 'くれる', reading: 'クンナイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.SpecialIrrealis, context);
     });
   });
 }

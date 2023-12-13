@@ -1,8 +1,7 @@
 import { IpadicFeatures } from "kuromoji";
-import { PartOfSpeech } from "../token.js";
-import { IpadicSymbolType } from "./symbol.js";
+import { PartOfSpeech, SymbolType } from "./token.js";
 
-export enum IpadicDetailsType {
+export enum DetailsType {
     Suffix = '接尾',
     NotIndependent = '非自立',
     ConjunctionParticle = '接続助詞',
@@ -30,7 +29,7 @@ export class IpadicPOSDetails {
     }
 
     isSuffix(): boolean {
-        return this.has(IpadicDetailsType.Suffix);
+        return this.has(DetailsType.Suffix);
     }
 
     isSuffixType(suffixType: SuffixType): boolean {
@@ -38,7 +37,7 @@ export class IpadicPOSDetails {
     }
 
     isNotIndependent(): boolean {
-        return this.has(IpadicDetailsType.NotIndependent);
+        return this.has(DetailsType.NotIndependent);
     }
 
     isSuruVerb(token: IpadicFeatures) {
@@ -46,8 +45,8 @@ export class IpadicPOSDetails {
             this.isSuffixType(SuffixType.SuruConjunction);
     }
 
-    symbolType(): IpadicSymbolType | undefined {
-        return Object.values(IpadicSymbolType).find(x => this.has(x));
+    symbolType(): SymbolType | undefined {
+        return Object.values(SymbolType).find(x => this.has(x));
     }
 
     private has(property: string): boolean {
