@@ -29,14 +29,14 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '死のう', basicForm: '死ぬ', reading: 'シノウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Volitional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.NaiForm', function () {
       const verbs = [
         { surfaceForm: '死なない', basicForm: '死ぬ', reading: 'シナナイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.NaiForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Imperative', function () {
@@ -49,62 +49,62 @@ export function runTestSuite(context: TestContext) {
         runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
       });
       */
+    });
 
-      describe('as い variant (なさい）', function () {
-        const verbs = [
-          { surfaceForm: '死になさい', basicForm: '死ぬ', reading: 'シニナサイ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
+    describe('なさい', function () {
+      const verbs = [
+        { surfaceForm: '死になさい', basicForm: '死ぬ', reading: 'シニナサイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
 
-      describe('as contracted い variant (な）', function () {
-        const verbs = [
-          { surfaceForm: '死にな', basicForm: '死ぬ', reading: 'シニナ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
+    describe('なさい (contracted)', function () {
+      const verbs = [
+        { surfaceForm: '死にな', basicForm: '死ぬ', reading: 'シニナ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.TeForm', function () {
       const verbs = [
         { surfaceForm: '死んで', basicForm: '死ぬ', reading: 'シンデ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
 
     describe('ConjugatedForm.PastForm', function () {
       const verbs = [
         { surfaceForm: '死んだ', basicForm: '死ぬ', reading: 'シンダ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PastForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('ConjugatedForm.PoliteForm', function () {
       const verbs = [
         { surfaceForm: '死にます', basicForm: '死ぬ', reading: 'シニマス' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PoliteForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.Passive', function () {
       const verbs = [
         { surfaceForm: '死なれる', basicForm: '死ぬ', reading: 'シナレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Passive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Causative', function () {
       const verbs = [
         { surfaceForm: '死なせる', basicForm: '死ぬ', reading: 'シナセル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Causative, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.CausativePassive', function () {
       const verbs = [
         { surfaceForm: '死なせられる', basicForm: '死ぬ', reading: 'シナセラレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.CausativePassive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
   });
 }

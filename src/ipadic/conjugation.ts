@@ -1,4 +1,8 @@
 // string literals from kuromoji (MeCab IPADIC)
+
+import { IpadicFeatures } from "kuromoji";
+import { ConjugatedForm } from "../conjugation.js";
+
 // https://qiita.com/ensan_hcl/items/885588c7d2d99de85b44
 export enum IpadicConjugatedForm {
     ClassicalPlainForm = '文語基本形',
@@ -39,4 +43,47 @@ export enum IpadicConjugatedType {
     Godan = '五段',
     Masu = '特殊・マス',
     Ta = '特殊・タ',
+}
+
+export function getConjugatedForm(token: IpadicFeatures) {
+    const form = token.conjugated_form;
+    const ipadicForm = Object.values(IpadicConjugatedForm).find(x => x === form);
+    switch (ipadicForm) {
+        case IpadicConjugatedForm.PlainForm:
+            return ConjugatedForm.PlainForm;
+        case IpadicConjugatedForm.ConditionalContraction1:
+        case IpadicConjugatedForm.ConditionalContraction2:
+            return ConjugatedForm.ConditionalContraction;
+        case IpadicConjugatedForm.ConditionalForm:
+            return ConjugatedForm.Conditional;
+        case IpadicConjugatedForm.Continuative:
+            return ConjugatedForm.Continuative;
+        case IpadicConjugatedForm.GaruConjunction:
+            return ConjugatedForm.GaruForm;
+        case IpadicConjugatedForm.GozaiConjunction:
+            return ConjugatedForm.GozaiForm;
+        case IpadicConjugatedForm.Irrealis:
+        case IpadicConjugatedForm.IrrealisNuConjunction:
+        case IpadicConjugatedForm.IrrealisReruConjunction:
+        case IpadicConjugatedForm.IrrealisUConjunction:
+        case IpadicConjugatedForm.SpecialIrrealis:
+            return ConjugatedForm.Irrealis;
+        case IpadicConjugatedForm.ImperativeI:
+        case IpadicConjugatedForm.ImperativeRo:
+        case IpadicConjugatedForm.ImperativeYo:
+        case IpadicConjugatedForm.ImperativeE:
+            return ConjugatedForm.Imperative;
+        case IpadicConjugatedForm.ClassicalPlainForm:
+            return ConjugatedForm.ClassicalPlainForm;
+        case IpadicConjugatedForm.IndeclinableNominalConjunction:
+        case IpadicConjugatedForm.SpecialIndeclinableNominalConjunction1:
+        case IpadicConjugatedForm.SpecialIndeclinableNominalConjunction2:
+            return ConjugatedForm.IndeclinableNominal;
+        case IpadicConjugatedForm.TaConjunction:
+            return ConjugatedForm.TaConjunction;
+        case IpadicConjugatedForm.TeConjunction:
+            return ConjugatedForm.TeConjunction;
+        default:
+            throw new Error("unhandled verb/adjective conjugation");
+    }
 }

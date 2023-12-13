@@ -11,13 +11,15 @@ export function runTestSuite(context: TestContext) {
         assert.equal(words.length, 1);
 
         const word = words[0];
-        assert.equal(word.pos, bunsetsu.PartOfSpeech.Symbol);
-        assert.equal(word.surfaceForm, c);
-        assert.equal(word.basicForm, c);
+        assert.equal(word.pos(), bunsetsu.PartOfSpeech.Symbol);
+        assert.equal(word.surfaceForm(), c);
+        assert.equal(word.basicForm(), c);
 
-        assert.ok(word.detail);
-        assert.equal(word.detail.type, bunsetsu.PartOfSpeech.Symbol);
-        const detail = word.detail as bunsetsu.SymbolDetail;
+        assert.equal(word.tokens.length, 1);
+        const token = word.tokens[0];
+        assert.ok(token.detail);
+        assert.equal(token.detail.type, bunsetsu.PartOfSpeech.Symbol);
+        const detail = token.detail as bunsetsu.SymbolDetail;
         assert.equal(detail.symbolType, symbolType);
       });
     }

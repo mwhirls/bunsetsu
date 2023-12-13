@@ -30,21 +30,21 @@ export function runTestSuite(context: TestContext) {
       const phrases = [
         { phrase: 'これ食べんの？', index: 1, wordSurfaceForm: '食べん', basicForm: '食べる', reading: 'タベン' },
       ];
-      runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.Contracted, context);
+      runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.IndeclinableNominal, context);
     });
 
     describe('ConjugatedForm.Volitional', function () {
       const verbs = [
         { surfaceForm: '着よう', basicForm: '着る', reading: 'キヨウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Volitional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.NaiForm', function () {
       const verbs = [
         { surfaceForm: '感じない', basicForm: '感じる', reading: 'カンジナイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.NaiForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Imperative', function () {
@@ -62,49 +62,55 @@ export function runTestSuite(context: TestContext) {
         ];
         runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.Imperative, context);
       });
-
-      describe('as い variant (なさい）', function () {
-        const verbs = [
-          { surfaceForm: '寝なさい', basicForm: '寝る', reading: 'ネナサイ' },
-          { surfaceForm: '寝な', basicForm: '寝る', reading: 'ネナ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
     });
 
     describe('ConjugatedForm.TeForm', function () {
       const verbs = [
         { surfaceForm: '食べて', basicForm: '食べる', reading: 'タベテ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
 
     describe('ConjugatedForm.PastForm', function () {
       const verbs = [
         { surfaceForm: '食べた', basicForm: '食べる', reading: 'タベタ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PastForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.Passive', function () {
       const verbs = [
         { surfaceForm: '食べられる', basicForm: '食べる', reading: 'タベラレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Passive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Causative', function () {
       const verbs = [
         { surfaceForm: '食べさせる', basicForm: '食べる', reading: 'タベサセル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Causative, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.CausativePassive', function () {
       const verbs = [
         { surfaceForm: '食べさせられる', basicForm: '食べる', reading: 'タベサセラレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.CausativePassive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+    });
+
+    describe('なさい', function () {
+      const verbs = [
+        { surfaceForm: '寝なさい', basicForm: '寝る', reading: 'ネナサイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
+    describe('なさい (contracted)', function () {
+      const verbs = [
+        { surfaceForm: '寝な', basicForm: '寝る', reading: 'ネナ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
   });
 
@@ -121,7 +127,7 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: 'くんない', basicForm: 'くれる', reading: 'クンナイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Contracted, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
   });
 }

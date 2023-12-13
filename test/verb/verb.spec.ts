@@ -33,24 +33,24 @@ export function runTestSuite(context: TestContext) {
     describe('ConjugatedForm.ProgressiveForm', function () {
       describe('as plain form', function () {
         const verbs = [
-          { surfaceForm: '走っている', basicForm: '走る', reading: 'ハシッテイル', auxillary: 'いる' },
+          { surfaceForm: '走っている', basicForm: '走る', reading: 'ハシッテイル', auxillary: 'いる', auxillaryIndex: 2 },
         ];
-        runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
+        runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
       });
 
       describe('as polite form', function () {
         const verbs = [
-          { surfaceForm: '走っています', basicForm: '走る', reading: 'ハシッテイマス', auxillary: 'いる' },
+          { surfaceForm: '走っています', basicForm: '走る', reading: 'ハシッテイマス', auxillary: 'いる', auxillaryIndex: 2 },
         ];
-        runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
+        runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
       });
 
       describe('as contracted polite', function () {
         const verbs = [
-          { surfaceForm: '食べてます', basicForm: '食べる', reading: 'タベテマス', auxillary: 'ます' },
-          { surfaceForm: '走ってます', basicForm: '走る', reading: 'ハシッテマス', auxillary: 'ます' },
+          { surfaceForm: '食べてます', basicForm: '食べる', reading: 'タベテマス', auxillary: 'ます', auxillaryIndex: 2 },
+          { surfaceForm: '走ってます', basicForm: '走る', reading: 'ハシッテマス', auxillary: 'ます', auxillaryIndex: 2 },
         ];
-        runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
+        runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
       });
     });
   });

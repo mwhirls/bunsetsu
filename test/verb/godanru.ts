@@ -51,7 +51,7 @@ export function runTestSuite(context: TestContext) {
           { phrase: '乗んの？', index: 0, wordSurfaceForm: '乗ん', basicForm: '乗る', reading: 'ノン' },
           { phrase: '終わんの？', index: 0, wordSurfaceForm: '終わん', basicForm: '終わる', reading: 'オワン' },
         ];
-        runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.Contracted, context);
+        runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.IndeclinableNominal, context);
       });
 
       describe('when followed by ない', function () {
@@ -64,7 +64,7 @@ export function runTestSuite(context: TestContext) {
           { phrase: '乗んない', index: 0, wordSurfaceForm: '乗んない', basicForm: '乗る', reading: 'ノンナイ' },
           { phrase: '終わんない', index: 0, wordSurfaceForm: '終わんない', basicForm: '終わる', reading: 'オワンナイ' },
         ];
-        runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.Contracted, context);
+        runTestOnPhrase(phrases, bunsetsu.ConjugatedForm.Irrealis, context);
       });
     });
 
@@ -76,7 +76,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '作ろう', basicForm: '作る', reading: 'ツクロウ' },
         { surfaceForm: '乗ろう', basicForm: '乗る', reading: 'ノロウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Volitional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.NaiForm', function () {
@@ -88,7 +88,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '乗らない', basicForm: '乗る', reading: 'ノラナイ' },
         { surfaceForm: '終わらない', basicForm: '終わる', reading: 'オワラナイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.NaiForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Imperative', function () {
@@ -103,30 +103,30 @@ export function runTestSuite(context: TestContext) {
         ];
         runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
       });
+    });
 
-      describe('as い variant (なさい）', function () {
-        const verbs = [
-          { surfaceForm: '殴りなさい', basicForm: '殴る', reading: 'ナグリナサイ' },
-          { surfaceForm: 'なりなさい', basicForm: 'なる', reading: 'ナリナサイ' },
-          { surfaceForm: '走りなさい', basicForm: '走る', reading: 'ハシリナサイ' },
-          { surfaceForm: '作りなさい', basicForm: '作る', reading: 'ツクリナサイ' },
-          { surfaceForm: '乗りなさい', basicForm: '乗る', reading: 'ノリナサイ' },
-          { surfaceForm: '終わりなさい', basicForm: '終わる', reading: 'オワリナサイ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
+    describe('なさい', function () {
+      const verbs = [
+        { surfaceForm: '殴りなさい', basicForm: '殴る', reading: 'ナグリナサイ' },
+        { surfaceForm: 'なりなさい', basicForm: 'なる', reading: 'ナリナサイ' },
+        { surfaceForm: '走りなさい', basicForm: '走る', reading: 'ハシリナサイ' },
+        { surfaceForm: '作りなさい', basicForm: '作る', reading: 'ツクリナサイ' },
+        { surfaceForm: '乗りなさい', basicForm: '乗る', reading: 'ノリナサイ' },
+        { surfaceForm: '終わりなさい', basicForm: '終わる', reading: 'オワリナサイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
 
-      describe('as contracted い variant (な）', function () {
-        const verbs = [
-          { surfaceForm: '殴りな', basicForm: '殴る', reading: 'ナグリナ' },
-          { surfaceForm: 'なりな', basicForm: 'なる', reading: 'ナリナ' },
-          { surfaceForm: '走りな', basicForm: '走る', reading: 'ハシリナ' },
-          { surfaceForm: '作りな', basicForm: '作る', reading: 'ツクリナ' },
-          { surfaceForm: '乗りな', basicForm: '乗る', reading: 'ノリナ' },
-          { surfaceForm: '終わりな', basicForm: '終わる', reading: 'オワリナ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
+    describe('なさい (contracted)', function () {
+      const verbs = [
+        { surfaceForm: '殴りな', basicForm: '殴る', reading: 'ナグリナ' },
+        { surfaceForm: 'なりな', basicForm: 'なる', reading: 'ナリナ' },
+        { surfaceForm: '走りな', basicForm: '走る', reading: 'ハシリナ' },
+        { surfaceForm: '作りな', basicForm: '作る', reading: 'ツクリナ' },
+        { surfaceForm: '乗りな', basicForm: '乗る', reading: 'ノリナ' },
+        { surfaceForm: '終わりな', basicForm: '終わる', reading: 'オワリナ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.TeForm', function () {
@@ -138,7 +138,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '乗って', basicForm: '乗る', reading: 'ノッテ' },
         { surfaceForm: '終わって', basicForm: '終わる', reading: 'オワッテ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
 
     describe('ConjugatedForm.PastForm', function () {
@@ -150,7 +150,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '乗った', basicForm: '乗る', reading: 'ノッタ' },
         { surfaceForm: '終わった', basicForm: '終わる', reading: 'オワッタ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PastForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('ConjugatedForm.PoliteForm', function () {
@@ -162,7 +162,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '乗ります', basicForm: '乗る', reading: 'ノリマス' },
         { surfaceForm: '終わります', basicForm: '終わる', reading: 'オワリマス' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PoliteForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.Passive', function () {
@@ -174,7 +174,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '乗られる', basicForm: '乗る', reading: 'ノラレル' },
         { surfaceForm: '終わられる', basicForm: '終わる', reading: 'オワラレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Passive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Causative', function () {
@@ -186,7 +186,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '乗らせる', basicForm: '乗る', reading: 'ノラセル' },
         { surfaceForm: '終わらせる', basicForm: '終わる', reading: 'オワラセル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Causative, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.CausativePassive', function () {
@@ -198,7 +198,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '乗らせられる', basicForm: '乗る', reading: 'ノラセラレル' },
         { surfaceForm: '終わらせられる', basicForm: '終わる', reading: 'オワラセラレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.CausativePassive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
   });
 }

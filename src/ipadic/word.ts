@@ -1,34 +1,75 @@
 import { IpadicFeatures } from "kuromoji";
-import { PartOfSpeech, WordDetail } from "../word.js";
+import { PartOfSpeech, Token, TokenDetail, Word } from "../word.js";
 import { IpadicAdjectiveDetail } from "./adjective.js";
-import { IpadicNounDetail } from "./noun.js";
 import { IpadicSymbolDetail } from "./symbol.js";
 import { IpadicVerbDetail } from "./verb.js";
+import { IpadicAuxillaryVerbDetail } from "./auxillaryVerb.js";
 
-export class IpadicWord {
+export class IpadicTokenNode {
     pos: PartOfSpeech;
-    surfaceForm: string;
-    basicForm: string;
-    reading: string | undefined;
-    pronunciation: string | undefined;
-    detail?: WordDetail;
-    tokens: IpadicFeatures[];
+    token: IpadicFeatures;
+    detail?: TokenDetail;
+    next?: IpadicTokenNode;
 
-    constructor(pos: PartOfSpeech, tokens: IpadicFeatures[]);
-    constructor(pos: PartOfSpeech, tokens: IpadicFeatures[], surfaceForm?: string);
-    constructor(pos: PartOfSpeech, tokens: IpadicFeatures[], surfaceForm?: string, basicForm?: string);
-    constructor(pos: PartOfSpeech, tokens: IpadicFeatures[], surfaceForm?: string, basicForm?: string, reading?: string);
-    constructor(pos: PartOfSpeech, tokens: IpadicFeatures[], surfaceForm?: string, basicForm?: string, reading?: string, pronunciation?: string);
-    constructor(pos: PartOfSpeech, tokens: IpadicFeatures[], surfaceForm?: string, basicForm?: string, reading?: string, pronunciation?: string, detail?: WordDetail);
-    constructor(pos: PartOfSpeech, tokens: IpadicFeatures[], surfaceForm?: string, basicForm?: string, reading?: string, pronunciation?: string, detail?: WordDetail) {
+    constructor(pos: PartOfSpeech, token: IpadicFeatures);
+    constructor(pos: PartOfSpeech, token: IpadicFeatures, detail?: IpadicTokenDetail);
+    constructor(pos: PartOfSpeech, token: IpadicFeatures, detail?: IpadicTokenDetail, next?: IpadicTokenNode);
+    constructor(pos: PartOfSpeech, token: IpadicFeatures, detail?: IpadicTokenDetail, next?: IpadicTokenNode) {
         this.pos = pos;
-        this.surfaceForm = surfaceForm ?? tokens.reduce((acc, curr) => acc + curr.surface_form ?? "", "");
-        this.basicForm = basicForm ?? tokens.reduce((acc, curr) => acc + curr.basic_form ?? "", "");
-        this.reading = reading ?? tokens.reduce((acc, curr) => acc + curr.reading ?? "", "");
-        this.pronunciation = pronunciation ?? tokens.reduce((acc, curr) => acc + curr.pronunciation ?? "", "");
+        this.token = token;
         this.detail = detail;
-        this.tokens = tokens;
+        this.next = next;
     }
 }
 
-export type IpadicWordDetail = IpadicSymbolDetail | IpadicAdjectiveDetail | IpadicVerbDetail | IpadicNounDetail;
+export type IpadicTokenDetail = IpadicSymbolDetail | IpadicAdjectiveDetail | IpadicVerbDetail | IpadicAuxillaryVerbDetail;
+
+export class IpadicWord implements Word {
+    tokens: Token[];
+
+    constructor(root: IpadicTokenNode) {
+        this.tokens = flatten(root);
+    }
+
+    pos(): PartOfSpeech {
+        return this.root().pos;
+    }
+    surfaceForm(): string {
+        return this.tokens.reduce((acc, t) => acc + t.surfaceForm, "");
+    }
+    basicForm(): string {
+        const root = this.root();
+        if (root.pos === PartOfSpeech.Verb ||
+            root.pos === PartOfSpeech.iAdjective) {
+            return root.basicForm;
+        }
+        return this.tokens.reduce((acc, t) => acc + t.basicForm, "");
+    }
+    reading(): string | undefined {
+        return this.tokens.reduce((acc, t) => acc + t.reading, "");
+    }
+    pronunciation(): string | undefined {
+        return this.tokens.reduce((acc, t) => acc + t.pronunciation, "");
+    }
+    root(): Token {
+        return this.tokens[0];
+    }
+}
+
+function flatten(root: IpadicTokenNode): Token[] {
+    const result: Token[] = [];
+    let node: IpadicTokenNode | undefined = root;
+    while (node) {
+        const token = {
+            pos: node.pos,
+            surfaceForm: node.token.surface_form,
+            basicForm: node.token.basic_form,
+            reading: node.token.reading,
+            pronunciation: node.token.pronunciation,
+            detail: node.detail,
+        };
+        result.push(token);
+        node = node.next;
+    }
+    return result;
+}

@@ -4,7 +4,7 @@ import { TestContext } from "./context.js";
 
 export function runTestSuite(context: TestContext) {
   describe('PartOfSpeech.iAdjective', function () {
-    const runTestCase = (testCases: { phrase: string, basicForm: string, reading: string, auxillary?: string }[], conjugatedForm: bunsetsu.ConjugatedForm) => {
+    const runTestCase = (testCases: { phrase: string, basicForm: string, reading: string, auxillary?: string, auxillaryIndex?: number }[], conjugatedForm: bunsetsu.ConjugatedForm) => {
       for (const expected of testCases) {
         it(`should identify ${expected.phrase} as one word`, function () {
           assert.ok(context.segmenter);
@@ -12,18 +12,22 @@ export function runTestSuite(context: TestContext) {
           assert.equal(words.length, 1);
 
           const word = words[0];
-          assert.equal(word.pos, bunsetsu.PartOfSpeech.iAdjective);
-          assert.equal(word.surfaceForm, expected.phrase);
-          assert.equal(word.basicForm, expected.basicForm);
-          assert.equal(word.reading, expected.reading);
+          assert.equal(word.pos(), bunsetsu.PartOfSpeech.iAdjective);
+          assert.equal(word.surfaceForm(), expected.phrase);
+          assert.equal(word.basicForm(), expected.basicForm);
+          assert.equal(word.reading(), expected.reading);
 
-          assert.ok(word.detail);
-          assert.equal(word.detail.type, bunsetsu.PartOfSpeech.iAdjective);
-          const detail = word.detail as bunsetsu.AdjectiveDetail;
+          assert.ok(word.tokens.length >= 1);
+          const token = word.tokens[0];
+          assert.ok(token.detail);
+          assert.equal(token.detail.type, bunsetsu.PartOfSpeech.iAdjective);
+          const detail = token.detail as bunsetsu.AdjectiveDetail;
           assert.equal(detail.conjugatedForm, conjugatedForm);
 
-          if (expected.auxillary) {
-            assert.equal(detail.auxillaryWord?.basicForm, expected.auxillary);
+          if (expected.auxillary && expected.auxillaryIndex) {
+            const auxIdx = expected.auxillaryIndex ?? 1;
+            assert.ok(word.tokens.length > auxIdx);
+            assert.equal(word.tokens[auxIdx].basicForm, expected.auxillary);
           }
         });
       }
@@ -106,7 +110,7 @@ export function runTestSuite(context: TestContext) {
       const adjectives = [
         { phrase: '高かろう', basicForm: "高い", reading: 'タカカロウ', auxillary: 'う' },
       ];
-      runTestCase(adjectives, bunsetsu.ConjugatedForm.IrrealisUForm);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.Irrealis);
     });
 
 
@@ -114,7 +118,7 @@ export function runTestSuite(context: TestContext) {
       const adjectives = [
         { phrase: '高からぬ', basicForm: "高い", reading: 'タカカラヌ', auxillary: 'ぬ' },
       ];
-      runTestCase(adjectives, bunsetsu.ConjugatedForm.IrrealisNuForm);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.Irrealis);
     });
 
     describe('ConjugatedForm.ImperativeE', function () {
@@ -136,7 +140,7 @@ export function runTestSuite(context: TestContext) {
       const adjectives = [
         { phrase: 'うるさかった', basicForm: "うるさい", reading: "ウルサカッタ", stemSurfaceForm: 'うるさ', stemReading: 'ウルサ' },
       ];
-      runTestCase(adjectives, bunsetsu.ConjugatedForm.PastForm);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.TaConjunction);
     });
 
     describe('ConjugatedForm.TeForm', function () {
@@ -145,15 +149,15 @@ export function runTestSuite(context: TestContext) {
         { phrase: '寒くて', basicForm: "寒い", reading: 'サムクテ' },
 
       ];
-      runTestCase(adjectives, bunsetsu.ConjugatedForm.TeForm);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.TeConjunction);
     });
 
     describe('ConjugatedForm.Adverbial', function () {
       const adjectives = [
         { phrase: 'うるさく', basicForm: "うるさい", reading: "ウルサク" },
-        { phrase: '芳しくない', basicForm: "芳しい", reading: 'カンバシクナイ', auxillary: 'ない' },
+        { phrase: '芳しくない', basicForm: "芳しい", reading: 'カンバシクナイ', auxillary: 'ない', auxillaryIndex: 1 },
       ];
-      runTestCase(adjectives, bunsetsu.ConjugatedForm.Adverbial);
+      runTestCase(adjectives, bunsetsu.ConjugatedForm.TeConjunction);
     });
   });
 }

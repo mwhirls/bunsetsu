@@ -1,28 +1,23 @@
 import { IpadicFeatures } from "kuromoji";
 import { ConjugatedForm } from "../conjugation.js";
 import { VerbDetail } from "../verb.js";
-import { PartOfSpeech, Word } from "../word.js";
-import { IpadicWord } from "./word.js";
+import { PartOfSpeech } from "../word.js";
+import { IpadicTokenNode } from "./word.js";
 
-export class IpadicVerb extends IpadicWord {
-    constructor(stem: IpadicFeatures, inflection: IpadicFeatures[], detail: IpadicVerbDetail) {
-        super(PartOfSpeech.Verb, [stem, ...inflection], undefined, stem.basic_form, undefined, undefined, detail);
+export class IpadicVerb extends IpadicTokenNode {
+    constructor(token: IpadicFeatures, detail: IpadicVerbDetail);
+    constructor(token: IpadicFeatures, detail: IpadicVerbDetail, auxillary?: IpadicTokenNode);
+    constructor(token: IpadicFeatures, detail: IpadicVerbDetail, auxillary?: IpadicTokenNode) {
+        super(PartOfSpeech.Verb, token, detail, auxillary);
     }
 }
 
 export class IpadicVerbDetail implements VerbDetail {
     type: PartOfSpeech.Verb;
     conjugatedForm: ConjugatedForm;
-    auxillaryWord?: Word;
-    negativeForm?: boolean;
 
-    constructor(conjugatedForm: ConjugatedForm);
-    constructor(conjugatedForm: ConjugatedForm, auxillaryWord?: IpadicWord);
-    constructor(conjugatedForm: ConjugatedForm, auxillaryWord?: IpadicWord, negativeForm?: boolean);
-    constructor(conjugatedForm: ConjugatedForm, auxillaryWord?: IpadicWord, negativeForm?: boolean) {
+    constructor(conjugatedForm: ConjugatedForm) {
         this.type = PartOfSpeech.Verb;
         this.conjugatedForm = conjugatedForm;
-        this.auxillaryWord = auxillaryWord;
-        this.negativeForm = negativeForm;
     }
 }

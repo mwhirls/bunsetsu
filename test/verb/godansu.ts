@@ -49,7 +49,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡そう', basicForm: '渡す', reading: 'ワタソウ' },
         { surfaceForm: '貸そう', basicForm: '貸す', reading: 'カソウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Volitional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.NaiForm', function () {
@@ -61,7 +61,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡さない', basicForm: '渡す', reading: 'ワタサナイ' },
         { surfaceForm: '貸さない', basicForm: '貸す', reading: 'カサナイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.NaiForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Imperative', function () {
@@ -75,30 +75,30 @@ export function runTestSuite(context: TestContext) {
         ];
         runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
       });
+    });
 
-      describe('as い variant (なさい）', function () {
-        const verbs = [
-          { surfaceForm: '話しなさい', basicForm: '話す', reading: 'ハナシナサイ' },
-          { surfaceForm: '出しなさい', basicForm: '出す', reading: 'ダシナサイ' },
-          { surfaceForm: '返しなさい', basicForm: '返す', reading: 'カエシナサイ' },
-          { surfaceForm: '押しなさい', basicForm: '押す', reading: 'オシナサイ' },
-          { surfaceForm: '渡しなさい', basicForm: '渡す', reading: 'ワタシナサイ' },
-          { surfaceForm: '貸しなさい', basicForm: '貸す', reading: 'カシナサイ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
+    describe('なさい', function () {
+      const verbs = [
+        { surfaceForm: '話しなさい', basicForm: '話す', reading: 'ハナシナサイ' },
+        { surfaceForm: '出しなさい', basicForm: '出す', reading: 'ダシナサイ' },
+        { surfaceForm: '返しなさい', basicForm: '返す', reading: 'カエシナサイ' },
+        { surfaceForm: '押しなさい', basicForm: '押す', reading: 'オシナサイ' },
+        { surfaceForm: '渡しなさい', basicForm: '渡す', reading: 'ワタシナサイ' },
+        { surfaceForm: '貸しなさい', basicForm: '貸す', reading: 'カシナサイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
 
-      describe('as contracted い variant (な）', function () {
-        const verbs = [
-          { surfaceForm: '話しな', basicForm: '話す', reading: 'ハナシナ' },
-          { surfaceForm: '出しな', basicForm: '出す', reading: 'ダシナ' },
-          { surfaceForm: '返しな', basicForm: '返す', reading: 'カエシナ' },
-          { surfaceForm: '押しな', basicForm: '押す', reading: 'オシナ' },
-          { surfaceForm: '渡しな', basicForm: '渡す', reading: 'ワタシナ' },
-          { surfaceForm: '貸しな', basicForm: '貸す', reading: 'カシナ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
+    describe('なさい (contracted)', function () {
+      const verbs = [
+        { surfaceForm: '話しな', basicForm: '話す', reading: 'ハナシナ' },
+        { surfaceForm: '出しな', basicForm: '出す', reading: 'ダシナ' },
+        { surfaceForm: '返しな', basicForm: '返す', reading: 'カエシナ' },
+        { surfaceForm: '押しな', basicForm: '押す', reading: 'オシナ' },
+        { surfaceForm: '渡しな', basicForm: '渡す', reading: 'ワタシナ' },
+        { surfaceForm: '貸しな', basicForm: '貸す', reading: 'カシナ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.TeForm', function () {
@@ -110,7 +110,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡して', basicForm: '渡す', reading: 'ワタシテ' },
         { surfaceForm: '貸して', basicForm: '貸す', reading: 'カシテ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
 
     describe('ConjugatedForm.PastForm', function () {
@@ -122,7 +122,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡した', basicForm: '渡す', reading: 'ワタシタ' },
         { surfaceForm: '貸した', basicForm: '貸す', reading: 'カシタ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PastForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.PoliteForm', function () {
@@ -134,7 +134,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡します', basicForm: '渡す', reading: 'ワタシマス' },
         { surfaceForm: '貸します', basicForm: '貸す', reading: 'カシマス' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PoliteForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.Passive', function () {
@@ -146,7 +146,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡される', basicForm: '渡す', reading: 'ワタサレル' },
         { surfaceForm: '貸される', basicForm: '貸す', reading: 'カサレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Passive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Causative', function () {
@@ -160,7 +160,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡させる', basicForm: '渡す', reading: 'ワタサセル' },
         { surfaceForm: '貸させる', basicForm: '貸す', reading: 'カサセル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Causative, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.CausativePassive', function () {
@@ -172,7 +172,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡させられる', basicForm: '渡す', reading: 'ワタサセラレル' },
         { surfaceForm: '貸させられる', basicForm: '貸す', reading: 'カサセラレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.CausativePassive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
   });
 }

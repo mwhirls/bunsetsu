@@ -49,7 +49,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '稼ごう', basicForm: '稼ぐ', reading: 'カセゴウ' },
         { surfaceForm: '繋ごう', basicForm: '繋ぐ', reading: 'ツナゴウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Volitional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.NaiForm', function () {
@@ -61,7 +61,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '稼がない', basicForm: '稼ぐ', reading: 'カセガナイ' },
         { surfaceForm: '防がない', basicForm: '防ぐ', reading: 'フセガナイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.NaiForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Imperative', function () {
@@ -82,7 +82,7 @@ export function runTestSuite(context: TestContext) {
       });
       */
 
-      describe('as い variant (なさい）', function () {
+      describe('なさい', function () {
         const verbs = [
           { surfaceForm: '泳ぎなさい', basicForm: '泳ぐ', reading: 'オヨギナサイ' },
           { surfaceForm: '脱ぎなさい', basicForm: '脱ぐ', reading: 'ヌギナサイ' },
@@ -91,10 +91,10 @@ export function runTestSuite(context: TestContext) {
           { surfaceForm: '稼ぎなさい', basicForm: '稼ぐ', reading: 'カセギナサイ' },
           { surfaceForm: '繋ぎなさい', basicForm: '繋ぐ', reading: 'ツナギナサイ' },
         ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
+        runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
       });
 
-      describe('as contracted い variant (な）', function () {
+      describe('なさい (contracted)', function () {
         const verbs = [
           { surfaceForm: '泳ぎな', basicForm: '泳ぐ', reading: 'オヨギナ' },
           { surfaceForm: '脱ぎな', basicForm: '脱ぐ', reading: 'ヌギナ' },
@@ -103,7 +103,7 @@ export function runTestSuite(context: TestContext) {
           { surfaceForm: '稼ぎな', basicForm: '稼ぐ', reading: 'カセギナ' },
           { surfaceForm: '繋ぎな', basicForm: '繋ぐ', reading: 'ツナギナ' },
         ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
+        runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
       });
     });
 
@@ -116,7 +116,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '稼いで', basicForm: '稼ぐ', reading: 'カセイデ' },
         { surfaceForm: '繋いで', basicForm: '繋ぐ', reading: 'ツナイデ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
 
     describe('ConjugatedForm.PastForm', function () {
@@ -128,7 +128,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '稼いだ', basicForm: '稼ぐ', reading: 'カセイダ' },
         { surfaceForm: '繋いだ', basicForm: '繋ぐ', reading: 'ツナイダ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PastForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('ConjugatedForm.PoliteForm', function () {
@@ -140,7 +140,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '稼ぎます', basicForm: '稼ぐ', reading: 'カセギマス' },
         { surfaceForm: '繋ぎます', basicForm: '繋ぐ', reading: 'ツナギマス' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PoliteForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.Passive', function () {
@@ -152,7 +152,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '稼がれる', basicForm: '稼ぐ', reading: 'カセガレル' },
         { surfaceForm: '繋がれる', basicForm: '繋ぐ', reading: 'ツナガレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Passive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
     describe('ConjugatedForm.Causative', function () {
       // can be a bit tricky to test because some causative forms are considered
@@ -165,7 +165,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '稼がせる', basicForm: '稼ぐ', reading: 'カセガセル' },
         { surfaceForm: '繋がせる', basicForm: '繋ぐ', reading: 'ツナガセル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Causative, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.CausativePassive', function () {
@@ -179,7 +179,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '稼がせられる', basicForm: '稼ぐ', reading: 'カセガセラレル' },
         { surfaceForm: '繋がせられる', basicForm: '繋ぐ', reading: 'ツナガセラレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.CausativePassive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
   });
 }

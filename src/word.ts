@@ -1,4 +1,5 @@
 import { AdjectiveDetail } from "./adjective.js";
+import { AuxillaryVerbDetail } from "./auxillaryVerb.js";
 import { NounDetail } from "./noun.js";
 import { SymbolDetail } from "./symbol.js";
 import { VerbDetail } from "./verb.js";
@@ -16,13 +17,23 @@ export enum PartOfSpeech {
     Conjunction = '接続詞'
 }
 
-export interface Word {
+export interface Token {
     pos: PartOfSpeech;
     surfaceForm: string;
     basicForm: string;
     reading: string | undefined;
     pronunciation: string | undefined;
-    detail?: WordDetail;
+    detail?: TokenDetail;
 }
 
-export type WordDetail = SymbolDetail | AdjectiveDetail | VerbDetail | NounDetail;
+export interface Word {
+    tokens: Token[];
+
+    pos(): PartOfSpeech;
+    surfaceForm(): string;
+    basicForm(): string;
+    reading(): string | undefined;
+    pronunciation(): string | undefined;
+}
+
+export type TokenDetail = SymbolDetail | AdjectiveDetail | VerbDetail | AuxillaryVerbDetail | NounDetail;

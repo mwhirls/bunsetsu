@@ -43,8 +43,8 @@ describe('Segmenter', function () {
           const words = context.segmenter.segmentAsWords(form);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.pos, bunsetsu.PartOfSpeech.Filler);
-          assert.equal(word.surfaceForm, form);
+          assert.equal(word.pos(), bunsetsu.PartOfSpeech.Filler);
+          assert.equal(word.surfaceForm(), form);
         });
       }
     });
@@ -57,8 +57,8 @@ describe('Segmenter', function () {
           const words = context.segmenter.segmentAsWords(form);
           assert.equal(words.length, 1);
           const word = words[0];
-          assert.equal(word.pos, bunsetsu.PartOfSpeech.Interjection);
-          assert.equal(word.surfaceForm, form);
+          assert.equal(word.pos(), bunsetsu.PartOfSpeech.Interjection);
+          assert.equal(word.surfaceForm(), form);
         });
       }
     });

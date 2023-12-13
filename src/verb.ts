@@ -9,5 +9,4 @@ export interface VerbDetail {
     type: PartOfSpeech.Verb;
     conjugatedForm: ConjugatedForm;
     auxillaryWord?: Word,
-    negativeForm?: boolean;
 }

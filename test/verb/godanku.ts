@@ -49,7 +49,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '働こう', basicForm: '働く', reading: 'ハタラコウ' },
         { surfaceForm: '着こう', basicForm: '着く', reading: 'ツコウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Volitional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.NaiForm', function () {
@@ -61,7 +61,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '働かない', basicForm: '働く', reading: 'ハタラカナイ' },
         { surfaceForm: '着かない', basicForm: '着く', reading: 'ツカナイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.NaiForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Imperative', function () {
@@ -81,30 +81,30 @@ export function runTestSuite(context: TestContext) {
         runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
       });
       */
+    });
 
-      describe('as い variant (なさい）', function () {
-        const verbs = [
-          { surfaceForm: '聞きなさい', basicForm: '聞く', reading: 'キキナサイ' },
-          { surfaceForm: '書きなさい', basicForm: '書く', reading: 'カキナサイ' },
-          { surfaceForm: '置きなさい', basicForm: '置く', reading: 'オキナサイ' },
-          { surfaceForm: '歩きなさい', basicForm: '歩く', reading: 'アルキナサイ' },
-          { surfaceForm: '働きなさい', basicForm: '働く', reading: 'ハタラキナサイ' },
-          { surfaceForm: '着きなさい', basicForm: '着く', reading: 'ツキナサイ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
+    describe('なさい', function () {
+      const verbs = [
+        { surfaceForm: '聞きなさい', basicForm: '聞く', reading: 'キキナサイ' },
+        { surfaceForm: '書きなさい', basicForm: '書く', reading: 'カキナサイ' },
+        { surfaceForm: '置きなさい', basicForm: '置く', reading: 'オキナサイ' },
+        { surfaceForm: '歩きなさい', basicForm: '歩く', reading: 'アルキナサイ' },
+        { surfaceForm: '働きなさい', basicForm: '働く', reading: 'ハタラキナサイ' },
+        { surfaceForm: '着きなさい', basicForm: '着く', reading: 'ツキナサイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
 
-      describe('as contracted い variant (な）', function () {
-        const verbs = [
-          { surfaceForm: '聞きな', basicForm: '聞く', reading: 'キキナ' },
-          { surfaceForm: '書きな', basicForm: '書く', reading: 'カキナ' },
-          { surfaceForm: '置きな', basicForm: '置く', reading: 'オキナ' },
-          { surfaceForm: '歩きな', basicForm: '歩く', reading: 'アルキナ' },
-          { surfaceForm: '働きな', basicForm: '働く', reading: 'ハタラキナ' },
-          { surfaceForm: '着きな', basicForm: '着く', reading: 'ツキナ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
+    describe('なさい (contracted)', function () {
+      const verbs = [
+        { surfaceForm: '聞きな', basicForm: '聞く', reading: 'キキナ' },
+        { surfaceForm: '書きな', basicForm: '書く', reading: 'カキナ' },
+        { surfaceForm: '置きな', basicForm: '置く', reading: 'オキナ' },
+        { surfaceForm: '歩きな', basicForm: '歩く', reading: 'アルキナ' },
+        { surfaceForm: '働きな', basicForm: '働く', reading: 'ハタラキナ' },
+        { surfaceForm: '着きな', basicForm: '着く', reading: 'ツキナ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.TeForm', function () {
@@ -116,7 +116,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '働いて', basicForm: '働く', reading: 'ハタライテ' },
         { surfaceForm: '着いて', basicForm: '着く', reading: 'ツイテ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
 
     describe('ConjugatedForm.PastForm', function () {
@@ -128,7 +128,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '働いた', basicForm: '働く', reading: 'ハタライタ' },
         { surfaceForm: '着いた', basicForm: '着く', reading: 'ツイタ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PastForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('ConjugatedForm.PoliteForm', function () {
@@ -140,7 +140,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '働きます', basicForm: '働く', reading: 'ハタラキマス' },
         { surfaceForm: '着きます', basicForm: '着く', reading: 'ツキマス' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PoliteForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.Passive', function () {
@@ -152,7 +152,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '働かれる', basicForm: '働く', reading: 'ハタラカレル' },
         { surfaceForm: '着かれる', basicForm: '着く', reading: 'ツカレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Passive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Causative', function () {
@@ -166,7 +166,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '吹かせる', basicForm: '吹く', reading: 'フカセル' },
         { surfaceForm: '着かせる', basicForm: '着く', reading: 'ツカセル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Causative, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.CausativePassive', function () {
@@ -178,7 +178,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '吹かせられる', basicForm: '吹く', reading: 'フカセラレル' },
         { surfaceForm: '着かせられる', basicForm: '着く', reading: 'ツカセラレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.CausativePassive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
   });
 }

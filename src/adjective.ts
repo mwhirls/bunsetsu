@@ -5,6 +5,5 @@ export interface AdjectiveDetail {
     type: PartOfSpeech.iAdjective;
     conjugatedForm: ConjugatedForm;
     auxillaryWord?: Word,
-    negativeForm?: boolean;
 }
 

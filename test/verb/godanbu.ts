@@ -49,7 +49,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '選ぼう', basicForm: '選ぶ', reading: 'エラボウ' },
         { surfaceForm: '喜ぼう', basicForm: '喜ぶ', reading: 'ヨロコボウ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Volitional, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.NaiForm', function () {
@@ -61,7 +61,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '選ばない', basicForm: '選ぶ', reading: 'エラバナイ' },
         { surfaceForm: '喜ばない', basicForm: '喜ぶ', reading: 'ヨロコバナイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.NaiForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Imperative', function () {
@@ -81,28 +81,29 @@ export function runTestSuite(context: TestContext) {
         runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
       });
       */
+    });
 
-      describe('as い variant (なさい）', function () {
-        const verbs = [
-          { surfaceForm: '呼びなさい', basicForm: '呼ぶ', reading: 'ヨビナサイ' },
-          { surfaceForm: '飛びなさい', basicForm: '飛ぶ', reading: 'トビナサイ' },
-          { surfaceForm: '遊びなさい', basicForm: '遊ぶ', reading: 'アソビナサイ' },
-          { surfaceForm: '並びなさい', basicForm: '並ぶ', reading: 'ナラビナサイ' },
-          { surfaceForm: '選びなさい', basicForm: '選ぶ', reading: 'エラビナサイ' },
-          { surfaceForm: '喜びなさい', basicForm: '喜ぶ', reading: 'ヨロコビナサイ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
 
-      describe('as contracted い variant (な）', function () {
-        const verbs = [
-          { surfaceForm: '呼びな', basicForm: '呼ぶ', reading: 'ヨビナ' },
-          { surfaceForm: '飛びな', basicForm: '飛ぶ', reading: 'トビナ' },
-          { surfaceForm: '選びな', basicForm: '選ぶ', reading: 'エラビナ' },
-          { surfaceForm: '喜びな', basicForm: '喜ぶ', reading: 'ヨロコビナ' },
-        ];
-        runTest(verbs, bunsetsu.ConjugatedForm.Imperative, context);
-      });
+    describe('なさい', function () {
+      const verbs = [
+        { surfaceForm: '呼びなさい', basicForm: '呼ぶ', reading: 'ヨビナサイ' },
+        { surfaceForm: '飛びなさい', basicForm: '飛ぶ', reading: 'トビナサイ' },
+        { surfaceForm: '遊びなさい', basicForm: '遊ぶ', reading: 'アソビナサイ' },
+        { surfaceForm: '並びなさい', basicForm: '並ぶ', reading: 'ナラビナサイ' },
+        { surfaceForm: '選びなさい', basicForm: '選ぶ', reading: 'エラビナサイ' },
+        { surfaceForm: '喜びなさい', basicForm: '喜ぶ', reading: 'ヨロコビナサイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
+    describe('なさい (contracted)', function () {
+      const verbs = [
+        { surfaceForm: '呼びな', basicForm: '呼ぶ', reading: 'ヨビナ' },
+        { surfaceForm: '飛びな', basicForm: '飛ぶ', reading: 'トビナ' },
+        { surfaceForm: '選びな', basicForm: '選ぶ', reading: 'エラビナ' },
+        { surfaceForm: '喜びな', basicForm: '喜ぶ', reading: 'ヨロコビナ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.TeForm', function () {
@@ -114,7 +115,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '選んで', basicForm: '選ぶ', reading: 'エランデ' },
         { surfaceForm: '喜んで', basicForm: '喜ぶ', reading: 'ヨロコンデ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
 
     describe('ConjugatedForm.PastForm', function () {
@@ -126,7 +127,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '選んだ', basicForm: '選ぶ', reading: 'エランダ' },
         { surfaceForm: '喜んだ', basicForm: '喜ぶ', reading: 'ヨロコンダ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PastForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('ConjugatedForm.PoliteForm', function () {
@@ -138,7 +139,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '選びます', basicForm: '選ぶ', reading: 'エラビマス' },
         { surfaceForm: '喜びます', basicForm: '喜ぶ', reading: 'ヨロコビマス' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PoliteForm, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ConjugatedForm.Passive', function () {
@@ -150,7 +151,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '選ばれる', basicForm: '選ぶ', reading: 'エラバレル' },
         { surfaceForm: '喜ばれる', basicForm: '喜ぶ', reading: 'ヨロコバレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Passive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     describe('ConjugatedForm.Causative', function () {
@@ -162,7 +163,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '選ばせる', basicForm: '選ぶ', reading: 'エラバセル' },
         { surfaceForm: '喜ばせる', basicForm: '喜ぶ', reading: 'ヨロコバセル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.Causative, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
     // can be a bit tricky to test because some causative forms are considered
@@ -174,7 +175,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '選ばせられる', basicForm: '選ぶ', reading: 'エラバセラレル' },
         { surfaceForm: '喜ばせられる', basicForm: '喜ぶ', reading: 'ヨロコバセラレル' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.CausativePassive, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
   });
 }
