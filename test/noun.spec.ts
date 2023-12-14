@@ -66,5 +66,23 @@ export function runTestSuite(context: TestContext) {
                 });
             }
         });
+
+        describe('separate noun within phrase', async function () {
+            const cases = [
+                { phrase: '関係ある', noun: '関係' }
+            ];
+            for (const c of cases) {
+                it(`should identify ${c.noun} as a separate word in the phrase ${c.phrase}`, function () {
+                    assert.ok(context.segmenter);
+                    const words = context.segmenter.segmentAsWords(c.phrase);
+                    assert.ok(words.length > 1);
+
+                    const word = words[0];
+                    assert.equal(word.pos(), bunsetsu.PartOfSpeech.Noun);
+                    assert.equal(word.surfaceForm(), c.noun);
+                    assert.equal(word.basicForm(), c.noun);
+                });
+            }
+        });
     });
 }

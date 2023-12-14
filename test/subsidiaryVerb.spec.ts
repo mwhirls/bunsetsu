@@ -7,7 +7,7 @@ type TestCase = {
     basicForm: string;
 }
 
-export function runTest(testCases: TestCase[], subsidiaryVerb: string, subsidiaryIndex: number, context: TestContext) {
+function runTest(testCases: TestCase[], subsidiaryVerb: string, subsidiaryIndex: number, context: TestContext) {
     for (const expected of testCases) {
         it(`should identify ${expected.surfaceForm} as one word`, function () {
             assert.ok(context.segmenter);

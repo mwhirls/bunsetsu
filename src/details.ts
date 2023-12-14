@@ -45,8 +45,8 @@ export class IpadicPOSDetails {
         return this.has(DetailsType.NaiAdjectiveStem);
     }
 
-    isSuruVerb(token: IpadicFeatures) {
-        return token.pos === PartOfSpeech.Noun &&
+    isSuruVerb() {
+        return this.token.pos === PartOfSpeech.Noun &&
             this.isSuffixType(SuffixType.SuruConjunction);
     }
 

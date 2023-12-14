@@ -45,12 +45,15 @@ class TokenCursor {
 function handleNoun(cursor: TokenCursor) {
     const token = cursor.token();
     const details = new IpadicPOSDetails(token);
-    if (details.isSuruVerb(token) || details.isNaiAdjectiveStem()) {
-        const next = cursor.next();
-        if (next) {
-            const auxillary = nextWord(next);
-            return new IpadicNode(PartOfSpeech.Noun, token, undefined, auxillary);
-        }
+    const next = cursor.next();
+    if (!next) {
+        return new IpadicNode(PartOfSpeech.Noun, token);
+    }
+    const isSuruVerb = details.isSuruVerb() && next.token().basic_form === 'する';
+    const isNaiAdjective = details.isNaiAdjectiveStem() && next.token().basic_form === 'ない';
+    if (isSuruVerb || isNaiAdjective) {
+        const auxillary = nextWord(next);
+        return new IpadicNode(PartOfSpeech.Noun, token, undefined, auxillary);
     }
     return new IpadicNode(PartOfSpeech.Noun, token);
 }
