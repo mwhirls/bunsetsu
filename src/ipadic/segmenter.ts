@@ -1,6 +1,6 @@
 import kuromoji from "kuromoji";
 import { Segmenter } from "../segmenter.js";
-import { PartOfSpeech, DetailType, ConjugatedForm, IpadicConjugatedType } from "../token.js";
+import { PartOfSpeech, ConjugatedForm, IpadicConjugatedType } from "../token.js";
 import { Sentence, Word } from "../word.js";
 import { IpadicPOSDetails } from "../details.js";
 import { IpadicConjugation, IpadicConjugationDetail, IpadicNode, IpadicSymbol } from "./token.js";
@@ -45,13 +45,11 @@ class TokenCursor {
 function handleNoun(cursor: TokenCursor) {
     const token = cursor.token();
     const details = new IpadicPOSDetails(token);
-    if (details.isSuruVerb(token)) {
+    if (details.isSuruVerb(token) || details.isNaiAdjectiveStem()) {
         const next = cursor.next();
-        if (next && next.token().basic_form === 'する') {
-            const verb = handleVerbAdjective(next);
-            if (verb.detail && verb.detail.type === DetailType.ConjugationDetail) {
-                return new IpadicNode(PartOfSpeech.Noun, token, undefined, verb);
-            }
+        if (next) {
+            const auxillary = nextWord(next);
+            return new IpadicNode(PartOfSpeech.Noun, token, undefined, auxillary);
         }
     }
     return new IpadicNode(PartOfSpeech.Noun, token);
@@ -88,6 +86,22 @@ function handleSymbol(cursor: TokenCursor) {
 function conjugatedWord(stem: kuromoji.IpadicFeatures, conjugatedForm: ConjugatedForm, auxillary?: IpadicNode): IpadicConjugation {
     const detail = new IpadicConjugationDetail(conjugatedForm);
     return new IpadicConjugation(stem, detail, auxillary);
+}
+
+function handlePlainForm(cursor: TokenCursor) {
+    const token = cursor.token();
+    const form = token.conjugated_form as ConjugatedForm; // todo
+    const next = cursor.next();
+    if (!next) {
+        return conjugatedWord(cursor.token(), form);
+    }
+    // handle cases like 食べるまい
+    const nextToken = next.token();
+    if (nextToken.pos === PartOfSpeech.AuxillaryVerb) {
+        const auxillary = nextWord(next);
+        return conjugatedWord(cursor.token(), form, auxillary);
+    }
+    return conjugatedWord(cursor.token(), form);
 }
 
 function handleConditional(cursor: TokenCursor): IpadicConjugation {
@@ -258,6 +272,7 @@ function handleVerbAdjective(cursor: TokenCursor): IpadicConjugation {
     }
     switch (token.conjugated_form) {
         case ConjugatedForm.PlainForm:
+            return handlePlainForm(cursor);
         case ConjugatedForm.ConditionalContraction1:
         case ConjugatedForm.ConditionalContraction2:
         case ConjugatedForm.ImperativeE:

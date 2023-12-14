@@ -110,5 +110,20 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
+
+    describe('まい after plain form', function () {
+      const verbs = [
+        { surfaceForm: '死にまい', basicForm: '死ぬ', reading: 'シニマイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
+    describe('まい after plain form', function () {
+      const verbs = [
+        { surfaceForm: '死ぬまい', basicForm: '死ぬ', reading: 'シヌマイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.PlainForm, context);
+    });
+
   });
 }

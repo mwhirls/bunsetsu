@@ -177,5 +177,29 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
+
+    describe('まい after plain form', function () {
+      const verbs = [
+        { surfaceForm: '話しまい', basicForm: '話す', reading: 'ハナシマイ' },
+        { surfaceForm: '出しまい', basicForm: '出す', reading: 'ダシマイ' },
+        { surfaceForm: '返しまい', basicForm: '返す', reading: 'カエシマイ' },
+        { surfaceForm: '押しまい', basicForm: '押す', reading: 'オシマイ' },
+        { surfaceForm: '渡しまい', basicForm: '渡す', reading: 'ワタシマイ' },
+        { surfaceForm: '貸しまい', basicForm: '貸す', reading: 'カシマイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
+    describe('まい after plain form', function () {
+      const verbs = [
+        { surfaceForm: '話すまい', basicForm: '話す', reading: 'ハナスマイ' },
+        { surfaceForm: '出すまい', basicForm: '出す', reading: 'ダスマイ' },
+        { surfaceForm: '返すまい', basicForm: '返す', reading: 'カエスマイ' },
+        { surfaceForm: '押すまい', basicForm: '押す', reading: 'オスマイ' },
+        { surfaceForm: '渡すまい', basicForm: '渡す', reading: 'ワタスマイ' },
+        { surfaceForm: '貸すまい', basicForm: '貸す', reading: 'カスマイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.PlainForm, context);
+    });
   });
 }

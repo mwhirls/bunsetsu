@@ -116,6 +116,13 @@ export function runTestSuite(context: TestContext) {
       ];
       runWordTestCase(verbs, bunsetsu.ConjugatedForm.Continuative);
     });
+
+    describe('まい after plain form', function () {
+      const verbs = [
+        { surfaceForm: '来るまい', reading: 'クルマイ' },
+      ];
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.PlainForm);
+    });
   });
 
 
@@ -255,6 +262,13 @@ export function runTestSuite(context: TestContext) {
       ];
       runWordTestCase(verbs, bunsetsu.ConjugatedForm.Continuative);
     });
+
+    describe('まい after plain form', function () {
+      const verbs = [
+        { surfaceForm: 'するまい', reading: 'スルマイ' },
+      ];
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.PlainForm);
+    });
   });
 
   // Single kanji する verbs that conjugate irregularly due to lingering
@@ -308,6 +322,13 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.ImperativeRo, context);
     });
+
+    describe('まい after plain form', function () {
+      const verbs = [
+        { surfaceForm: '反するまい', basicForm: '反する', reading: 'ハンスルマイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.PlainForm, context);
+    });
   });
 
   // Single kanji ずる verbs that conjugate irregularly due to lingering
@@ -351,6 +372,13 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '信ぜよ', basicForm: '信ずる', reading: 'シンゼヨ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.ImperativeYo, context);
+    });
+
+    describe('まい after plain form', function () {
+      const verbs = [
+        { surfaceForm: '信ずるまい', basicForm: '信ずる', reading: 'シンズルマイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.PlainForm, context);
     });
   });
 }

@@ -5,6 +5,7 @@ export enum DetailsType {
     Suffix = '接尾',
     NotIndependent = '非自立',
     ConjunctionParticle = '接続助詞',
+    NaiAdjectiveStem = 'ナイ形容詞語幹',
 }
 
 export enum SuffixType {
@@ -38,6 +39,10 @@ export class IpadicPOSDetails {
 
     isNotIndependent(): boolean {
         return this.has(DetailsType.NotIndependent);
+    }
+
+    isNaiAdjectiveStem(): boolean {
+        return this.has(DetailsType.NaiAdjectiveStem);
     }
 
     isSuruVerb(token: IpadicFeatures) {

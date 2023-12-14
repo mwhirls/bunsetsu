@@ -184,5 +184,30 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
+
+    describe('まい', function () {
+      const verbs = [
+        { surfaceForm: '聞きまい', basicForm: '聞く', reading: 'キキマイ' },
+        { surfaceForm: '書きまい', basicForm: '書く', reading: 'カキマイ' },
+        { surfaceForm: '置きまい', basicForm: '置く', reading: 'オキマイ' },
+        { surfaceForm: '歩きまい', basicForm: '歩く', reading: 'アルキマイ' },
+        { surfaceForm: '働きまい', basicForm: '働く', reading: 'ハタラキマイ' },
+        { surfaceForm: '着きまい', basicForm: '着く', reading: 'ツキマイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
+    describe('まい after plain form', function () {
+      const verbs = [
+        { surfaceForm: '聞くまい', basicForm: '聞く', reading: 'キクマイ' },
+        { surfaceForm: '書くまい', basicForm: '書く', reading: 'カクマイ' },
+        { surfaceForm: '置くまい', basicForm: '置く', reading: 'オクマイ' },
+        { surfaceForm: '歩くまい', basicForm: '歩く', reading: 'アルクマイ' },
+        { surfaceForm: '働くまい', basicForm: '働く', reading: 'ハタラクマイ' },
+        { surfaceForm: '着くまい', basicForm: '着く', reading: 'ツクマイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.PlainForm, context);
+    });
+
   });
 }
