@@ -1,12 +1,10 @@
 import kuromoji, { IpadicFeatures } from "kuromoji";
 import { Segmenter } from "../segmenter.js";
-import { PartOfSpeech, ConjugatedForm, IpadicConjugatedType, Token } from "../token.js";
+import { PartOfSpeech, ConjugatedForm, IpadicConjugatedType } from "../token.js";
 import { Sentence, Word } from "../word.js";
 import { IpadicPOSDetails } from "../details.js";
 import { IpadicConjugation, IpadicConjugationDetail, IpadicNode, IpadicSymbol } from "./token.js";
 import { IpadicSentence, IpadicWord } from "./word.js";
-
-
 
 class TokenCursor {
     private readonly tokens: kuromoji.IpadicFeatures[];
@@ -51,10 +49,34 @@ function handleSpecialCharacter(cursor: TokenCursor) {
     return null;
 }
 
+function isNominalizer(token: IpadicFeatures) {
+    const nominalizers = [
+        'の',
+        'ん',
+        'こと',
+    ];
+    return nominalizers.some(x => x === token.surface_form);
+}
+
+function handleNominalizer(cursor: TokenCursor) {
+    const token = cursor.token();
+    if (!isNominalizer(token)) {
+        return null;
+    }
+    if (token.surface_form === 'こと') {
+        return new IpadicNode(PartOfSpeech.Noun, token);
+    }
+    return new IpadicNode(PartOfSpeech.Particle, token);
+}
+
 function handleNoun(cursor: TokenCursor) {
     const specialCharacter = handleSpecialCharacter(cursor);
     if (specialCharacter) {
         return specialCharacter;
+    }
+    const nominalizer = handleNominalizer(cursor);
+    if (nominalizer) {
+        return nominalizer;
     }
     const token = cursor.token();
     const details = new IpadicPOSDetails(token);
@@ -109,15 +131,23 @@ function handlePlainForm(cursor: TokenCursor) {
     const form = token.conjugated_form as ConjugatedForm; // todo
     const next = cursor.next();
     if (!next) {
+        // sometimes ん gets categorized as an auxillary verb (食べるん)
+        if (isNominalizer(token)) {
+            return new IpadicNode(PartOfSpeech.Particle, token);
+        }
         return conjugatedWord(cursor.token(), form);
     }
     // handle cases like 食べるまい
     const nextToken = next.token();
     if (nextToken.pos === PartOfSpeech.AuxillaryVerb) {
+        // sometimes ん gets categorized as an auxillary verb (食べるん)
+        if (isNominalizer(nextToken)) {
+            return conjugatedWord(token, form);
+        }
         const auxillary = nextWord(next);
-        return conjugatedWord(cursor.token(), form, auxillary);
+        return conjugatedWord(token, form, auxillary);
     }
-    return conjugatedWord(cursor.token(), form);
+    return conjugatedWord(token, form);
 }
 
 function handleConditional(cursor: TokenCursor): IpadicConjugation {
@@ -221,6 +251,12 @@ function isAuxillaryVerb(cursor: TokenCursor) {
         token.basic_form === 'ある'; // ～てある subsidiary verb gets marked as an independent verb
 }
 
+function isEndOfClause(cursor: TokenCursor) {
+    const token = cursor.token();
+    const tokend = new IpadicPOSDetails(token);
+    return tokend.isSentenceEndingParticle() || isNominalizer(token);
+}
+
 function handleAuxillaryVerb(cursor: TokenCursor | null) {
     if (!cursor) {
         return undefined;
@@ -235,29 +271,32 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
         return suffix;
     }
     const next = cursor.next();
-    if (next) {
-        const nextd = new IpadicPOSDetails(next.token());
-        if (next.token().pos === PartOfSpeech.AuxillaryVerb ||
-            nextd.isNotIndependent()) {
-            const auxillary = nextWord(next);
-            return conjugatedWord(token, form, auxillary);
-        }
-        const stemForms = [
-            ConjugatedForm.ConditionalForm,
-            ConjugatedForm.Continuative,
-            ConjugatedForm.GaruConjunction,
-            ConjugatedForm.GozaiConjunction,
-            ConjugatedForm.Irrealis,
-            ConjugatedForm.TaConjunction,
-            ConjugatedForm.TeConjunction
-        ];
-        const isStem = stemForms.some(x => x === token.conjugated_form);
-        if (isStem) {
-            const auxillary = nextWord(next);
-            return conjugatedWord(token, form, auxillary);
-        }
+    if (!next) {
+        return conjugatedWord(token, form);
     }
-    return conjugatedWord(token, form);
+    const nextd = new IpadicPOSDetails(next.token());
+    if (isEndOfClause(next)) {
+        return conjugatedWord(token, form);
+    }
+    if (next.token().pos === PartOfSpeech.AuxillaryVerb ||
+        nextd.isNotIndependent()) {
+        const auxillary = nextWord(next);
+        return conjugatedWord(token, form, auxillary);
+    }
+    const stemForms = [
+        ConjugatedForm.ConditionalForm,
+        ConjugatedForm.Continuative,
+        ConjugatedForm.GaruConjunction,
+        ConjugatedForm.GozaiConjunction,
+        ConjugatedForm.Irrealis,
+        ConjugatedForm.TaConjunction,
+        ConjugatedForm.TeConjunction
+    ];
+    const isStem = stemForms.some(x => x === token.conjugated_form);
+    if (isStem) {
+        const auxillary = nextWord(next);
+        return conjugatedWord(token, form, auxillary);
+    }
 }
 
 function handleStemAuxillaryForm(cursor: TokenCursor) {
@@ -376,7 +415,8 @@ function toWords(tokens: kuromoji.IpadicFeatures[]): Word[] {
     const result = [];
     let index = 0;
     while (index < tokens.length) {
-        const root = nextWord(new TokenCursor(tokens, index));
+        const cursor = new TokenCursor(tokens, index);
+        const root = nextWord(cursor);
         const word = new IpadicWord(root);
         index += word.tokens.length;
         result.push(word);

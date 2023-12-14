@@ -6,6 +6,9 @@ export enum DetailsType {
     NotIndependent = '非自立',
     ConjunctionParticle = '接続助詞',
     NaiAdjectiveStem = 'ナイ形容詞語幹',
+    AdverbialParticle = '副助詞',
+    ParallelMarker = '並立助詞',
+    SentenceEndingParticle = '終助詞'
 }
 
 export enum SuffixType {
@@ -50,11 +53,15 @@ export class IpadicPOSDetails {
             this.isSuffixType(SuffixType.SuruConjunction);
     }
 
+    isSentenceEndingParticle() {
+        return this.has(DetailsType.SentenceEndingParticle);
+    }
+
     symbolType(): SymbolType | undefined {
         return Object.values(SymbolType).find(x => this.has(x));
     }
 
     private has(property: string): boolean {
-        return this.details.some((value) => value === property);
+        return this.details.some((value) => value.includes(property));
     }
 }
