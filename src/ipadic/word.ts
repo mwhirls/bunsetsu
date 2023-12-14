@@ -1,4 +1,4 @@
-import { Token, PartOfSpeech } from "../token.js";
+import { Token, PartOfSpeech, WordType } from "../token.js";
 import { Sentence, Word } from "../word.js";
 import { IpadicNode } from "./token.js";
 
@@ -15,8 +15,11 @@ export class IpadicWord implements Word {
     surfaceForm(): string {
         return this.tokens.reduce((acc, t) => acc + t.surfaceForm, "");
     }
-    basicForm(): string {
-        return this.root().basicForm;
+    wordType(): WordType {
+        return this.root().wordType;
+    }
+    basicForm(): string | undefined {
+        return this.wordType() === WordType.Known ? this.root().basicForm : undefined
     }
     reading(): string | undefined {
         return this.tokens.reduce((acc, t) => acc + t.reading, "");
@@ -33,9 +36,14 @@ function flatten(root: IpadicNode): Token[] {
     const result: Token[] = [];
     let node: IpadicNode | undefined = root;
     while (node) {
+        const wordType = Object.values(WordType).find(x => x === node!.token.word_type);
+        if (!wordType) {
+            throw new Error('unrecognized word type');
+        }
         const token = {
             pos: node.pos,
             surfaceForm: node.token.surface_form,
+            wordType: wordType,
             basicForm: node.token.basic_form,
             reading: node.token.reading,
             pronunciation: node.token.pronunciation,

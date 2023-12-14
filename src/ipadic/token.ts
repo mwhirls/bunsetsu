@@ -1,5 +1,5 @@
 import { IpadicFeatures } from "kuromoji";
-import { ConjugatedForm, ConjugationDetail, DetailType, PartOfSpeech, SymbolDetail, SymbolType, TokenDetail } from "../token.js";
+import { ConjugatedForm, ConjugationDetail, DetailType, PartOfSpeech, SymbolDetail, SymbolType, TokenDetail, WordType } from "../token.js";
 import { IpadicPOSDetails } from "../details.js";
 
 export class IpadicNode {

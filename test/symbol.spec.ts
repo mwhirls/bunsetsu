@@ -3,7 +3,8 @@ import * as assert from 'assert'
 import { TestContext } from "./context.js";
 
 export function runTestSuite(context: TestContext) {
-  const runTestCase = (cases: string[], symbolType: bunsetsu.SymbolType) => {
+  const runTestCase = (cases: string[], symbolType: bunsetsu.SymbolType, wordType?: bunsetsu.WordType) => {
+    const type = wordType ?? bunsetsu.WordType.Known;
     for (const c of cases) {
       it(`should identify ${c} as one alphabetical character`, function () {
         assert.ok(context.segmenter);
@@ -13,7 +14,9 @@ export function runTestSuite(context: TestContext) {
         const word = words[0];
         assert.equal(word.pos(), bunsetsu.PartOfSpeech.Symbol);
         assert.equal(word.surfaceForm(), c);
-        assert.equal(word.basicForm(), c);
+        if (type === bunsetsu.WordType.Known) {
+          assert.equal(word.basicForm(), c);
+        }
 
         assert.equal(word.tokens.length, 1);
         const token = word.tokens[0];
@@ -26,50 +29,55 @@ export function runTestSuite(context: TestContext) {
   };
 
   describe('PartOfSpeech.Symbol', async function () {
-    describe('SymbolType.Alphabet', function () {
+    describe('alphabet', function () {
       const alphabet = [...'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ'];
       runTestCase(alphabet, bunsetsu.SymbolType.Alphabet);
     });
 
-    describe('SymbolType.OpeningBracketParens', function () {
+    describe('opening brackets/parenthesis', function () {
       const brackets = [...'「『（'];
       runTestCase(brackets, bunsetsu.SymbolType.OpeningBracketParens);
     });
 
-    describe('SymbolType.ClosingBracketParens', function () {
+    describe('closing brackets/parenthesis', function () {
       const brackets = [...'」』）'];
       runTestCase(brackets, bunsetsu.SymbolType.ClosingBracketParens);
     });
 
-    describe('SymbolType.Period', function () {
+    describe('period', function () {
       const c = '。';
       runTestCase([c], bunsetsu.SymbolType.Period);
     });
 
-    describe('SymbolType.ExclamationMark', function () {
+    describe('exclamation mark', function () {
       const c = '！';
       runTestCase([c], bunsetsu.SymbolType.Unknown);
     });
 
 
-    describe('SymbolType.QuestionMark', function () {
+    describe('question mark', function () {
       const c = '？';
       runTestCase([c], bunsetsu.SymbolType.Unknown);
     });
 
-    describe('SymbolType.Interpunct', function () {
+    describe('interpunct', function () {
       const c = '・';
       runTestCase([c], bunsetsu.SymbolType.Unknown);
     });
 
-    describe('SymbolType.Space', function () {
+    describe('space', function () {
       const space = '　';
       runTestCase([space], bunsetsu.SymbolType.Space);
     });
 
-    describe('SymbolType.Comma', function () {
+    describe('common', function () {
       const comma = '、';
       runTestCase([comma], bunsetsu.SymbolType.Comma);
+    });
+
+    describe('misc. special characters', function () {
+      const brackets = [...'!@#$%^&*()_+-=[]{};\':"\\|,.<>/?~'];
+      runTestCase(brackets, bunsetsu.SymbolType.Unknown, bunsetsu.WordType.Unknown);
     });
   });
 }

@@ -69,9 +69,16 @@ export enum IpadicConjugatedType {
     Ya = '特殊・ヤ'
 }
 
+// String literals from kuromoji (MeCab IPADIC)
+export enum WordType {
+    Known = 'KNOWN',
+    Unknown = 'UNKNOWN',
+}
+
 export interface Token {
     pos: PartOfSpeech;
     surfaceForm: string;
+    wordType: WordType;
     basicForm: string;
     reading: string | undefined;
     pronunciation: string | undefined;

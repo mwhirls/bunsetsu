@@ -1,4 +1,4 @@
-import kuromoji from "kuromoji";
+import kuromoji, { IpadicFeatures } from "kuromoji";
 import { Segmenter } from "../segmenter.js";
 import { PartOfSpeech, ConjugatedForm, IpadicConjugatedType, Token } from "../token.js";
 import { Sentence, Word } from "../word.js";
@@ -42,7 +42,20 @@ class TokenCursor {
     }
 }
 
+function handleSpecialCharacter(cursor: TokenCursor) {
+    const format = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
+    const isSpecialCharacter = format.test(cursor.token().basic_form);
+    if (isSpecialCharacter) {
+        return handleSymbol(cursor);
+    }
+    return null;
+}
+
 function handleNoun(cursor: TokenCursor) {
+    const specialCharacter = handleSpecialCharacter(cursor);
+    if (specialCharacter) {
+        return specialCharacter;
+    }
     const token = cursor.token();
     const details = new IpadicPOSDetails(token);
     const next = cursor.next();
