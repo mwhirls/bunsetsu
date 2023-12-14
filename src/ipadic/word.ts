@@ -16,12 +16,7 @@ export class IpadicWord implements Word {
         return this.tokens.reduce((acc, t) => acc + t.surfaceForm, "");
     }
     basicForm(): string {
-        const root = this.root();
-        if (root.pos === PartOfSpeech.Verb ||
-            root.pos === PartOfSpeech.iAdjective) {
-            return root.basicForm;
-        }
-        return this.tokens.reduce((acc, t) => acc + t.basicForm, "");
+        return this.root().basicForm;
     }
     reading(): string | undefined {
         return this.tokens.reduce((acc, t) => acc + t.reading, "");

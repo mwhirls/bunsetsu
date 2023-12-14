@@ -3,6 +3,7 @@ import * as assert from 'assert'
 import * as symbol from "./symbol.spec.js";
 import * as adjective from "./adjective.spec.js";
 import * as verb from "./verb/verb.spec.js";
+import * as noun from "./noun.spec.js"
 import { TestContext } from "./context.js";
 
 export const DICTIONARY_PATH = "./node_modules/kuromoji/dict"
@@ -66,5 +67,6 @@ describe('Segmenter', function () {
     symbol.runTestSuite(context);
     adjective.runTestSuite(context);
     verb.runTestSuite(context);
+    noun.runTestSuite(context);
   });
 });
