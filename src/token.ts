@@ -8,7 +8,8 @@ export enum PartOfSpeech {
     Verb = '動詞',
     Particle = '助詞',
     AuxillaryVerb = '助動詞',
-    Conjunction = '接続詞'
+    Conjunction = '接続詞',
+    Unknown = '',
 }
 
 // string literals from kuromoji (Mecab IPADIC)

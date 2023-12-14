@@ -1,6 +1,6 @@
 import kuromoji from "kuromoji";
 import { Segmenter } from "../segmenter.js";
-import { PartOfSpeech, ConjugatedForm, IpadicConjugatedType } from "../token.js";
+import { PartOfSpeech, ConjugatedForm, IpadicConjugatedType, Token } from "../token.js";
 import { Sentence, Word } from "../word.js";
 import { IpadicPOSDetails } from "../details.js";
 import { IpadicConjugation, IpadicConjugationDetail, IpadicNode, IpadicSymbol } from "./token.js";
@@ -196,14 +196,21 @@ function handleSuffix(cursor: TokenCursor, conjugatedForm: ConjugatedForm): Ipad
     return conjugatedWord(token, conjugatedForm, suffix);
 }
 
+function isAuxillaryVerb(cursor: TokenCursor) {
+    const token = cursor.token();
+    const tokend = new IpadicPOSDetails(token);
+    return token.pos === PartOfSpeech.AuxillaryVerb ||
+        tokend.isNotIndependent() ||
+        token.basic_form === 'おる' || // ～ておる subsidiary verb gets marked as an independent verb
+        token.basic_form === 'ある'; // ～てある subsidiary verb gets marked as an independent verb
+}
+
 function handleAuxillaryVerb(cursor: TokenCursor | null) {
     if (!cursor) {
         return undefined;
     }
     const token = cursor.token();
-    const tokend = new IpadicPOSDetails(token);
-    if (token.pos !== PartOfSpeech.AuxillaryVerb &&
-        !tokend.isNotIndependent()) {
+    if (!isAuxillaryVerb(cursor)) {
         return undefined;
     }
     const form = token.conjugated_form as ConjugatedForm; // todo
@@ -318,8 +325,10 @@ function nextWord(cursor: TokenCursor): IpadicNode {
             return handleVerbAdjective(cursor);
         case PartOfSpeech.Noun:
             return handleNoun(cursor);
-        default:
-            return new IpadicNode(PartOfSpeech[token.pos as keyof typeof PartOfSpeech], token);
+        default: {
+            const pos = Object.values(PartOfSpeech).find(x => x === token.pos) ?? PartOfSpeech.Unknown;
+            return new IpadicNode(pos, token);
+        }
     }
 }
 
