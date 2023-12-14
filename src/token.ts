@@ -65,6 +65,7 @@ export enum IpadicConjugatedType {
     Godan = '五段',
     Masu = '特殊・マス',
     Ta = '特殊・タ',
+    Ya = '特殊・ヤ'
 }
 
 export interface Token {

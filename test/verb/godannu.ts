@@ -96,5 +96,19 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
+
+    describe('てほしい', function () {
+      const verbs = [
+        { surfaceForm: '死んでほしい', basicForm: '死ぬ', reading: 'シンデホシイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+    });
+
+    describe('やがる', function () {
+      const verbs = [
+        { surfaceForm: '死にやがる', basicForm: '死ぬ', reading: 'シニヤガル' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
   });
 }

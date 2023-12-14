@@ -198,5 +198,24 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
+
+    describe('てほしい', function () {
+      const verbs = [
+        { surfaceForm: '殴ってほしい', basicForm: '殴る', reading: 'ナグッテホシイ' },
+        { surfaceForm: 'なってほしい', basicForm: 'なる', reading: 'ナッテホシイ' },
+        { surfaceForm: '走ってほしい', basicForm: '走る', reading: 'ハシッテホシイ' },
+        { surfaceForm: '作ってほしい', basicForm: '作る', reading: 'ツクッテホシイ' },
+        { surfaceForm: '乗ってほしい', basicForm: '乗る', reading: 'ノッテホシイ' },
+        { surfaceForm: '終わってほしい', basicForm: '終わる', reading: 'オワッテホシイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+    });
+
+    describe('やがる', function () {
+      const verbs = [
+        { surfaceForm: '殴りやがる', basicForm: '殴る', reading: 'ナグリヤガル' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
   });
 }

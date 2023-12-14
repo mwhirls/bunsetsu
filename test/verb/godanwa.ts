@@ -154,5 +154,24 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
+
+    describe('てほしい', function () {
+      const verbs = [
+        { surfaceForm: '言ってほしい', basicForm: '言う', reading: 'イッテホシイ' },
+        { surfaceForm: '買ってほしい', basicForm: '買う', reading: 'カッテホシイ' },
+        { surfaceForm: '使ってほしい', basicForm: '使う', reading: 'ツカッテホシイ' },
+        { surfaceForm: '洗ってほしい', basicForm: '洗う', reading: 'アラッテホシイ' },
+        { surfaceForm: '会ってほしい', basicForm: '会う', reading: 'アッテホシイ' },
+        { surfaceForm: '違ってほしい', basicForm: '違う', reading: 'チガッテホシイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+    });
+
+    describe('やがる', function () {
+      const verbs = [
+        { surfaceForm: '買いやがる', basicForm: '買う', reading: 'カイヤガル' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
   });
 }

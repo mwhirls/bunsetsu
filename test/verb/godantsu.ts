@@ -166,5 +166,17 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
+
+    describe('てほしい', function () {
+      const verbs = [
+        { surfaceForm: '持ってほしい', basicForm: '持つ', reading: 'モッテホシイ' },
+        { surfaceForm: '待ってほしい', basicForm: '待つ', reading: 'マッテホシイ' },
+        { surfaceForm: '立ってほしい', basicForm: '立つ', reading: 'タッテホシイ' },
+        { surfaceForm: '打ってほしい', basicForm: '打つ', reading: 'ウッテホシイ' },
+        { surfaceForm: '勝ってほしい', basicForm: '勝つ', reading: 'カッテホシイ' },
+        { surfaceForm: '育ってほしい', basicForm: '育つ', reading: 'ソダッテホシイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+    });
   });
 }

@@ -167,4 +167,47 @@ export function runTestSuite(context: TestContext) {
     ];
     runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
   });
+
+  describe('てほしい', function () {
+    const verbs = [
+      { surfaceForm: '泳いでほしい', basicForm: '泳ぐ', reading: 'オヨイデホシイ' },
+      { surfaceForm: '脱いでほしい', basicForm: '脱ぐ', reading: 'ヌイデホシイ' },
+      { surfaceForm: '騒いでほしい', basicForm: '騒ぐ', reading: 'サワイデホシイ' },
+      { surfaceForm: '注いでほしい', basicForm: '注ぐ', reading: 'ソソイデホシイ' },
+      { surfaceForm: '稼いでほしい', basicForm: '稼ぐ', reading: 'カセイデホシイ' },
+      { surfaceForm: '繋いでほしい', basicForm: '繋ぐ', reading: 'ツナイデホシイ' },
+    ];
+    runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+  });
+
+  describe('たい', function () {
+    const verbs = [
+      { surfaceForm: '泳ぎたい', basicForm: '泳ぐ', reading: 'オヨギタイ' },
+      { surfaceForm: '脱ぎたい', basicForm: '脱ぐ', reading: 'ヌギタイ' },
+      { surfaceForm: '騒ぎたい', basicForm: '騒ぐ', reading: 'サワギタイ' },
+      { surfaceForm: '注ぎたい', basicForm: '注ぐ', reading: 'ソソギタイ' },
+      { surfaceForm: '稼ぎたい', basicForm: '稼ぐ', reading: 'カセギタイ' },
+      { surfaceForm: '繋ぎたい', basicForm: '繋ぐ', reading: 'ツナギタイ' },
+    ];
+    runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+  });
+
+  describe('たがる', function () {
+    const verbs = [
+      { surfaceForm: '泳ぎたがる', basicForm: '泳ぐ', reading: 'オヨギタガル' },
+      { surfaceForm: '脱ぎたがる', basicForm: '脱ぐ', reading: 'ヌギタガル' },
+      { surfaceForm: '騒ぎたがる', basicForm: '騒ぐ', reading: 'サワギタガル' },
+      { surfaceForm: '注ぎたがる', basicForm: '注ぐ', reading: 'ソソギタガル' },
+      { surfaceForm: '稼ぎたがる', basicForm: '稼ぐ', reading: 'カセギタガル' },
+      { surfaceForm: '繋ぎたがる', basicForm: '繋ぐ', reading: 'ツナギタガル' },
+    ];
+    runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+  });
+
+  describe('やがる', function () {
+    const verbs = [
+      { surfaceForm: '飛びやがる', basicForm: '飛ぶ', reading: 'トビヤガル' },
+    ];
+    runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+  });
 }

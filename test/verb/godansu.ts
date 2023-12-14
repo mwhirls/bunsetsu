@@ -165,5 +165,17 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
+
+    describe('てほしい', function () {
+      const verbs = [
+        { surfaceForm: '話してほしい', basicForm: '話す', reading: 'ハナシテホシイ' },
+        { surfaceForm: '出してほしい', basicForm: '出す', reading: 'ダシテホシイ' },
+        { surfaceForm: '返してほしい', basicForm: '返す', reading: 'カエシテホシイ' },
+        { surfaceForm: '押してほしい', basicForm: '押す', reading: 'オシテホシイ' },
+        { surfaceForm: '渡してほしい', basicForm: '渡す', reading: 'ワタシテホシイ' },
+        { surfaceForm: '貸してほしい', basicForm: '貸す', reading: 'カシテホシイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+    });
   });
 }

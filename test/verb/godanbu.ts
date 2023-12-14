@@ -161,5 +161,47 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
+
+    describe('てほしい', function () {
+      const verbs = [
+        { surfaceForm: '呼んでほしい', basicForm: '呼ぶ', reading: 'ヨンデホシイ' },
+        { surfaceForm: '飛んでほしい', basicForm: '飛ぶ', reading: 'トンデホシイ' },
+        { surfaceForm: '遊んでほしい', basicForm: '遊ぶ', reading: 'アソンデホシイ' },
+        { surfaceForm: '並んでほしい', basicForm: '並ぶ', reading: 'ナランデホシイ' },
+        { surfaceForm: '選んでほしい', basicForm: '選ぶ', reading: 'エランデホシイ' },
+        { surfaceForm: '喜んでほしい', basicForm: '喜ぶ', reading: 'ヨロコンデホシイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+    });
+
+    describe('たい', function () {
+      const verbs = [
+        { surfaceForm: '呼びたい', basicForm: '呼ぶ', reading: 'ヨビタイ' },
+        { surfaceForm: '飛びたい', basicForm: '飛ぶ', reading: 'トビタイ' },
+        { surfaceForm: '遊びたい', basicForm: '遊ぶ', reading: 'アソビタイ' },
+        { surfaceForm: '並びたい', basicForm: '並ぶ', reading: 'ナラビタイ' },
+        { surfaceForm: '選びたい', basicForm: '選ぶ', reading: 'エラビタイ' },
+        { surfaceForm: '喜びたい', basicForm: '喜ぶ', reading: 'ヨロコビタイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
+    describe('たがる', function () {
+      const verbs = [
+        { surfaceForm: '呼びたがる', basicForm: '呼ぶ', reading: 'ヨビタガル' },
+        { surfaceForm: '飛びたがる', basicForm: '飛ぶ', reading: 'トビタガル' },
+        { surfaceForm: '並びたがる', basicForm: '並ぶ', reading: 'ナラビタガル' },
+        { surfaceForm: '選びたがる', basicForm: '選ぶ', reading: 'エラビタガル' },
+        { surfaceForm: '喜びたがる', basicForm: '喜ぶ', reading: 'ヨロコビタガル' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
+    describe('やがる', function () {
+      const verbs = [
+        { surfaceForm: '飛びやがる', basicForm: '飛ぶ', reading: 'トビヤガル' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
   });
 }

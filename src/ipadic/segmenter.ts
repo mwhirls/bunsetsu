@@ -193,6 +193,10 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
         return undefined;
     }
     const form = token.conjugated_form as ConjugatedForm; // todo
+    const suffix = handleSuffix(cursor, form);
+    if (suffix) {
+        return suffix;
+    }
     const next = cursor.next();
     if (next) {
         const nextd = new IpadicPOSDetails(next.token());
