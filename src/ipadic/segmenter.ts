@@ -297,6 +297,7 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
         const auxillary = nextWord(next);
         return conjugatedWord(token, form, auxillary);
     }
+    return conjugatedWord(token, form);
 }
 
 function handleStemAuxillaryForm(cursor: TokenCursor) {

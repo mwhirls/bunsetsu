@@ -112,6 +112,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '歩いた', basicForm: '歩く', reading: 'アルイタ' },
         { surfaceForm: '働いた', basicForm: '働く', reading: 'ハタライタ' },
         { surfaceForm: '着いた', basicForm: '着く', reading: 'ツイタ' },
+        { surfaceForm: '行った', basicForm: '行く', reading: 'イッタ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
