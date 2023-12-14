@@ -269,10 +269,20 @@ function handleMasu(cursor: TokenCursor) {
     return null;
 }
 
+function isCopula(token: IpadicFeatures) {
+    const copulas = [
+        'だ',
+        'です',
+    ];
+    return copulas.some(x => x === token.basic_form);
+}
+
 function isEndOfClause(cursor: TokenCursor) {
     const token = cursor.token();
     const tokend = new IpadicPOSDetails(token);
-    return tokend.isSentenceEndingParticle() || isNominalizer(token);
+    return tokend.isSentenceEndingParticle() ||
+        isNominalizer(token) ||
+        isCopula(token);
 }
 
 function handleAuxillaryVerb(cursor: TokenCursor | null) {

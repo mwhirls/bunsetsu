@@ -6,6 +6,7 @@ import * as verb from "./verb/verb.spec.js";
 import * as noun from "./noun.spec.js"
 import * as subsidiaryVerb from "./subsidiaryVerb.spec.js"
 import * as particle from './particle.spec.js'
+import * as copula from './copula.spec.js'
 import { TestContext } from "./context.js";
 
 export const DICTIONARY_PATH = "./node_modules/kuromoji/dict"
@@ -72,5 +73,6 @@ describe('Segmenter', function () {
     noun.runTestSuite(context);
     subsidiaryVerb.runTestSuite(context);
     particle.runTestSuite(context);
+    copula.runTestSuite(context);
   });
 });
