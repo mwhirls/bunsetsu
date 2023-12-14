@@ -76,6 +76,22 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
+
+    describe('polite form', function () {
+      const verbs = [
+        { surfaceForm: '食べます', basicForm: '食べる', reading: 'タベマス' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
+    describe('polite form (conjugated)', function () {
+      const verbs = [
+        { surfaceForm: '食べません', basicForm: '食べる', reading: 'タベマセン' },
+        { surfaceForm: '食べませんでした', basicForm: '食べる', reading: 'タベマセンデシタ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
     describe('passive form', function () {
       const verbs = [
         { surfaceForm: '食べられる', basicForm: '食べる', reading: 'タベラレル' },

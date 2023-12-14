@@ -138,6 +138,14 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
+    describe('polite form (conjugated)', function () {
+      const verbs = [
+        { surfaceForm: '呼びません', basicForm: '呼ぶ', reading: 'ヨビマセン' },
+        { surfaceForm: '呼びませんでした', basicForm: '呼ぶ', reading: 'ヨビマセンデシタ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
     describe('causative form', function () {
       const verbs = [
         { surfaceForm: '呼ばせる', basicForm: '呼ぶ', reading: 'ヨバセル' },

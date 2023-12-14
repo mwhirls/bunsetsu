@@ -129,6 +129,14 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
+    describe('polite form (conjugated)', function () {
+      const verbs = [
+        { surfaceForm: '聞きません', basicForm: '聞く', reading: 'キキマセン' },
+        { surfaceForm: '聞きませんでした', basicForm: '聞く', reading: 'キキマセンデシタ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
     describe('passive form', function () {
       const verbs = [
         { surfaceForm: '聞かれる', basicForm: '聞く', reading: 'キカレル' },

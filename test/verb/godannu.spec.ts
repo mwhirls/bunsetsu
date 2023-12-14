@@ -76,6 +76,14 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
+    describe('polite form (conjugated)', function () {
+      const verbs = [
+        { surfaceForm: '死にません', basicForm: '死ぬ', reading: 'シニマセン' },
+        { surfaceForm: '死にませんでした', basicForm: '死ぬ', reading: 'シニマセンデシタ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
     describe('passive form', function () {
       const verbs = [
         { surfaceForm: '死なれる', basicForm: '死ぬ', reading: 'シナレル' },

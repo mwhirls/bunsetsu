@@ -251,6 +251,24 @@ function isAuxillaryVerb(cursor: TokenCursor) {
         token.basic_form === 'ある'; // ～てある subsidiary verb gets marked as an independent verb
 }
 
+function handleMasu(cursor: TokenCursor) {
+    const token = cursor.token();
+    if (token.basic_form !== 'ます') {
+        return null;
+    }
+    const form = token.conjugated_form as ConjugatedForm; // todo
+    const next = cursor.next();
+    if (!next) {
+        return conjugatedWord(token, form);
+    }
+    // recurse for ませ（ん）、ませ（んでした）、まし（た）
+    if (next.token().pos === PartOfSpeech.AuxillaryVerb) {
+        const auxillary = nextWord(next);
+        return conjugatedWord(token, form, auxillary);
+    }
+    return null;
+}
+
 function isEndOfClause(cursor: TokenCursor) {
     const token = cursor.token();
     const tokend = new IpadicPOSDetails(token);
@@ -269,6 +287,10 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
     const suffix = handleSuffix(cursor, form);
     if (suffix) {
         return suffix;
+    }
+    const masu = handleMasu(cursor);
+    if (masu) {
+        return masu;
     }
     const next = cursor.next();
     if (!next) {

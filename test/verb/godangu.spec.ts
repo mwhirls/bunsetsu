@@ -129,6 +129,14 @@ export function runTestSuite(context: TestContext) {
     runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
   });
 
+  describe('polite form (conjugated)', function () {
+    const verbs = [
+      { surfaceForm: '泳ぎません', basicForm: '泳ぐ', reading: 'オヨギマセン' },
+      { surfaceForm: '泳ぎませんでした', basicForm: '泳ぐ', reading: 'オヨギマセンデシタ' },
+    ];
+    runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+  });
+
   describe('passive form', function () {
     const verbs = [
       { surfaceForm: '泳がれる', basicForm: '泳ぐ', reading: 'オヨガレル' },

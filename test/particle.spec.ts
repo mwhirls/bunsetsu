@@ -75,6 +75,11 @@ export function runTestSuite(context: TestContext) {
             });
         });
 
+        //ホント申し訳ないことしたなと思ってます
+        // ふっかけすぎです
+        // お願いしまーす
+        // 分かりませんので
+
         /*
         describe('んだ', function () {
         });

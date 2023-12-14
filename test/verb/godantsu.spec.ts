@@ -129,6 +129,14 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
+    describe('polite form (conjugated)', function () {
+      const verbs = [
+        { surfaceForm: '持ちません', basicForm: '持つ', reading: 'モチマセン' },
+        { surfaceForm: '持ちませんでした', basicForm: '持つ', reading: 'モチマセンデシタ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
     describe('passive form', function () {
       const verbs = [
         { surfaceForm: '持たれる', basicForm: '持つ', reading: 'モタレル' },

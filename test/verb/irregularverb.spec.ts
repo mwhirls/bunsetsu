@@ -77,11 +77,19 @@ export function runTestSuite(context: TestContext) {
       runWordTestCase(verbs, bunsetsu.ConjugatedForm.ImperativeYo);
     });
 
-    describe('ConjugatedForm.Continuative', function () {
+    describe('polite form', function () {
       const verbs = [
         { surfaceForm: '来ます', reading: 'キマス' },
+      ];
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Continuative);
+    });
+
+    describe('polite form (conjugated)', function () {
+      const verbs = [
         { surfaceForm: '来ました', reading: 'キマシタ' },
         { surfaceForm: '来まして', reading: 'キマシテ' },
+        { surfaceForm: '来ません', reading: 'キマセン' },
+        { surfaceForm: '来ませんでした', reading: 'キマセンデシタ' },
       ];
       runWordTestCase(verbs, bunsetsu.ConjugatedForm.Continuative);
     });
@@ -210,6 +218,16 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: 'します', reading: 'シマス' },
         { surfaceForm: 'しました', reading: 'シマシタ' },
         { surfaceForm: 'しまして', reading: 'シマシテ' },
+      ];
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Continuative);
+    });
+
+    describe('polite form (conjugated)', function () {
+      const verbs = [
+        { surfaceForm: 'しました', reading: 'シマシタ' },
+        { surfaceForm: 'しまして', reading: 'シマシテ' },
+        { surfaceForm: 'しません', reading: 'シマセン' },
+        { surfaceForm: 'しませんでした', reading: 'シマセンデシタ' },
       ];
       runWordTestCase(verbs, bunsetsu.ConjugatedForm.Continuative);
     });

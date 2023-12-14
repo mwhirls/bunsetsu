@@ -163,6 +163,14 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
+    describe('polite form (conjugated)', function () {
+      const verbs = [
+        { surfaceForm: '殴りません', basicForm: '殴る', reading: 'ナグリマセン' },
+        { surfaceForm: '殴りませんでした', basicForm: '殴る', reading: 'ナグリマセンデシタ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
     describe('passive form', function () {
       const verbs = [
         { surfaceForm: '殴られる', basicForm: '殴る', reading: 'ナグラレル' },
