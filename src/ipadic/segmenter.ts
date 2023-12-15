@@ -29,7 +29,7 @@ class TokenCursor {
 
     advanced(num: number): TokenCursor | null {
         const next = this.curr + num;
-        if (next >= this.tokens.length) {
+        if (next >= this.tokens.length || next < 0) {
             return null;
         }
         return new TokenCursor(this.tokens, next);
@@ -37,6 +37,10 @@ class TokenCursor {
 
     next(): TokenCursor | null {
         return this.advanced(1);
+    }
+
+    previous(): TokenCursor | null {
+        return this.advanced(-1);
     }
 }
 
@@ -130,19 +134,12 @@ function handlePlainForm(cursor: TokenCursor) {
     const token = cursor.token();
     const form = token.conjugated_form as ConjugatedForm; // todo
     const next = cursor.next();
-    if (!next) {
-        // sometimes ん gets categorized as an auxillary verb (食べるん)
-        if (isNominalizer(token)) {
-            return new IpadicNode(PartOfSpeech.Particle, token);
-        }
-        return conjugatedWord(cursor.token(), form);
-    }
-    const nextToken = next.token();
-    if (nextToken.pos !== PartOfSpeech.AuxillaryVerb) {
+    const nextToken = next?.token();
+    if (!next || !nextToken || nextToken.pos !== PartOfSpeech.AuxillaryVerb) {
         return conjugatedWord(token, form);
     }
-    const sentenceEndingCopula = token.basic_form !== 'ん' && isCopula(nextToken);
-    if (isNominalizer(nextToken) || sentenceEndingCopula) {
+
+    if (isEndOfClause(next)) {
         return conjugatedWord(token, form);
     }
 
@@ -247,7 +244,7 @@ function isAuxillaryVerb(cursor: TokenCursor) {
     const token = cursor.token();
     const tokend = new IpadicPOSDetails(token);
     return token.pos === PartOfSpeech.AuxillaryVerb ||
-        tokend.isNotIndependent() ||
+        ((token.pos === PartOfSpeech.Verb || token.pos === PartOfSpeech.iAdjective) && tokend.isNotIndependent()) ||
         token.basic_form === 'おる' || // ～ておる subsidiary verb gets marked as an independent verb
         token.basic_form === 'ある'; // ～てある subsidiary verb gets marked as an independent verb
 }
@@ -262,8 +259,17 @@ function handleMasu(cursor: TokenCursor) {
     if (!next) {
         return conjugatedWord(token, form);
     }
-    // recurse for ませ（ん）、ませ（んでした）、まし（た）
-    if (next.token().pos === PartOfSpeech.AuxillaryVerb) {
+
+    const nextToken = next.token();
+    if (nextToken.surface_form === 'ん') { // recurse for ませ（ん）
+        const masen = nextWord(next);
+        const nextNext = next.next();
+        if (nextNext) {
+            const desu = nextWord(nextNext);
+            masen.next = desu;
+        }
+        return conjugatedWord(token, form, masen);
+    } else if (nextToken.pos === PartOfSpeech.AuxillaryVerb) { // まし（た）
         const auxillary = nextWord(next);
         return conjugatedWord(token, form, auxillary);
     }
@@ -283,7 +289,8 @@ function isEndOfClause(cursor: TokenCursor) {
     const tokend = new IpadicPOSDetails(token);
     return tokend.isSentenceEndingParticle() ||
         isNominalizer(token) ||
-        isCopula(token);
+        isCopula(token) ||
+        token.basic_form == 'じゃん';
 }
 
 function handleAuxillaryVerb(cursor: TokenCursor | null) {
@@ -307,12 +314,10 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
     if (!next) {
         return conjugatedWord(token, form);
     }
-    const nextd = new IpadicPOSDetails(next.token());
     if (isEndOfClause(next)) {
         return conjugatedWord(token, form);
     }
-    if (next.token().pos === PartOfSpeech.AuxillaryVerb ||
-        nextd.isNotIndependent()) {
+    if (isAuxillaryVerb(next)) {
         const auxillary = nextWord(next);
         return conjugatedWord(token, form, auxillary);
     }

@@ -64,64 +64,82 @@ export function runTestSuite(context: TestContext) {
         });
 
         describe('ん', function () {
-            describe('at end of sentence', function () {
-                const cases = [
-                    '食べるん',
-                    '言ったん',
-                    '学生だったん',
-                    '何点だったん',
-                ];
-                runTest(cases, 'ん', -1, context);
-            });
+            const cases = [
+                '言ったん',
+                '学生だったん',
+                '何点だったん',
+            ];
+            runTest(cases, 'ん', -1, context);
         });
 
-        //ホント申し訳ないことしたなと思ってます
-        // ふっかけすぎです
-        // お願いしまーす
-        // 分かりませんので
-
-        /*
         describe('んだ', function () {
+            const cases = [
+                '食べたんだけどね',
+            ];
+            runTest(cases, 'ん', 1, context);
         });
 
         describe('なんだ', function () {
+            const cases = [
+                '元気なんだ',
+                '学生だったんだ'
+            ];
+            runTest(cases, 'ん', -2, context);
         });
 
         describe('ね', function () {
+            const cases = [
+                '元気だね',
+                '優しいね',
+                '飲もうね',
+                '会うね',
+                '言ったんだね'
+            ];
+            runTest(cases, 'ね', -1, context);
         });
 
         describe('よ', function () {
+            const cases = [
+                '元気だよ',
+                '優しいよ',
+                '飲もうよ',
+                '会うよ',
+                '言ったんだよ'
+            ];
+            runTest(cases, 'よ', -1, context);
         });
 
         describe('じゃ', function () {
-        });
-
-        describe('じゃん', function () {
             const cases = [
-                '言ってたじゃん',
+                '元気じゃない',
+                'それじゃ',
+                '学生じゃなかったら',
             ];
-            runTest(cases);
+            runTest(cases, 'じゃ', 1, context);
         });
 
+        /*
         describe('な (prohibition)', function () {
         });
-
+    
         describe('な (admiration)', function () {
             // プリントな
+            ホント申し訳ないことしたなと思ってます
         });
-
+        
+    
         describe('ぜ', function () {
         });
-
+    
         describe('さ', function () {
         });
-
+    
         describe('っけ', function () {
         });
-
+    
         describe('わ', function () {
         });
-
+    
         describe('ぞ', function () {
         });
         */

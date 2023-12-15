@@ -4,6 +4,7 @@ import * as symbol from "./symbol.spec.js";
 import * as adjective from "./adjective.spec.js";
 import * as verb from "./verb/verb.spec.js";
 import * as noun from "./noun.spec.js"
+import * as auxillaryVerb from "./auxillaryVerb.spec.js"
 import * as subsidiaryVerb from "./subsidiaryVerb.spec.js"
 import * as particle from './particle.spec.js'
 import * as copula from './copula.spec.js'
@@ -71,6 +72,7 @@ describe('Segmenter', function () {
     adjective.runTestSuite(context);
     verb.runTestSuite(context);
     noun.runTestSuite(context);
+    auxillaryVerb.runTestSuite(context);
     subsidiaryVerb.runTestSuite(context);
     particle.runTestSuite(context);
     copula.runTestSuite(context);
