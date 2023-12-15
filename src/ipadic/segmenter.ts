@@ -137,17 +137,18 @@ function handlePlainForm(cursor: TokenCursor) {
         }
         return conjugatedWord(cursor.token(), form);
     }
-    // handle cases like 食べるまい
     const nextToken = next.token();
-    if (nextToken.pos === PartOfSpeech.AuxillaryVerb) {
-        // sometimes ん gets categorized as an auxillary verb (食べるん)
-        if (isNominalizer(nextToken)) {
-            return conjugatedWord(token, form);
-        }
-        const auxillary = nextWord(next);
-        return conjugatedWord(token, form, auxillary);
+    if (nextToken.pos !== PartOfSpeech.AuxillaryVerb) {
+        return conjugatedWord(token, form);
     }
-    return conjugatedWord(token, form);
+    const sentenceEndingCopula = token.basic_form !== 'ん' && isCopula(nextToken);
+    if (isNominalizer(nextToken) || sentenceEndingCopula) {
+        return conjugatedWord(token, form);
+    }
+
+    // handle cases like 食べるまい, 食べませ（ん）でした (ん is in plain form)
+    const auxillary = nextWord(next);
+    return conjugatedWord(token, form, auxillary);
 }
 
 function handleConditional(cursor: TokenCursor): IpadicConjugation {

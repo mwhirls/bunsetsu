@@ -67,5 +67,19 @@ export function runTestSuite(context: TestContext) {
             ];
             runTest(cases, 'でした', 'です', -1);
         });
+
+        describe('だろ', function () {
+            const cases = [
+                '腹立つだろ',
+            ];
+            runTest(cases, 'だろ', 'だ', -1);
+        });
+
+        describe('だろう', function () {
+            const cases = [
+                '食べるだろう',
+            ];
+            runTest(cases, 'だろう', 'だ', -1);
+        });
     });
 }
