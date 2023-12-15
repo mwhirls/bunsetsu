@@ -81,5 +81,29 @@ export function runTestSuite(context: TestContext) {
             ];
             runTest(cases, 'だろう', 'だ', -1);
         });
+
+        describe('なら', function () {
+            const cases = [
+                '元気なら',
+                '食べるなら',
+                'この問題なら',
+            ];
+            runTest(cases, 'なら', 'だ', -1);
+        });
+
+        describe('だったら', function () {
+            const cases = [
+                '元気だったら',
+                '言うんだったら',
+            ];
+            runTest(cases, 'だったら', 'だ', -1);
+        });
+
+        describe('で', function () {
+            const cases = [
+                '小さいほうでいいよ',
+            ];
+            runTest(cases, 'で', 'だ', -3);
+        });
     });
 }

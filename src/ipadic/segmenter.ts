@@ -1,6 +1,6 @@
 import kuromoji, { IpadicFeatures } from "kuromoji";
 import { Segmenter } from "../segmenter.js";
-import { PartOfSpeech, ConjugatedForm, IpadicConjugatedType } from "../token.js";
+import { PartOfSpeech, ConjugatedForm, ConjugatedType } from "../token.js";
 import { Sentence, Word } from "../word.js";
 import { IpadicPOSDetails } from "../details.js";
 import { IpadicConjugation, IpadicConjugationDetail, IpadicNode, IpadicSymbol } from "./token.js";
@@ -175,7 +175,7 @@ function handleTeConjunction(cursor: TokenCursor) {
 
 function handleIchidanKureru(cursor: TokenCursor) {
     const token = cursor.token();
-    if (token.conjugated_type === IpadicConjugatedType.IchidanKureru &&
+    if (token.conjugated_type === ConjugatedType.IchidanKureru &&
         token.surface_form === 'くれ') { // irregular imperative of くれる can be miscategorized as continuative form
         const next = cursor.next()?.token();
         if (!next || next.pos === PartOfSpeech.Particle) {
@@ -320,6 +320,17 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
     return conjugatedWord(token, form);
 }
 
+function handleDa(cursor: TokenCursor) {
+    const token = cursor.token();
+    // don't recurse for で (conjugation of auxillary verb だ)
+    if (token.conjugated_type === ConjugatedType.SpecialDa &&
+        token.conjugated_form === ConjugatedForm.Continuative) {
+        const form = token.conjugated_form as ConjugatedForm;
+        return conjugatedWord(token, form);
+    }
+    return null;
+}
+
 function handleStemAuxillaryForm(cursor: TokenCursor) {
     const token = cursor.token();
     const next = cursor.peek();
@@ -338,6 +349,10 @@ function handleStemAuxillaryForm(cursor: TokenCursor) {
     const nasai = handleNasaiContraction(cursor);
     if (nasai) {
         return nasai;
+    }
+    const da = handleDa(cursor);
+    if (da) {
+        return da;
     }
     const suffixed = handleSuffix(cursor, form);
     if (suffixed) {

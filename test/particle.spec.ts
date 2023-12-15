@@ -187,5 +187,22 @@ export function runTestSuite(context: TestContext) {
             ];
             runTest(cases, 'ぞ', -2, context);
         });
+
+        describe('と', function () {
+            const cases = [
+                '元気だと',
+                '言うんだと',
+                'ヤマトの説明だと',
+            ];
+            runTest(cases, 'と', -1, context);
+        });
+
+        describe('から', function () {
+            const cases = [
+                '元気だから',
+                '言うんだから',
+            ];
+            runTest(cases, 'から', -1, context);
+        });
     });
 }

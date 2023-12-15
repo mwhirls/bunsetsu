@@ -11,20 +11,19 @@ function runTest(testCases: string[], auxillary: string, auxillaryIndex: number,
             assert.ok(index >= 0);
 
             const word = words[index];
-            assert.equal(word.pos(), bunsetsu.PartOfSpeech.AuxillaryVerb);
+            assert.equal(word.pos(), bunsetsu.PartOfSpeech.Conjunction);
             assert.equal(word.surfaceForm(), auxillary);
-            assert.equal(word.basicForm(), auxillary);
         });
     }
 }
 
 export function runTestSuite(context: TestContext) {
-    describe('じゃん', function () {
-        const cases = [
-            '元気じゃん',
-            '優しいじゃん',
-            '食べたじゃん',
-        ];
-        runTest(cases, 'じゃん', -1, context);
+    describe('PartOfSpeech.Conjunction', function () {
+        describe('だから', function () {
+            const cases = [
+                'だから',
+            ];
+            runTest(cases, 'だから', -1, context);
+        });
     });
 }

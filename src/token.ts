@@ -52,7 +52,8 @@ export enum ConjugatedForm {
 }
 
 // String literals from kuromoji (MeCab IPADIC)
-export enum IpadicConjugatedType {
+// todo: this list is incomplete
+export enum ConjugatedType {
     Kuru = 'カ変・来ル',
     SuruSpecialClass = 'サ変・−スル',
     Zuru = 'サ変・−ズル',
@@ -64,9 +65,10 @@ export enum IpadicConjugatedType {
     KamiNidan = '上二段',
     Yodan = '四段',
     Godan = '五段',
-    Masu = '特殊・マス',
-    Ta = '特殊・タ',
-    Ya = '特殊・ヤ'
+    SpecialMasu = '特殊・マス',
+    SpecialTa = '特殊・タ',
+    SpecialYa = '特殊・ヤ',
+    SpecialDa = '特殊・ダ',
 }
 
 // String literals from kuromoji (MeCab IPADIC)

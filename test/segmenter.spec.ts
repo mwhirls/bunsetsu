@@ -8,6 +8,7 @@ import * as auxillaryVerb from "./auxillaryVerb.spec.js"
 import * as subsidiaryVerb from "./subsidiaryVerb.spec.js"
 import * as particle from './particle.spec.js'
 import * as copula from './copula.spec.js'
+import * as conjunction from './conjunctions.spec.js'
 import { TestContext } from "./context.js";
 
 export const DICTIONARY_PATH = "./node_modules/kuromoji/dict"
@@ -76,5 +77,6 @@ describe('Segmenter', function () {
     subsidiaryVerb.runTestSuite(context);
     particle.runTestSuite(context);
     copula.runTestSuite(context);
+    conjunction.runTestSuite(context);
   });
 });
