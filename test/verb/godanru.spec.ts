@@ -139,6 +139,13 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
 
+    describe('ちゃ (ては contracted)', function () {
+      const verbs = [
+        { surfaceForm: '走っちゃ', basicForm: '走る', reading: 'ハシッチャ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+    });
+
     describe('past form', function () {
       const verbs = [
         { surfaceForm: '殴った', basicForm: '殴る', reading: 'ナグッタ' },

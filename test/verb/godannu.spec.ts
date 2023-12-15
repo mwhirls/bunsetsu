@@ -62,6 +62,13 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
 
+    describe('ちゃ (ては contracted)', function () {
+      const verbs = [
+        { surfaceForm: '死んじゃ', basicForm: '死ぬ', reading: 'シンジャ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+    });
+
     describe('past form', function () {
       const verbs = [
         { surfaceForm: '死んだ', basicForm: '死ぬ', reading: 'シンダ' },

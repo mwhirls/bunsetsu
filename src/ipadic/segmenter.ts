@@ -148,8 +148,13 @@ function handleTeForm(cursor: TokenCursor) {
         return null;
     }
     const nextToken = next.token();
-    if (nextToken.surface_form === 'て' || // group 早く＋て
-        nextToken.surface_form === 'で') { // group 泳い＋で
+    const teConjunctions = [
+        'て', // group 早く＋て
+        'で', // group 泳い＋で
+        'ちゃ', // group 言っ＋ちゃいけない
+        'じゃ' // group 飲ん＋じゃいけない
+    ];
+    if (teConjunctions.some(x => x === nextToken.surface_form)) {
         const subsidiaryVerb = handleAuxillaryVerb(next.next());
         const particle = nextWord(next);
         particle.next = subsidiaryVerb;
