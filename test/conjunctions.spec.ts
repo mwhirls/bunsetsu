@@ -2,7 +2,7 @@ import { assert } from "chai";
 import { TestContext } from "./context.js";
 import * as bunsetsu from "../src/index.js"
 
-function runTest(testCases: string[], auxillary: string, auxillaryIndex: number, context: TestContext) {
+function runTest(testCases: string[], auxillary: string, auxillaryIndex: number, context: TestContext, pos: bunsetsu.PartOfSpeech) {
     for (const expected of testCases) {
         it(`should identify ${auxillary} as a separate word in the phrase ${expected}`, function () {
             assert.ok(context.segmenter);
@@ -11,7 +11,7 @@ function runTest(testCases: string[], auxillary: string, auxillaryIndex: number,
             assert.ok(index >= 0);
 
             const word = words[index];
-            assert.equal(word.pos(), bunsetsu.PartOfSpeech.Conjunction);
+            assert.equal(word.pos(), pos);
             assert.equal(word.surfaceForm(), auxillary);
         });
     }
@@ -23,7 +23,14 @@ export function runTestSuite(context: TestContext) {
             const cases = [
                 'だから',
             ];
-            runTest(cases, 'だから', -1, context);
+            runTest(cases, 'だから', -1, context, bunsetsu.PartOfSpeech.Conjunction);
+        });
+
+        describe('たら', function () {
+            const cases = [
+                'また時間になったら来ますね',
+            ];
+            runTest(cases, 'なったら', -3, context, bunsetsu.PartOfSpeech.Verb);
         });
     });
 }

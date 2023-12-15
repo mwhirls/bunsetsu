@@ -277,7 +277,8 @@ function isEndOfClause(cursor: TokenCursor) {
     return tokend.isSentenceEndingParticle() ||
         isNominalizer(token) ||
         isCopula(token) ||
-        token.basic_form == 'じゃん';
+        token.basic_form == 'じゃん' ||
+        token.conjugated_type === ConjugatedType.SpecialTa;
 }
 
 function handleAuxillaryVerb(cursor: TokenCursor | null) {
@@ -309,7 +310,6 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
         return conjugatedWord(token, form, auxillary);
     }
     const stemForms = [
-        ConjugatedForm.ConditionalForm,
         ConjugatedForm.Continuative,
         ConjugatedForm.GaruConjunction,
         ConjugatedForm.GozaiConjunction,
@@ -338,7 +338,7 @@ function handleDa(cursor: TokenCursor) {
 
 function handleStemAuxillaryForm(cursor: TokenCursor) {
     const token = cursor.token();
-    const next = cursor.peek();
+    const next = cursor.next();
     const kureru = handleIchidanKureru(cursor);
     if (kureru) {
         return kureru;
@@ -363,7 +363,7 @@ function handleStemAuxillaryForm(cursor: TokenCursor) {
     if (suffixed) {
         return suffixed;
     }
-    const auxillary = handleAuxillaryVerb(cursor.next());
+    const auxillary = handleAuxillaryVerb(next);
     return conjugatedWord(token, form, auxillary);
 }
 
