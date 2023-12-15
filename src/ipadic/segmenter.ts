@@ -130,24 +130,6 @@ function conjugatedWord(stem: kuromoji.IpadicFeatures, conjugatedForm: Conjugate
     return new IpadicConjugation(stem, detail, auxillary);
 }
 
-function handlePlainForm(cursor: TokenCursor) {
-    const token = cursor.token();
-    const form = token.conjugated_form as ConjugatedForm; // todo
-    const next = cursor.next();
-    const nextToken = next?.token();
-    if (!next || !nextToken || nextToken.pos !== PartOfSpeech.AuxillaryVerb) {
-        return conjugatedWord(token, form);
-    }
-
-    if (isEndOfClause(next)) {
-        return conjugatedWord(token, form);
-    }
-
-    // handle cases like 食べるまい, 食べませ（ん）でした (ん is in plain form)
-    const auxillary = nextWord(next);
-    return conjugatedWord(token, form, auxillary);
-}
-
 function handleConditional(cursor: TokenCursor): IpadicConjugation {
     const token = cursor.token();
     const form = ConjugatedForm.ConditionalForm;
@@ -373,7 +355,6 @@ function handleVerbAdjective(cursor: TokenCursor): IpadicConjugation {
     }
     switch (token.conjugated_form) {
         case ConjugatedForm.PlainForm:
-            return handlePlainForm(cursor);
         case ConjugatedForm.ConditionalContraction1:
         case ConjugatedForm.ConditionalContraction2:
         case ConjugatedForm.ImperativeE:

@@ -201,18 +201,5 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
-
-    describe('まい after plain form', function () {
-      const verbs = [
-        { surfaceForm: '飲むまい', basicForm: '飲む', reading: 'ノムマイ' },
-        { surfaceForm: '読むまい', basicForm: '読む', reading: 'ヨムマイ' },
-        { surfaceForm: '頼むまい', basicForm: '頼む', reading: 'タノムマイ' },
-        { surfaceForm: '休むまい', basicForm: '休む', reading: 'ヤスムマイ' },
-        { surfaceForm: '住むまい', basicForm: '住む', reading: 'スムマイ' },
-        { surfaceForm: '楽しむまい', basicForm: '楽しむ', reading: 'タノシムマイ' },
-      ];
-      runTest(verbs, bunsetsu.ConjugatedForm.PlainForm, context);
-    });
-
   });
 }

@@ -167,11 +167,4 @@ export function runTestSuite(context: TestContext) {
     ];
     runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
   });
-
-  describe('まい after plain form ', function () {
-    const verbs = [
-      { surfaceForm: '食べるまい', basicForm: '食べる', reading: 'タベルマイ' },
-    ];
-    runTest(verbs, bunsetsu.ConjugatedForm.PlainForm, context);
-  });
 }
