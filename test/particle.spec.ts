@@ -118,30 +118,74 @@ export function runTestSuite(context: TestContext) {
             runTest(cases, 'じゃ', 1, context);
         });
 
-        /*
         describe('な (prohibition)', function () {
+            const cases = [
+                'するな',
+                '行くな',
+                '飲むな',
+            ];
+            runTest(cases, 'な', 1, context);
         });
-    
-        describe('な (admiration)', function () {
-            // プリントな
-            ホント申し訳ないことしたなと思ってます
+
+        describe('な (admiration, emphasis, etc)', function () {
+            describe('at end of sentence', function () {
+                const cases = [
+                    'プリントな',
+                    '元気だな',
+                ];
+                runTest(cases, 'な', -1, context);
+
+            });
+
+            describe('embedded clause', function () {
+                const cases = [
+                    'ホント申し訳ないことしたなと思ってます',
+                ];
+                runTest(cases, 'な', 4, context);
+
+            });
+
         });
-        
-    
+
         describe('ぜ', function () {
+            const cases = [
+                'ゲットだぜ',
+                '飲もうぜ',
+            ];
+            runTest(cases, 'ぜ', -1, context);
         });
-    
+
         describe('さ', function () {
+            const cases = [
+                'でさ',
+                'やってみるさ',
+                'よくあることさ'
+            ];
+            runTest(cases, 'さ', -1, context);
         });
-    
+
         describe('っけ', function () {
+            const cases = [
+                '次のテストっていつだっけ？',
+                'どこに住んでいるんだっけ？',
+            ];
+            runTest(cases, 'っけ', -2, context);
         });
-    
+
         describe('わ', function () {
+            const cases = [
+                '知ってるわ。',
+                'ちゃんとやるわ！',
+            ];
+            runTest(cases, 'わ', -2, context);
         });
-    
+
         describe('ぞ', function () {
+            const cases = [
+                'がんばるぞ！',
+                'さあ, 始めるぞ！',
+            ];
+            runTest(cases, 'ぞ', -2, context);
         });
-        */
     });
 }
