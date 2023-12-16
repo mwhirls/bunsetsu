@@ -165,6 +165,24 @@ function handleTeForm(cursor: TokenCursor) {
     return null;
 }
 
+function handleTariConditional(cursor: TokenCursor) {
+    const token = cursor.token();
+    const next = cursor.next();
+    if (!next) {
+        return null;
+    }
+    const nextToken = next.token();
+    const tariForms = [
+        'たり', // group 早か＋ったり
+        'だり', // group 飲ん＋だり
+    ];
+    if (tariForms.some(x => x === nextToken.surface_form)) {
+        const particle = nextWord(next);
+        return new IpadicConjugation(token, particle, ConjugatedForm.TaConjunction);
+    }
+    return null;
+}
+
 function handleTeConjunction(cursor: TokenCursor) {
     const teForm = handleTeForm(cursor);
     if (teForm) {
@@ -336,6 +354,7 @@ function handleStemAuxillaryForm(cursor: TokenCursor) {
     const result = reduce(cursor, [
         handleIchidanKureru,
         handleTeForm,
+        handleTariConditional,
         handleNasaiContraction,
         handleDa,
         handleSuffix,
@@ -389,6 +408,12 @@ function handleVerbAdjective(cursor: TokenCursor): IpadicConjugation {
     }
 }
 
+function handleUnknownWord(cursor: TokenCursor) {
+    const token = cursor.token();
+    const pos = Object.values(PartOfSpeech).find(x => x === token.pos) ?? PartOfSpeech.Unknown;
+    return new IpadicNode(pos, token);
+}
+
 function nextWord(cursor: TokenCursor): IpadicNode {
     const token = cursor.token();
     switch (token.pos) {
@@ -404,10 +429,8 @@ function nextWord(cursor: TokenCursor): IpadicNode {
             return handleVerbAdjective(cursor);
         case PartOfSpeech.Noun:
             return handleNoun(cursor);
-        default: {
-            const pos = Object.values(PartOfSpeech).find(x => x === token.pos) ?? PartOfSpeech.Unknown;
-            return new IpadicNode(pos, token);
-        }
+        default:
+            return handleUnknownWord(cursor);
     }
 }
 
