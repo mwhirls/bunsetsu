@@ -142,6 +142,20 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
     });
+
+    describe('やがる', function () {
+      const verbs = [
+        { surfaceForm: '食べやがる', basicForm: '食べる', reading: 'タベヤガル' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
+    });
+
+    describe('まい ', function () {
+      const verbs = [
+        { surfaceForm: '食べまい', basicForm: '食べる', reading: 'タベマイ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+    });
   });
 
   // くれる is generally treated as 一段, but has a few irregularities
@@ -159,19 +173,5 @@ export function runTestSuite(context: TestContext) {
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.SpecialIrrealis, context);
     });
-  });
-
-  describe('やがる', function () {
-    const verbs = [
-      { surfaceForm: '食べやがる', basicForm: '食べる', reading: 'タベヤガル' },
-    ];
-    runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
-  });
-
-  describe('まい ', function () {
-    const verbs = [
-      { surfaceForm: '食べまい', basicForm: '食べる', reading: 'タベマイ' },
-    ];
-    runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
   });
 }

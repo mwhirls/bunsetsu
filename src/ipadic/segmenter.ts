@@ -44,6 +44,14 @@ class TokenCursor {
     }
 }
 
+type TokenHandler = (cursor: TokenCursor) => IpadicNode | null;
+
+function reduce(cursor: TokenCursor, handlers: TokenHandler[]): IpadicNode | null {
+    return handlers.reduce((prev: IpadicNode | null, curr: TokenHandler) => {
+        return prev ?? curr(cursor);
+    }, null)
+}
+
 function handleSpecialCharacter(cursor: TokenCursor) {
     const format = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
     const isSpecialCharacter = format.test(cursor.token().basic_form);
@@ -74,13 +82,12 @@ function handleNominalizer(cursor: TokenCursor) {
 }
 
 function handleNoun(cursor: TokenCursor) {
-    const specialCharacter = handleSpecialCharacter(cursor);
-    if (specialCharacter) {
-        return specialCharacter;
-    }
-    const nominalizer = handleNominalizer(cursor);
-    if (nominalizer) {
-        return nominalizer;
+    const result = reduce(cursor, [
+        handleSpecialCharacter,
+        handleNominalizer,
+    ]);
+    if (result) {
+        return result;
     }
     const token = cursor.token();
     const details = new IpadicPOSDetails(token);
@@ -155,7 +162,8 @@ function handleTeForm(cursor: TokenCursor) {
         'じゃ' // group 飲ん＋じゃいけない
     ];
     if (teConjunctions.some(x => x === nextToken.surface_form)) {
-        const subsidiaryVerb = handleAuxillaryVerb(next.next());
+        const nextNext = next.next();
+        const subsidiaryVerb = nextNext ? handleAuxillaryVerb(nextNext) : undefined;
         const particle = nextWord(next);
         particle.next = subsidiaryVerb;
         return conjugatedWord(token, ConjugatedForm.TeConjunction, particle);
@@ -182,15 +190,15 @@ function handleIchidanKureru(cursor: TokenCursor) {
     const token = cursor.token();
     if (token.conjugated_type === ConjugatedType.IchidanKureru &&
         token.surface_form === 'くれ') { // irregular imperative of くれる can be miscategorized as continuative form
-        const next = cursor.next()?.token();
-        if (!next || next.pos === PartOfSpeech.Particle) {
+        const nextToken = cursor.next()?.token();
+        if (!nextToken || nextToken.pos === PartOfSpeech.Particle) {
             return conjugatedWord(token, ConjugatedForm.ImperativeE);
         }
     }
     return null;
 }
 
-function handleNasaiContraction(cursor: TokenCursor) {
+function handleNasaiContraction(cursor: TokenCursor): IpadicNode | null {
     // attempt to manually infer the contracted ～なさい form (e.g. 食べな) 
     // since it tends to come through as stem + sentence-ending particle
     const token = cursor.token();
@@ -210,10 +218,12 @@ function handleNasaiContraction(cursor: TokenCursor) {
         const auxillary = nextWord(next);
         return conjugatedWord(token, ConjugatedForm.Continuative, auxillary);
     }
+    return null;
 }
 
-function handleSuffix(cursor: TokenCursor, conjugatedForm: ConjugatedForm): IpadicNode | null {
+function handleSuffix(cursor: TokenCursor): IpadicNode | null {
     const token = cursor.token();
+    const form = token.conjugated_form as ConjugatedForm; // todo
     const next = cursor.next();
     if (!next) {
         return null;
@@ -224,7 +234,7 @@ function handleSuffix(cursor: TokenCursor, conjugatedForm: ConjugatedForm): Ipad
         return null;
     }
     const suffix = nextWord(next);
-    return conjugatedWord(token, conjugatedForm, suffix);
+    return conjugatedWord(token, form, suffix);
 }
 
 function isAuxillaryVerb(cursor: TokenCursor) {
@@ -291,37 +301,23 @@ function handleTa(cursor: TokenCursor) {
 }
 
 
-function handleAuxillaryVerb(cursor: TokenCursor | null) {
-    if (!cursor) {
-        return undefined;
-    }
-    const token = cursor.token();
+function handleAuxillaryVerb(cursor: TokenCursor) {
     if (!isAuxillaryVerb(cursor)) {
         return undefined;
     }
+    const result = reduce(cursor, [
+        handleSuffix,
+        handleMasu,
+        handleTa,
+    ]);
+    if (result) {
+        return result;
+    }
+    const token = cursor.token();
     const form = token.conjugated_form as ConjugatedForm; // todo
-    const suffix = handleSuffix(cursor, form);
-    if (suffix) {
-        return suffix;
-    }
-    const masu = handleMasu(cursor);
-    if (masu) {
-        return masu;
-    }
-    const ta = handleTa(cursor);
-    if (ta) {
-        return ta;
-    }
     const next = cursor.next();
-    if (!next) {
+    if (!next || isSeparateWord(next)) {
         return conjugatedWord(token, form);
-    }
-    if (isSeparateWord(next)) {
-        return conjugatedWord(token, form);
-    }
-    if (isAuxillaryVerb(next)) {
-        const auxillary = nextWord(next);
-        return conjugatedWord(token, form, auxillary);
     }
     const stemForms = [
         ConjugatedForm.ConditionalForm,
@@ -353,30 +349,20 @@ function handleDa(cursor: TokenCursor) {
 
 function handleStemAuxillaryForm(cursor: TokenCursor) {
     const token = cursor.token();
-    const next = cursor.next();
-    const kureru = handleIchidanKureru(cursor);
-    if (kureru) {
-        return kureru;
+    const result = reduce(cursor, [
+        handleIchidanKureru,
+        handleTeForm,
+        handleNasaiContraction,
+        handleDa,
+        handleSuffix,
+    ]);
+    if (result) {
+        return result;
     }
+    const next = cursor.next();
     const form = token.conjugated_form as ConjugatedForm;
     if (!next) {
         return conjugatedWord(token, form);
-    }
-    const teForm = handleTeForm(cursor);
-    if (teForm) {
-        return teForm;
-    }
-    const nasai = handleNasaiContraction(cursor);
-    if (nasai) {
-        return nasai;
-    }
-    const da = handleDa(cursor);
-    if (da) {
-        return da;
-    }
-    const suffixed = handleSuffix(cursor, form);
-    if (suffixed) {
-        return suffixed;
     }
     const auxillary = handleAuxillaryVerb(next);
     return conjugatedWord(token, form, auxillary);
