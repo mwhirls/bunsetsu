@@ -19,10 +19,21 @@ export class IpadicNode {
     }
 }
 
+function getConjugatedForm(token: IpadicFeatures) {
+    const form = Object.values(ConjugatedForm).find(x => x === token.conjugated_form);
+    if (!form) {
+        throw new Error('unrecognized conjugated form');
+    }
+    return form;
+}
+
 export class IpadicConjugation extends IpadicNode {
-    constructor(token: IpadicFeatures, detail: IpadicConjugationDetail);
-    constructor(token: IpadicFeatures, detail: IpadicConjugationDetail, auxillary?: IpadicNode);
-    constructor(token: IpadicFeatures, detail: IpadicConjugationDetail, auxillary?: IpadicNode) {
+    constructor(token: IpadicFeatures);
+    constructor(token: IpadicFeatures, auxillary?: IpadicNode);
+    constructor(token: IpadicFeatures, auxillary?: IpadicNode, conjugatedForm?: ConjugatedForm);
+    constructor(token: IpadicFeatures, auxillary?: IpadicNode, conjugatedForm?: ConjugatedForm) {
+        const form = conjugatedForm ?? getConjugatedForm(token);
+        const detail = new IpadicConjugationDetail(form);
         const pos = Object.values(PartOfSpeech).find(x => x === token.pos);
         if (!pos) {
             throw new Error('unrecognized part of speech');

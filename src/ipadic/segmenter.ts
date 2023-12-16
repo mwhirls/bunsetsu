@@ -3,7 +3,7 @@ import { Segmenter } from "../segmenter.js";
 import { PartOfSpeech, ConjugatedForm, ConjugatedType } from "../token.js";
 import { Sentence, Word } from "../word.js";
 import { IpadicPOSDetails } from "../details.js";
-import { IpadicConjugation, IpadicConjugationDetail, IpadicNode, IpadicSymbol } from "./token.js";
+import { IpadicConjugation, IpadicNode, IpadicSymbol } from "./token.js";
 import { IpadicSentence, IpadicWord } from "./word.js";
 
 class TokenCursor {
@@ -132,20 +132,14 @@ function handleSymbol(cursor: TokenCursor) {
     return new IpadicSymbol(token);
 }
 
-function conjugatedWord(stem: kuromoji.IpadicFeatures, conjugatedForm: ConjugatedForm, auxillary?: IpadicNode): IpadicConjugation {
-    const detail = new IpadicConjugationDetail(conjugatedForm);
-    return new IpadicConjugation(stem, detail, auxillary);
-}
-
 function handleConditional(cursor: TokenCursor): IpadicConjugation {
     const token = cursor.token();
-    const form = ConjugatedForm.ConditionalForm;
     const next = cursor.next();
     if (next && next.token().surface_form === 'ば') { // group 来れ+ば
         const particle = nextWord(next);
-        return conjugatedWord(token, form, particle);
+        return new IpadicConjugation(token, particle);
     }
-    return conjugatedWord(token, form);
+    return new IpadicConjugation(token);
 }
 
 function handleTeForm(cursor: TokenCursor) {
@@ -166,7 +160,7 @@ function handleTeForm(cursor: TokenCursor) {
         const subsidiaryVerb = nextNext ? handleAuxillaryVerb(nextNext) : undefined;
         const particle = nextWord(next);
         particle.next = subsidiaryVerb;
-        return conjugatedWord(token, ConjugatedForm.TeConjunction, particle);
+        return new IpadicConjugation(token, particle, ConjugatedForm.TeConjunction);
     }
     return null;
 }
@@ -179,11 +173,11 @@ function handleTeConjunction(cursor: TokenCursor) {
     const token = cursor.token();
     const next = cursor.next();
     if (!next) {
-        return conjugatedWord(cursor.token(), ConjugatedForm.TeConjunction);
+        return new IpadicConjugation(cursor.token());
     }
     // adverbial form, e.g. 早く
     const auxillary = handleAuxillaryVerb(next); // 早くない
-    return conjugatedWord(token, ConjugatedForm.TeConjunction, auxillary);
+    return new IpadicConjugation(token, auxillary);
 }
 
 function handleIchidanKureru(cursor: TokenCursor) {
@@ -192,7 +186,7 @@ function handleIchidanKureru(cursor: TokenCursor) {
         token.surface_form === 'くれ') { // irregular imperative of くれる can be miscategorized as continuative form
         const nextToken = cursor.next()?.token();
         if (!nextToken || nextToken.pos === PartOfSpeech.Particle) {
-            return conjugatedWord(token, ConjugatedForm.ImperativeE);
+            return new IpadicConjugation(token, undefined, ConjugatedForm.ImperativeE);
         }
     }
     return null;
@@ -202,28 +196,22 @@ function handleNasaiContraction(cursor: TokenCursor): IpadicNode | null {
     // attempt to manually infer the contracted ～なさい form (e.g. 食べな) 
     // since it tends to come through as stem + sentence-ending particle
     const token = cursor.token();
-    if (token.pos !== PartOfSpeech.Verb &&
-        token.pos !== PartOfSpeech.AuxillaryVerb) {
-        return null;
-    }
-    if (token.conjugated_form !== ConjugatedForm.Continuative) {
-        return null;
-    }
     const next = cursor.next();
-    if (!next) {
+    if (!next ||
+        (token.pos !== PartOfSpeech.Verb && token.pos !== PartOfSpeech.AuxillaryVerb) ||
+        token.conjugated_form !== ConjugatedForm.Continuative) {
         return null;
     }
     const nextToken = next.token();
     if (nextToken.surface_form === 'な') {
         const auxillary = nextWord(next);
-        return conjugatedWord(token, ConjugatedForm.Continuative, auxillary);
+        return new IpadicConjugation(token, auxillary);
     }
     return null;
 }
 
 function handleSuffix(cursor: TokenCursor): IpadicNode | null {
     const token = cursor.token();
-    const form = token.conjugated_form as ConjugatedForm; // todo
     const next = cursor.next();
     if (!next) {
         return null;
@@ -234,7 +222,7 @@ function handleSuffix(cursor: TokenCursor): IpadicNode | null {
         return null;
     }
     const suffix = nextWord(next);
-    return conjugatedWord(token, form, suffix);
+    return new IpadicConjugation(token, suffix);
 }
 
 function isAuxillaryVerb(cursor: TokenCursor) {
@@ -251,10 +239,9 @@ function handleMasu(cursor: TokenCursor) {
     if (token.basic_form !== 'ます') {
         return null;
     }
-    const form = token.conjugated_form as ConjugatedForm; // todo
     const next = cursor.next();
     if (!next) {
-        return conjugatedWord(token, form);
+        return new IpadicConjugation(token);
     }
 
     const nextToken = next.token();
@@ -265,10 +252,10 @@ function handleMasu(cursor: TokenCursor) {
             const desu = nextWord(nextNext);
             masen.next = desu;
         }
-        return conjugatedWord(token, form, masen);
+        return new IpadicConjugation(token, masen);
     } else if (nextToken.pos === PartOfSpeech.AuxillaryVerb) { // まし（た）
         const auxillary = nextWord(next);
-        return conjugatedWord(token, form, auxillary);
+        return new IpadicConjugation(token, auxillary);
     }
     return null;
 }
@@ -293,9 +280,8 @@ function isSeparateWord(cursor: TokenCursor) {
 
 function handleTa(cursor: TokenCursor) {
     const token = cursor.token();
-    const form = token.conjugated_form as ConjugatedForm; // todo
     if (token.conjugated_type === ConjugatedType.SpecialTa) {
-        return conjugatedWord(token, form);
+        return new IpadicConjugation(token);
     }
     return null;
 }
@@ -314,10 +300,9 @@ function handleAuxillaryVerb(cursor: TokenCursor) {
         return result;
     }
     const token = cursor.token();
-    const form = token.conjugated_form as ConjugatedForm; // todo
     const next = cursor.next();
     if (!next || isSeparateWord(next)) {
-        return conjugatedWord(token, form);
+        return new IpadicConjugation(token);
     }
     const stemForms = [
         ConjugatedForm.ConditionalForm,
@@ -331,9 +316,9 @@ function handleAuxillaryVerb(cursor: TokenCursor) {
     const isStem = stemForms.some(x => x === token.conjugated_form);
     if (isStem) {
         const auxillary = nextWord(next);
-        return conjugatedWord(token, form, auxillary);
+        return new IpadicConjugation(token, auxillary);
     }
-    return conjugatedWord(token, form);
+    return new IpadicConjugation(token);
 }
 
 function handleDa(cursor: TokenCursor) {
@@ -341,8 +326,7 @@ function handleDa(cursor: TokenCursor) {
     // don't recurse for で (conjugation of auxillary verb だ)
     if (token.conjugated_type === ConjugatedType.SpecialDa &&
         token.conjugated_form === ConjugatedForm.Continuative) {
-        const form = token.conjugated_form as ConjugatedForm;
-        return conjugatedWord(token, form);
+        return new IpadicConjugation(token);
     }
     return null;
 }
@@ -360,12 +344,11 @@ function handleStemAuxillaryForm(cursor: TokenCursor) {
         return result;
     }
     const next = cursor.next();
-    const form = token.conjugated_form as ConjugatedForm;
     if (!next) {
-        return conjugatedWord(token, form);
+        return new IpadicConjugation(token);
     }
     const auxillary = handleAuxillaryVerb(next);
-    return conjugatedWord(token, form, auxillary);
+    return new IpadicConjugation(token, auxillary);
 }
 
 function handleVerbAdjective(cursor: TokenCursor): IpadicConjugation {
@@ -386,7 +369,7 @@ function handleVerbAdjective(cursor: TokenCursor): IpadicConjugation {
         case ConjugatedForm.SpecialIndeclinableNominalConjunction1:
         case ConjugatedForm.SpecialIndeclinableNominalConjunction2:
         case ConjugatedForm.ClassicalPlainForm:
-            return conjugatedWord(token, token.conjugated_form);
+            return new IpadicConjugation(token);
         case ConjugatedForm.ConditionalForm:
             return handleConditional(cursor);
         case ConjugatedForm.Continuative:
