@@ -174,7 +174,7 @@ function handleTeConjunction(cursor: TokenCursor) {
         return conjugatedWord(cursor.token(), ConjugatedForm.TeConjunction);
     }
     // adverbial form, e.g. 早く
-    const auxillary = nextWord(next);
+    const auxillary = handleAuxillaryVerb(next); // 早くない
     return conjugatedWord(token, ConjugatedForm.TeConjunction, auxillary);
 }
 
