@@ -142,6 +142,18 @@ function handleConditional(cursor: TokenCursor): IpadicConjugation {
     return new IpadicConjugation(token);
 }
 
+function handleTeWaForm(cursor: TokenCursor) {
+    const token = cursor.token();
+    const next = cursor.next();
+    if (token.surface_form != 'は' || !next) {
+        return undefined
+    }
+    const auxillaryVerb = next ? handleAuxillaryVerb(next) : undefined;
+    const particle = nextWord(cursor);
+    particle.next = auxillaryVerb;
+    return particle;
+}
+
 function handleTeForm(cursor: TokenCursor) {
     const token = cursor.token();
     const next = cursor.next();
@@ -157,9 +169,11 @@ function handleTeForm(cursor: TokenCursor) {
     ];
     if (teConjunctions.some(x => x === nextToken.surface_form)) {
         const nextNext = next.next();
-        const subsidiaryVerb = nextNext ? handleAuxillaryVerb(nextNext) : undefined;
         const particle = nextWord(next);
-        particle.next = subsidiaryVerb;
+        if (nextNext) {
+            const subsidiaryVerb = handleTeWaForm(nextNext) ?? handleAuxillaryVerb(nextNext);
+            particle.next = subsidiaryVerb;
+        }
         return new IpadicConjugation(token, particle, ConjugatedForm.TeConjunction);
     }
     return undefined;

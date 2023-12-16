@@ -54,5 +54,12 @@ export function runTestSuite(context: TestContext) {
             ];
             runTest(cases, '買ってくれたり', 0, context, bunsetsu.PartOfSpeech.Verb);
         });
+
+        describe('ては', function () {
+            const cases = [
+                '買ってはいけないです',
+            ];
+            runTest(cases, '買ってはいけない', 0, context, bunsetsu.PartOfSpeech.Verb);
+        });
     });
 }
