@@ -271,15 +271,25 @@ function isCopula(token: IpadicFeatures) {
     return copulas.some(x => x === token.basic_form);
 }
 
-function isEndOfClause(cursor: TokenCursor) {
+function isSeparateWord(cursor: TokenCursor) {
     const token = cursor.token();
     const tokend = new IpadicPOSDetails(token);
     return tokend.isSentenceEndingParticle() ||
         isNominalizer(token) ||
         isCopula(token) ||
-        token.basic_form == 'じゃん' ||
-        token.conjugated_type === ConjugatedType.SpecialTa;
+        token.basic_form == 'じゃん';
 }
+
+
+function handleTa(cursor: TokenCursor) {
+    const token = cursor.token();
+    const form = token.conjugated_form as ConjugatedForm; // todo
+    if (token.conjugated_type === ConjugatedType.SpecialTa) {
+        return conjugatedWord(token, form);
+    }
+    return null;
+}
+
 
 function handleAuxillaryVerb(cursor: TokenCursor | null) {
     if (!cursor) {
@@ -298,11 +308,15 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
     if (masu) {
         return masu;
     }
+    const ta = handleTa(cursor);
+    if (ta) {
+        return ta;
+    }
     const next = cursor.next();
     if (!next) {
         return conjugatedWord(token, form);
     }
-    if (isEndOfClause(next)) {
+    if (isSeparateWord(next)) {
         return conjugatedWord(token, form);
     }
     if (isAuxillaryVerb(next)) {
@@ -310,6 +324,7 @@ function handleAuxillaryVerb(cursor: TokenCursor | null) {
         return conjugatedWord(token, form, auxillary);
     }
     const stemForms = [
+        ConjugatedForm.ConditionalForm,
         ConjugatedForm.Continuative,
         ConjugatedForm.GaruConjunction,
         ConjugatedForm.GozaiConjunction,

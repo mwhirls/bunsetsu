@@ -233,6 +233,22 @@ export function runTestSuite(context: TestContext) {
                 ];
                 runTest(verbs, 'くる', 2, context);
             });
+
+            describe('as past form', function () {
+                const verbs = [
+                    { surfaceForm: 'してきた', basicForm: 'する' },
+                    { surfaceForm: '来てきた', basicForm: '来る' },
+                    { surfaceForm: '食べてきた', basicForm: '食べる' },
+                    { surfaceForm: '走ってきた', basicForm: '走る' },
+                    { surfaceForm: '聞いてきた', basicForm: '聞く' },
+                    { surfaceForm: '飲んできた', basicForm: '飲む' },
+                    { surfaceForm: '泳いできた', basicForm: '泳ぐ' },
+                    { surfaceForm: '話してきた', basicForm: '話す' },
+                    { surfaceForm: '待ってきた', basicForm: '待つ' },
+                    { surfaceForm: '言ってきた', basicForm: '言う' },
+                ];
+                runTest(verbs, 'くる', 2, context);
+            });
         });
 
         describe('～てまいる', function () {
@@ -379,19 +395,37 @@ export function runTestSuite(context: TestContext) {
         });
 
         describe('～てみる', function () {
-            const verbs = [
-                { surfaceForm: 'してみる', basicForm: 'する' },
-                { surfaceForm: '来てみる', basicForm: '来る' },
-                { surfaceForm: '食べてみる', basicForm: '食べる' },
-                { surfaceForm: '走ってみる', basicForm: '走る' },
-                { surfaceForm: '聞いてみる', basicForm: '聞く' },
-                { surfaceForm: '飲んでみる', basicForm: '飲む' },
-                { surfaceForm: '泳いでみる', basicForm: '泳ぐ' },
-                { surfaceForm: '話してみる', basicForm: '話す' },
-                { surfaceForm: '待ってみる', basicForm: '待つ' },
-                { surfaceForm: '言ってみる', basicForm: '言う' },
-            ];
-            runTest(verbs, 'みる', 2, context);
+            describe('as plain form', function () {
+                const verbs = [
+                    { surfaceForm: 'してみる', basicForm: 'する' },
+                    { surfaceForm: '来てみる', basicForm: '来る' },
+                    { surfaceForm: '食べてみる', basicForm: '食べる' },
+                    { surfaceForm: '走ってみる', basicForm: '走る' },
+                    { surfaceForm: '聞いてみる', basicForm: '聞く' },
+                    { surfaceForm: '飲んでみる', basicForm: '飲む' },
+                    { surfaceForm: '泳いでみる', basicForm: '泳ぐ' },
+                    { surfaceForm: '話してみる', basicForm: '話す' },
+                    { surfaceForm: '待ってみる', basicForm: '待つ' },
+                    { surfaceForm: '言ってみる', basicForm: '言う' },
+                ];
+                runTest(verbs, 'みる', 2, context);
+            });
+
+            describe('as conditional form', function () {
+                const verbs = [
+                    { surfaceForm: 'してみれば', basicForm: 'する' },
+                    { surfaceForm: '来てみれば', basicForm: '来る' },
+                    { surfaceForm: '食べてみれば', basicForm: '食べる' },
+                    { surfaceForm: '走ってみれば', basicForm: '走る' },
+                    { surfaceForm: '聞いてみれば', basicForm: '聞く' },
+                    { surfaceForm: '飲んでみれば', basicForm: '飲む' },
+                    { surfaceForm: '泳いでみれば', basicForm: '泳ぐ' },
+                    { surfaceForm: '話してみれば', basicForm: '話す' },
+                    { surfaceForm: '待ってみれば', basicForm: '待つ' },
+                    { surfaceForm: '言ってみれば', basicForm: '言う' },
+                ];
+                runTest(verbs, 'みる', 2, context);
+            });
         });
 
         describe('～てある', function () {
