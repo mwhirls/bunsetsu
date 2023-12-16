@@ -19,37 +19,37 @@ class TokenCursor {
         return this.tokens[this.curr];
     }
 
-    peek(): kuromoji.IpadicFeatures | null {
+    peek(): kuromoji.IpadicFeatures | undefined {
         const next = this.curr + 1;
         if (next >= this.tokens.length) {
-            return null;
+            return undefined;
         }
         return this.tokens[next];
     }
 
-    advanced(num: number): TokenCursor | null {
+    advanced(num: number): TokenCursor | undefined {
         const next = this.curr + num;
         if (next >= this.tokens.length || next < 0) {
-            return null;
+            return undefined;
         }
         return new TokenCursor(this.tokens, next);
     }
 
-    next(): TokenCursor | null {
+    next(): TokenCursor | undefined {
         return this.advanced(1);
     }
 
-    previous(): TokenCursor | null {
+    previous(): TokenCursor | undefined {
         return this.advanced(-1);
     }
 }
 
-type TokenHandler = (cursor: TokenCursor) => IpadicNode | null;
+type TokenHandler = (cursor: TokenCursor) => IpadicNode | undefined;
 
-function reduce(cursor: TokenCursor, handlers: TokenHandler[]): IpadicNode | null {
-    return handlers.reduce((prev: IpadicNode | null, curr: TokenHandler) => {
+function reduce(cursor: TokenCursor, handlers: TokenHandler[]): IpadicNode | undefined {
+    return handlers.reduce((prev: IpadicNode | undefined, curr: TokenHandler) => {
         return prev ?? curr(cursor);
-    }, null)
+    }, undefined)
 }
 
 function handleSpecialCharacter(cursor: TokenCursor) {
@@ -58,7 +58,7 @@ function handleSpecialCharacter(cursor: TokenCursor) {
     if (isSpecialCharacter) {
         return handleSymbol(cursor);
     }
-    return null;
+    return undefined;
 }
 
 function isNominalizer(token: IpadicFeatures) {
@@ -73,7 +73,7 @@ function isNominalizer(token: IpadicFeatures) {
 function handleNominalizer(cursor: TokenCursor) {
     const token = cursor.token();
     if (!isNominalizer(token)) {
-        return null;
+        return undefined;
     }
     if (token.surface_form === 'こと') {
         return new IpadicNode(PartOfSpeech.Noun, token);
@@ -118,7 +118,7 @@ function handleFiller(cursor: TokenCursor) {
     if (token.pos === PartOfSpeech.Filler) {
         return new IpadicNode(PartOfSpeech.Filler, token);
     }
-    return null;
+    return undefined;
 }
 
 function handleInterjection(cursor: TokenCursor) {
@@ -146,7 +146,7 @@ function handleTeForm(cursor: TokenCursor) {
     const token = cursor.token();
     const next = cursor.next();
     if (!next) {
-        return null;
+        return undefined;
     }
     const nextToken = next.token();
     const teConjunctions = [
@@ -162,14 +162,14 @@ function handleTeForm(cursor: TokenCursor) {
         particle.next = subsidiaryVerb;
         return new IpadicConjugation(token, particle, ConjugatedForm.TeConjunction);
     }
-    return null;
+    return undefined;
 }
 
 function handleTariConditional(cursor: TokenCursor) {
     const token = cursor.token();
     const next = cursor.next();
     if (!next) {
-        return null;
+        return undefined;
     }
     const nextToken = next.token();
     const tariForms = [
@@ -180,7 +180,7 @@ function handleTariConditional(cursor: TokenCursor) {
         const particle = nextWord(next);
         return new IpadicConjugation(token, particle, ConjugatedForm.TaConjunction);
     }
-    return null;
+    return undefined;
 }
 
 function handleTeConjunction(cursor: TokenCursor) {
@@ -207,10 +207,10 @@ function handleIchidanKureru(cursor: TokenCursor) {
             return new IpadicConjugation(token, undefined, ConjugatedForm.ImperativeE);
         }
     }
-    return null;
+    return undefined;
 }
 
-function handleNasaiContraction(cursor: TokenCursor): IpadicNode | null {
+function handleNasaiContraction(cursor: TokenCursor): IpadicNode | undefined {
     // attempt to manually infer the contracted ～なさい form (e.g. 食べな) 
     // since it tends to come through as stem + sentence-ending particle
     const token = cursor.token();
@@ -218,26 +218,26 @@ function handleNasaiContraction(cursor: TokenCursor): IpadicNode | null {
     if (!next ||
         (token.pos !== PartOfSpeech.Verb && token.pos !== PartOfSpeech.AuxillaryVerb) ||
         token.conjugated_form !== ConjugatedForm.Continuative) {
-        return null;
+        return undefined;
     }
     const nextToken = next.token();
     if (nextToken.surface_form === 'な') {
         const auxillary = nextWord(next);
         return new IpadicConjugation(token, auxillary);
     }
-    return null;
+    return undefined;
 }
 
-function handleSuffix(cursor: TokenCursor): IpadicNode | null {
+function handleSuffix(cursor: TokenCursor): IpadicNode | undefined {
     const token = cursor.token();
     const next = cursor.next();
     if (!next) {
-        return null;
+        return undefined;
     }
     const nextToken = next.token();
     const details = new IpadicPOSDetails(nextToken);
     if (!details.isSuffix()) {
-        return null;
+        return undefined;
     }
     const suffix = nextWord(next);
     return new IpadicConjugation(token, suffix);
@@ -255,7 +255,7 @@ function isAuxillaryVerb(cursor: TokenCursor) {
 function handleMasu(cursor: TokenCursor) {
     const token = cursor.token();
     if (token.basic_form !== 'ます') {
-        return null;
+        return undefined;
     }
     const next = cursor.next();
     if (!next) {
@@ -275,7 +275,7 @@ function handleMasu(cursor: TokenCursor) {
         const auxillary = nextWord(next);
         return new IpadicConjugation(token, auxillary);
     }
-    return null;
+    return undefined;
 }
 
 function isCopula(token: IpadicFeatures) {
@@ -301,7 +301,7 @@ function handleTa(cursor: TokenCursor) {
     if (token.conjugated_type === ConjugatedType.SpecialTa) {
         return new IpadicConjugation(token);
     }
-    return null;
+    return undefined;
 }
 
 
@@ -346,7 +346,7 @@ function handleDa(cursor: TokenCursor) {
         token.conjugated_form === ConjugatedForm.Continuative) {
         return new IpadicConjugation(token);
     }
-    return null;
+    return undefined;
 }
 
 function handleStemAuxillaryForm(cursor: TokenCursor) {
