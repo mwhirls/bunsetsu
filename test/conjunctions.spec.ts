@@ -5,9 +5,6 @@ import * as bunsetsu from "../src/index.js"
 function runTest(testCases: string[], auxillary: string, auxillaryIndex: number, context: TestContext, pos: bunsetsu.PartOfSpeech) {
     for (const expected of testCases) {
         it(`should identify ${auxillary} as a separate word in the phrase ${expected}`, function () {
-            if (auxillary === '買ってくれたり') {
-                debugger;
-            }
             assert.ok(context.segmenter);
             const words = context.segmenter!.segmentAsWords(expected);
             const index = auxillaryIndex < 0 ? words.length + auxillaryIndex : auxillaryIndex;
