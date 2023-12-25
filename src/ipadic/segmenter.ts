@@ -394,6 +394,7 @@ function handleVerbAdjective(cursor: TokenCursor): IpadicConjugation {
         case ConjugatedForm.PlainForm:
         case ConjugatedForm.ConditionalContraction1:
         case ConjugatedForm.ConditionalContraction2:
+        case ConjugatedForm.EuphonicChangeForm:
         case ConjugatedForm.ImperativeE:
         case ConjugatedForm.ImperativeI:
         case ConjugatedForm.ImperativeRo:

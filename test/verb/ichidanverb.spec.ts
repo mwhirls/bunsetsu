@@ -47,6 +47,13 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
+    describe('nai-form (euphonic change)', function () {
+      const verbs = [
+        { surfaceForm: '助けねえ', basicForm: '助ける', reading: 'タスケネエ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+    });
+
     describe('imperative as ろ variant', function () {
       const verbs = [
         { surfaceForm: '着ろ', basicForm: '着る', reading: 'キロ' },
