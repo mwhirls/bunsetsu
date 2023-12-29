@@ -292,20 +292,24 @@ function handleMasu(cursor: TokenCursor) {
     return undefined;
 }
 
-function isCopula(token: IpadicFeatures) {
-    const copulas = [
-        'だ',
-        'です',
-    ];
-    return copulas.some(x => x === token.basic_form);
+function isPlainCopula(token: IpadicFeatures) {
+    return token.basic_form == 'だ';
 }
 
-function isSeparateWord(cursor: TokenCursor) {
+function isPoliteCopula(token: IpadicFeatures) {
+    return token.basic_form == 'です';
+}
+
+function isSeparateWord(prev: TokenCursor, cursor: TokenCursor) {
     const token = cursor.token();
     const tokend = new IpadicPOSDetails(token);
+    if (isPlainCopula(token)) {
+        const prevToken = prev.token();
+        return prevToken.conjugated_form !== ConjugatedForm.TaConjunction;
+    }
     return tokend.isSentenceEndingParticle() ||
         isNominalizer(token) ||
-        isCopula(token) ||
+        isPoliteCopula(token) ||
         token.basic_form == 'じゃん';
 }
 
@@ -333,7 +337,7 @@ function handleAuxillaryVerb(cursor: TokenCursor) {
     }
     const token = cursor.token();
     const next = cursor.next();
-    if (!next || isSeparateWord(next)) {
+    if (!next || isSeparateWord(cursor, next)) {
         return new IpadicConjugation(token);
     }
     const stemForms = [
@@ -378,7 +382,7 @@ function handleStemAuxillaryForm(cursor: TokenCursor) {
         return result;
     }
     const next = cursor.next();
-    if (!next) {
+    if (!next || isSeparateWord(cursor, next)) {
         return new IpadicConjugation(token);
     }
     const auxillary = handleAuxillaryVerb(next);

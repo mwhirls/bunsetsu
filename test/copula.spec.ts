@@ -49,6 +49,7 @@ export function runTestSuite(context: TestContext) {
                 'ふっかけすぎです',
                 'ふっかけすぎだったのです',
                 'ふっかけすぎだったんです',
+                'どうすんです',
             ];
             runTest(cases, 'です', 'です', -1);
         });
