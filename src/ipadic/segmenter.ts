@@ -163,7 +163,7 @@ function handleTeForm(cursor: TokenCursor) {
     const nextToken = next.token();
     const teConjunctions = [
         'て', // group 早く＋て
-        'で', // group 泳い＋で
+        'で', // group 泳い＋で and ない＋で
         'ちゃ', // group 言っ＋ちゃいけない
         'じゃ' // group 飲ん＋じゃいけない
     ];
@@ -174,7 +174,7 @@ function handleTeForm(cursor: TokenCursor) {
             const subsidiaryVerb = handleTeWaForm(nextNext) ?? handleAuxillaryVerb(nextNext);
             particle.next = subsidiaryVerb;
         }
-        return new IpadicConjugation(token, particle, ConjugatedForm.TeConjunction);
+        return new IpadicConjugation(token, particle);
     }
     return undefined;
 }
@@ -197,7 +197,7 @@ function handleTariConditional(cursor: TokenCursor) {
     return undefined;
 }
 
-function handleTeConjunction(cursor: TokenCursor) {
+function handleTeDeConjunction(cursor: TokenCursor) {
     const teForm = handleTeForm(cursor);
     if (teForm) {
         return teForm;
@@ -343,7 +343,8 @@ function handleAuxillaryVerb(cursor: TokenCursor) {
         ConjugatedForm.GozaiConjunction,
         ConjugatedForm.Irrealis,
         ConjugatedForm.TaConjunction,
-        ConjugatedForm.TeConjunction
+        ConjugatedForm.TeConjunction,
+        ConjugatedForm.DeConjunction,
     ];
     const isStem = stemForms.some(x => x === token.conjugated_form);
     if (isStem) {
@@ -417,7 +418,8 @@ function handleVerbAdjective(cursor: TokenCursor): IpadicConjugation {
         case ConjugatedForm.TaConjunction:
             return handleStemAuxillaryForm(cursor);
         case ConjugatedForm.TeConjunction:
-            return handleTeConjunction(cursor);
+        case ConjugatedForm.DeConjunction:
+            return handleTeDeConjunction(cursor);
         default:
             throw new Error("unhandled verb/adjective conjugation");
     }

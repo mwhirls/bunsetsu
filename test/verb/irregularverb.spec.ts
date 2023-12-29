@@ -105,14 +105,14 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '来て', reading: 'キテ' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.TeConjunction);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Continuative);
     });
 
     describe('ちゃ (ては contracted)', function () {
       const verbs = [
         { surfaceForm: '来ちゃ', basicForm: '来る', reading: 'キチャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('なさい', function () {
@@ -243,14 +243,14 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: 'して', reading: 'シテ' },
       ];
-      runWordTestCase(verbs, bunsetsu.ConjugatedForm.TeConjunction);
+      runWordTestCase(verbs, bunsetsu.ConjugatedForm.Continuative);
     });
 
     describe('ちゃ (ては contracted)', function () {
       const verbs = [
         { surfaceForm: 'しちゃ', basicForm: 'する', reading: 'シチャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('passive form', function () {

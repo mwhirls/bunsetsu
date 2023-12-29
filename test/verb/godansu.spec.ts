@@ -64,6 +64,13 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
+    describe('ないで', function () {
+      const verbs = [
+        { surfaceForm: '話しかけないで', basicForm: "話しかける", reading: 'ハナシカケナイデ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+    });
+
     // TODO: hard to test imperative form because potential forms have their own
     // dictionary entries, and when they're in their continuative form
     // they look really similar to the imperative form
@@ -101,14 +108,14 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡して', basicForm: '渡す', reading: 'ワタシテ' },
         { surfaceForm: '貸して', basicForm: '貸す', reading: 'カシテ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ちゃ (ては contracted)', function () {
       const verbs = [
         { surfaceForm: '話しちゃ', basicForm: '話す', reading: 'ハナシチャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('past form', function () {
@@ -190,7 +197,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '渡してほしい', basicForm: '渡す', reading: 'ワタシテホシイ' },
         { surfaceForm: '貸してほしい', basicForm: '貸す', reading: 'カシテホシイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('まい', function () {

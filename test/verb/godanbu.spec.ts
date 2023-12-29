@@ -99,14 +99,14 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '選んで', basicForm: '選ぶ', reading: 'エランデ' },
         { surfaceForm: '喜んで', basicForm: '喜ぶ', reading: 'ヨロコンデ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('ちゃ (ては contracted)', function () {
       const verbs = [
         { surfaceForm: '呼んじゃ', basicForm: '呼ぶ', reading: 'ヨンジャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('past form', function () {
@@ -186,7 +186,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '選んでほしい', basicForm: '選ぶ', reading: 'エランデホシイ' },
         { surfaceForm: '喜んでほしい', basicForm: '喜ぶ', reading: 'ヨロコンデホシイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('たい', function () {

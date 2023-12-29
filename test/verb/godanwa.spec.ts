@@ -89,14 +89,14 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '会って', basicForm: '会う', reading: 'アッテ' },
         { surfaceForm: '違って', basicForm: '違う', reading: 'チガッテ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('ちゃ (ては contracted)', function () {
       const verbs = [
         { surfaceForm: '言っちゃ', basicForm: '言う', reading: 'イッチャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('past form', function () {
@@ -179,7 +179,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '会ってほしい', basicForm: '会う', reading: 'アッテホシイ' },
         { surfaceForm: '違ってほしい', basicForm: '違う', reading: 'チガッテホシイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('やがる', function () {

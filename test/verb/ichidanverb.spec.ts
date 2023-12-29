@@ -73,14 +73,14 @@ export function runTestSuite(context: TestContext) {
       const verbs = [
         { surfaceForm: '食べて', basicForm: '食べる', reading: 'タベテ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('ちゃ (ては contracted)', function () {
       const verbs = [
         { surfaceForm: '食べちゃ', basicForm: '食べる', reading: 'タベチャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('past form', function () {
@@ -147,7 +147,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '見てほしい', basicForm: '見る', reading: 'ミテホシイ' },
         { surfaceForm: '寝てほしい', basicForm: '寝る', reading: 'ネテホシイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.Continuative, context);
     });
 
     describe('やがる', function () {

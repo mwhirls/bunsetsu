@@ -102,14 +102,14 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '勝って', basicForm: '勝つ', reading: 'カッテ' },
         { surfaceForm: '育って', basicForm: '育つ', reading: 'ソダッテ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('ちゃ (ては contracted)', function () {
       const verbs = [
         { surfaceForm: '持っちゃ', basicForm: '持つ', reading: 'モッチャ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('past form', function () {
@@ -191,7 +191,7 @@ export function runTestSuite(context: TestContext) {
         { surfaceForm: '勝ってほしい', basicForm: '勝つ', reading: 'カッテホシイ' },
         { surfaceForm: '育ってほしい', basicForm: '育つ', reading: 'ソダッテホシイ' },
       ];
-      runTest(verbs, bunsetsu.ConjugatedForm.TeConjunction, context);
+      runTest(verbs, bunsetsu.ConjugatedForm.TaConjunction, context);
     });
 
     describe('まい', function () {

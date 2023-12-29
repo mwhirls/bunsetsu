@@ -50,6 +50,7 @@ export enum ConjugatedForm {
     SpecialIrrealis = '未然特殊',
     TaConjunction = '連用タ接続',
     TeConjunction = '連用テ接続',
+    DeConjunction = '連用デ接続',
 }
 
 // String literals from kuromoji (MeCab IPADIC)
