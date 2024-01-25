@@ -28,10 +28,10 @@ export function runTest(testCases: VerbTestCase[], conjugatedForm: bunsetsu.Conj
             assert.equal(words.length, 1);
 
             const word = words[0];
-            assert.equal(word.pos(), bunsetsu.PartOfSpeech.Verb);
-            assert.equal(word.surfaceForm(), expected.surfaceForm);
-            assert.equal(word.basicForm(), expected.basicForm);
-            assert.equal(word.reading(), expected.reading);
+            assert.equal(word.pos, bunsetsu.PartOfSpeech.Verb);
+            assert.equal(word.surfaceForm, expected.surfaceForm);
+            assert.equal(word.basicForm, expected.basicForm);
+            assert.equal(word.reading, expected.reading);
 
             assert.ok(word.tokens.length >= 1);
             const token = word.tokens[0];
@@ -56,10 +56,10 @@ export function runTestOnPhrase(testCases: PhraseTestCase[], conjugatedForm: bun
             const words = context.segmenter!.segmentAsWords(expected.phrase);
 
             const word = words[expected.index];
-            assert.equal(word.pos(), bunsetsu.PartOfSpeech.Verb);
-            assert.equal(word.surfaceForm(), expected.wordSurfaceForm);
-            assert.equal(word.basicForm(), expected.basicForm);
-            assert.equal(word.reading(), expected.reading);
+            assert.equal(word.pos, bunsetsu.PartOfSpeech.Verb);
+            assert.equal(word.surfaceForm, expected.wordSurfaceForm);
+            assert.equal(word.basicForm, expected.basicForm);
+            assert.equal(word.reading, expected.reading);
 
             assert.ok(word.tokens.length >= 1);
             const token = word.tokens[0];

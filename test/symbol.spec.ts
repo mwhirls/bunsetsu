@@ -12,10 +12,10 @@ export function runTestSuite(context: TestContext) {
         assert.equal(words.length, 1);
 
         const word = words[0];
-        assert.equal(word.pos(), bunsetsu.PartOfSpeech.Symbol);
-        assert.equal(word.surfaceForm(), c);
+        assert.equal(word.pos, bunsetsu.PartOfSpeech.Symbol);
+        assert.equal(word.surfaceForm, c);
         if (type === bunsetsu.WordType.Known) {
-          assert.equal(word.basicForm(), c);
+          assert.equal(word.basicForm, c);
         }
 
         assert.equal(word.tokens.length, 1);

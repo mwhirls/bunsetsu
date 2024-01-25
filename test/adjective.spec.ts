@@ -22,10 +22,10 @@ export function runTestSuite(context: TestContext) {
           assert.ok(words.length >= 1);
 
           const word = words[0];
-          assert.equal(word.pos(), bunsetsu.PartOfSpeech.iAdjective);
-          assert.equal(word.surfaceForm(), expected.surfaceForm);
-          assert.equal(word.basicForm(), expected.basicForm);
-          assert.equal(word.reading(), expected.reading);
+          assert.equal(word.pos, bunsetsu.PartOfSpeech.iAdjective);
+          assert.equal(word.surfaceForm, expected.surfaceForm);
+          assert.equal(word.basicForm, expected.basicForm);
+          assert.equal(word.reading, expected.reading);
 
           assert.ok(word.tokens.length >= 1);
           const token = word.tokens[0];

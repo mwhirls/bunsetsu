@@ -4,29 +4,23 @@ import { IpadicNode } from "./token.js";
 
 export class IpadicWord implements Word {
     tokens: Token[];
+    pos: PartOfSpeech;
+    surfaceForm: string;
+    wordType: WordType;
+    basicForm: string | undefined;
+    reading: string | undefined;
+    pronunciation: string | undefined;
 
     constructor(root: IpadicNode) {
         this.tokens = flatten(root);
+        this.pos = this.root().pos;
+        this.surfaceForm = this.tokens.reduce((acc, t) => acc + t.surfaceForm, "");
+        this.wordType = this.root().wordType;
+        this.basicForm = this.wordType === WordType.Known ? this.root().basicForm : undefined;
+        this.reading = this.tokens.reduce((acc, t) => acc + t.reading, "");
+        this.pronunciation = this.tokens.reduce((acc, t) => acc + t.pronunciation, "");
     }
 
-    pos(): PartOfSpeech {
-        return this.root().pos;
-    }
-    surfaceForm(): string {
-        return this.tokens.reduce((acc, t) => acc + t.surfaceForm, "");
-    }
-    wordType(): WordType {
-        return this.root().wordType;
-    }
-    basicForm(): string | undefined {
-        return this.wordType() === WordType.Known ? this.root().basicForm : undefined
-    }
-    reading(): string | undefined {
-        return this.tokens.reduce((acc, t) => acc + t.reading, "");
-    }
-    pronunciation(): string | undefined {
-        return this.tokens.reduce((acc, t) => acc + t.pronunciation, "");
-    }
     root(): Token {
         return this.tokens[0];
     }

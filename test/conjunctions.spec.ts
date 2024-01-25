@@ -11,8 +11,8 @@ function runTest(testCases: string[], auxillary: string, auxillaryIndex: number,
             assert.ok(index >= 0);
 
             const word = words[index];
-            assert.equal(word.pos(), pos);
-            assert.equal(word.surfaceForm(), auxillary);
+            assert.equal(word.pos, pos);
+            assert.equal(word.surfaceForm, auxillary);
         });
     }
 }

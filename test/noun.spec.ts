@@ -13,9 +13,9 @@ export function runTestSuite(context: TestContext) {
                     assert.equal(words.length, 1);
 
                     const word = words[0];
-                    assert.equal(word.pos(), bunsetsu.PartOfSpeech.Noun);
-                    assert.equal(word.surfaceForm(), n);
-                    assert.equal(word.basicForm(), n);
+                    assert.equal(word.pos, bunsetsu.PartOfSpeech.Noun);
+                    assert.equal(word.surfaceForm, n);
+                    assert.equal(word.basicForm, n);
                     assert.equal(word.tokens.length, 1);
                 });
             }
@@ -31,9 +31,9 @@ export function runTestSuite(context: TestContext) {
                     assert.equal(words.length, 1);
 
                     const word = words[0];
-                    assert.equal(word.pos(), bunsetsu.PartOfSpeech.Noun);
-                    assert.equal(word.surfaceForm(), suruVerb);
-                    assert.equal(word.basicForm(), n);
+                    assert.equal(word.pos, bunsetsu.PartOfSpeech.Noun);
+                    assert.equal(word.surfaceForm, suruVerb);
+                    assert.equal(word.basicForm, n);
 
                     assert.equal(word.tokens.length, 2);
                     const nounToken = word.tokens[0];
@@ -54,9 +54,9 @@ export function runTestSuite(context: TestContext) {
                     assert.equal(words.length, 1);
 
                     const word = words[0];
-                    assert.equal(word.pos(), bunsetsu.PartOfSpeech.Noun);
-                    assert.equal(word.surfaceForm(), suruVerb);
-                    assert.equal(word.basicForm(), n);
+                    assert.equal(word.pos, bunsetsu.PartOfSpeech.Noun);
+                    assert.equal(word.surfaceForm, suruVerb);
+                    assert.equal(word.basicForm, n);
 
                     assert.equal(word.tokens.length, 3);
                     const nounToken = word.tokens[0];
@@ -78,9 +78,9 @@ export function runTestSuite(context: TestContext) {
                     assert.ok(words.length > 1);
 
                     const word = words[0];
-                    assert.equal(word.pos(), bunsetsu.PartOfSpeech.Noun);
-                    assert.equal(word.surfaceForm(), c.noun);
-                    assert.equal(word.basicForm(), c.noun);
+                    assert.equal(word.pos, bunsetsu.PartOfSpeech.Noun);
+                    assert.equal(word.surfaceForm, c.noun);
+                    assert.equal(word.basicForm, c.noun);
                 });
             }
         });

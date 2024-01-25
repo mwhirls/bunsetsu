@@ -12,9 +12,9 @@ export function runTestSuite(context: TestContext) {
                 assert.ok(index >= 0);
 
                 const word = words[index];
-                assert.equal(word.pos(), bunsetsu.PartOfSpeech.AuxillaryVerb);
-                assert.equal(word.surfaceForm(), copulaSurfaceForm);
-                assert.equal(word.basicForm(), copulaBaseForm);
+                assert.equal(word.pos, bunsetsu.PartOfSpeech.AuxillaryVerb);
+                assert.equal(word.surfaceForm, copulaSurfaceForm);
+                assert.equal(word.basicForm, copulaBaseForm);
             });
         }
     }

@@ -15,9 +15,9 @@ function runTest(testCases: TestCase[], subsidiaryVerb: string, subsidiaryIndex:
             assert.equal(words.length, 1);
 
             const word = words[0];
-            assert.equal(word.pos(), bunsetsu.PartOfSpeech.Verb);
-            assert.equal(word.surfaceForm(), expected.surfaceForm);
-            assert.equal(word.basicForm(), expected.basicForm);
+            assert.equal(word.pos, bunsetsu.PartOfSpeech.Verb);
+            assert.equal(word.surfaceForm, expected.surfaceForm);
+            assert.equal(word.basicForm, expected.basicForm);
 
             assert.ok(word.tokens.length > subsidiaryIndex);
             const stem = word.tokens[0];
