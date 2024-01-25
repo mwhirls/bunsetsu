@@ -5,7 +5,7 @@ export interface Word {
     pos: PartOfSpeech;
     surfaceForm: string;
     wordType: WordType;
-    basicForm: string | undefined;
+    baseForm: string | undefined;
     reading: string | undefined;
     pronunciation: string | undefined;
 }

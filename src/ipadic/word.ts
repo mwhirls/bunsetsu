@@ -7,7 +7,7 @@ export class IpadicWord implements Word {
     pos: PartOfSpeech;
     surfaceForm: string;
     wordType: WordType;
-    basicForm: string | undefined;
+    baseForm: string | undefined;
     reading: string | undefined;
     pronunciation: string | undefined;
 
@@ -16,7 +16,7 @@ export class IpadicWord implements Word {
         this.pos = this.root().pos;
         this.surfaceForm = this.tokens.reduce((acc, t) => acc + t.surfaceForm, "");
         this.wordType = this.root().wordType;
-        this.basicForm = this.wordType === WordType.Known ? this.root().basicForm : undefined;
+        this.baseForm = this.wordType === WordType.Known ? this.root().baseForm : undefined;
         this.reading = this.tokens.reduce((acc, t) => acc + t.reading, "");
         this.pronunciation = this.tokens.reduce((acc, t) => acc + t.pronunciation, "");
     }
@@ -38,7 +38,7 @@ function flatten(root: IpadicNode): Token[] {
             pos: node.pos,
             surfaceForm: node.token.surface_form,
             wordType: wordType,
-            basicForm: node.token.basic_form,
+            baseForm: node.token.basic_form,
             reading: node.token.reading,
             pronunciation: node.token.pronunciation,
             detail: node.detail,

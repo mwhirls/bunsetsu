@@ -13,7 +13,7 @@ function runTest(testCases: string[], particle: string, particleIndex: number, c
             const word = words[index];
             assert.equal(word.pos, bunsetsu.PartOfSpeech.Particle);
             assert.equal(word.surfaceForm, particle);
-            assert.equal(word.basicForm, particle);
+            assert.equal(word.baseForm, particle);
         });
     }
 }

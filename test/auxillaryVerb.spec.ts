@@ -13,7 +13,7 @@ function runTest(testCases: string[], auxillary: string, auxillaryIndex: number,
             const word = words[index];
             assert.equal(word.pos, bunsetsu.PartOfSpeech.AuxillaryVerb);
             assert.equal(word.surfaceForm, auxillary);
-            assert.equal(word.basicForm, auxillary);
+            assert.equal(word.baseForm, auxillary);
         });
     }
 }

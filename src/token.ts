@@ -84,7 +84,7 @@ export interface Token {
     pos: PartOfSpeech;
     surfaceForm: string;
     wordType: WordType;
-    basicForm: string;
+    baseForm: string;
     reading: string | undefined;
     pronunciation: string | undefined;
     detail?: TokenDetail;

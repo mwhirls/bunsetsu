@@ -14,7 +14,7 @@ export function runTestSuite(context: TestContext) {
                 const word = words[index];
                 assert.equal(word.pos, bunsetsu.PartOfSpeech.AuxillaryVerb);
                 assert.equal(word.surfaceForm, copulaSurfaceForm);
-                assert.equal(word.basicForm, copulaBaseForm);
+                assert.equal(word.baseForm, copulaBaseForm);
             });
         }
     }

@@ -15,7 +15,7 @@ export function runTestSuite(context: TestContext) {
                     const word = words[0];
                     assert.equal(word.pos, bunsetsu.PartOfSpeech.Noun);
                     assert.equal(word.surfaceForm, n);
-                    assert.equal(word.basicForm, n);
+                    assert.equal(word.baseForm, n);
                     assert.equal(word.tokens.length, 1);
                 });
             }
@@ -33,13 +33,13 @@ export function runTestSuite(context: TestContext) {
                     const word = words[0];
                     assert.equal(word.pos, bunsetsu.PartOfSpeech.Noun);
                     assert.equal(word.surfaceForm, suruVerb);
-                    assert.equal(word.basicForm, n);
+                    assert.equal(word.baseForm, n);
 
                     assert.equal(word.tokens.length, 2);
                     const nounToken = word.tokens[0];
-                    assert.equal(nounToken.basicForm, n);
+                    assert.equal(nounToken.baseForm, n);
                     const suruToken = word.tokens[1];
-                    assert.equal(suruToken.basicForm, 'する');
+                    assert.equal(suruToken.baseForm, 'する');
                 });
             }
         });
@@ -56,13 +56,13 @@ export function runTestSuite(context: TestContext) {
                     const word = words[0];
                     assert.equal(word.pos, bunsetsu.PartOfSpeech.Noun);
                     assert.equal(word.surfaceForm, suruVerb);
-                    assert.equal(word.basicForm, n);
+                    assert.equal(word.baseForm, n);
 
                     assert.equal(word.tokens.length, 3);
                     const nounToken = word.tokens[0];
-                    assert.equal(nounToken.basicForm, n);
+                    assert.equal(nounToken.baseForm, n);
                     const suruToken = word.tokens[1];
-                    assert.equal(suruToken.basicForm, 'する');
+                    assert.equal(suruToken.baseForm, 'する');
                 });
             }
         });
@@ -80,7 +80,7 @@ export function runTestSuite(context: TestContext) {
                     const word = words[0];
                     assert.equal(word.pos, bunsetsu.PartOfSpeech.Noun);
                     assert.equal(word.surfaceForm, c.noun);
-                    assert.equal(word.basicForm, c.noun);
+                    assert.equal(word.baseForm, c.noun);
                 });
             }
         });

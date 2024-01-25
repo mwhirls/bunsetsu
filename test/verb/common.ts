@@ -4,7 +4,7 @@ import * as bunsetsu from "../../src/index.js"
 
 export type VerbTestCase = {
     surfaceForm: string;
-    basicForm: string;
+    baseForm: string;
     reading: string;
     auxillary?: string;
     auxillaryIndex?: number;
@@ -14,7 +14,7 @@ export type PhraseTestCase = {
     phrase: string;
     index: number;
     wordSurfaceForm: string;
-    basicForm: string;
+    baseForm: string;
     reading: string;
     auxillary?: string;
     auxillaryIndex?: number;
@@ -30,7 +30,7 @@ export function runTest(testCases: VerbTestCase[], conjugatedForm: bunsetsu.Conj
             const word = words[0];
             assert.equal(word.pos, bunsetsu.PartOfSpeech.Verb);
             assert.equal(word.surfaceForm, expected.surfaceForm);
-            assert.equal(word.basicForm, expected.basicForm);
+            assert.equal(word.baseForm, expected.baseForm);
             assert.equal(word.reading, expected.reading);
 
             assert.ok(word.tokens.length >= 1);
@@ -43,7 +43,7 @@ export function runTest(testCases: VerbTestCase[], conjugatedForm: bunsetsu.Conj
             if (expected.auxillary && expected.auxillaryIndex) {
                 const auxIdx = expected.auxillaryIndex ?? 1;
                 assert.ok(word.tokens.length > auxIdx);
-                assert.equal(word.tokens[auxIdx].basicForm, expected.auxillary);
+                assert.equal(word.tokens[auxIdx].baseForm, expected.auxillary);
             }
         });
     }
@@ -58,7 +58,7 @@ export function runTestOnPhrase(testCases: PhraseTestCase[], conjugatedForm: bun
             const word = words[expected.index];
             assert.equal(word.pos, bunsetsu.PartOfSpeech.Verb);
             assert.equal(word.surfaceForm, expected.wordSurfaceForm);
-            assert.equal(word.basicForm, expected.basicForm);
+            assert.equal(word.baseForm, expected.baseForm);
             assert.equal(word.reading, expected.reading);
 
             assert.ok(word.tokens.length >= 1);
@@ -71,7 +71,7 @@ export function runTestOnPhrase(testCases: PhraseTestCase[], conjugatedForm: bun
             if (expected.auxillary && expected.auxillaryIndex) {
                 const auxIdx = expected.auxillaryIndex ?? 1;
                 assert.ok(word.tokens.length > auxIdx);
-                assert.equal(word.tokens[auxIdx].basicForm, expected.auxillary);
+                assert.equal(word.tokens[auxIdx].baseForm, expected.auxillary);
             }
         });
     }
