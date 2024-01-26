@@ -39,6 +39,14 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
+    describe('ず', () => {
+      const verbs = [
+        { surfaceForm: '死なず', baseForm: "死ぬ", reading: 'シナズ' },
+        { surfaceForm: '死なずに', baseForm: "死ぬ", reading: 'シナズニ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+    });
+
     // TODO: tricky to test imperative form because 死ねる has its own dictionary entry
 
     describe('なさい', function () {

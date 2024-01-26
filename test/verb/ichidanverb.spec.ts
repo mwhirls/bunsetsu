@@ -54,6 +54,21 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
+    describe('ないで', function () {
+      const verbs = [
+        { surfaceForm: '話しかけないで', baseForm: "話しかける", reading: 'ハナシカケナイデ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+    });
+
+    describe('ず', () => {
+      const verbs = [
+        { surfaceForm: '食べず', baseForm: "食べる", reading: 'タベズ' },
+        { surfaceForm: '食べずに', baseForm: "食べる", reading: 'タベズニ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+    });
+
     describe('imperative as ろ variant', function () {
       const verbs = [
         { surfaceForm: '着ろ', baseForm: '着る', reading: 'キロ' },

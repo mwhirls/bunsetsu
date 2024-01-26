@@ -64,6 +64,14 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
+    describe('ず', () => {
+      const verbs = [
+        { surfaceForm: '飲まず', baseForm: "飲む", reading: 'ノマズ' },
+        { surfaceForm: '飲まずに', baseForm: "飲む", reading: 'ノマズニ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+    });
+
     // TODO: hard to test imperative because potential forms have their own
     // dictionary entries, and when they're in their continuative form
     // they look really similar to the imperative form

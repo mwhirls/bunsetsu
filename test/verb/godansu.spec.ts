@@ -64,9 +64,10 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
-    describe('ないで', function () {
+    describe('ず', () => {
       const verbs = [
-        { surfaceForm: '話しかけないで', baseForm: "話しかける", reading: 'ハナシカケナイデ' },
+        { surfaceForm: '話さず', baseForm: "話す", reading: 'ハナサズ' },
+        { surfaceForm: '話さずに', baseForm: "話す", reading: 'ハナサズニ' },
       ];
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });

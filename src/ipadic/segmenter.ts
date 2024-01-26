@@ -322,6 +322,22 @@ function handleTa(cursor: TokenCursor) {
     return undefined;
 }
 
+function handleZu(cursor: TokenCursor) {
+    const token = cursor.token();
+    if (token.conjugated_type !== ConjugatedType.SpecialNu) {
+        return undefined;
+    }
+    const next = cursor.next();
+    if (next) {
+        const nextToken = next.token();
+        // group ずに as in 言わずに together
+        if (nextToken.pos == PartOfSpeech.Particle && nextToken.surface_form === 'に') {
+            const auxillary = nextWord(next);
+            return new IpadicConjugation(token, auxillary);
+        }
+    }
+    return new IpadicConjugation(token);
+}
 
 function handleAuxillaryVerb(cursor: TokenCursor) {
     if (!isAuxillaryVerb(cursor)) {
@@ -331,6 +347,7 @@ function handleAuxillaryVerb(cursor: TokenCursor) {
         handleSuffix,
         handleMasu,
         handleTa,
+        handleZu,
     ]);
     if (result) {
         return result;

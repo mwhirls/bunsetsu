@@ -91,6 +91,14 @@ export function runTestSuite(context: TestContext) {
       runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
     });
 
+    describe('ず', () => {
+      const verbs = [
+        { surfaceForm: '殴らず', baseForm: "殴る", reading: 'ナグラズ' },
+        { surfaceForm: '殴らずに', baseForm: "殴る", reading: 'ナグラズニ' },
+      ];
+      runTest(verbs, bunsetsu.ConjugatedForm.Irrealis, context);
+    });
+
     describe('imperative as れ variant', function () {
       const verbs = [
         { surfaceForm: '殴れ', baseForm: '殴る', reading: 'ナグレ' },

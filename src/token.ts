@@ -32,6 +32,7 @@ export enum ConjugatedForm {
     ConditionalContraction1 = '仮定縮約１',
     ConditionalContraction2 = '仮定縮約２',
     Continuative = '連用形',
+    ContinuativeConjunction = '連用ニ接続',
     EuphonicChangeForm = '音便基本形',
     IndeclinableNominalConjunction = '体言接続',
     GaruConjunction = 'ガル接続',
@@ -72,6 +73,7 @@ export enum ConjugatedType {
     SpecialYa = '特殊・ヤ',
     SpecialDa = '特殊・ダ',
     SpecialNai = '特殊・ナイ',
+    SpecialNu = '特殊・ヌ',
 }
 
 // String literals from kuromoji (MeCab IPADIC)
