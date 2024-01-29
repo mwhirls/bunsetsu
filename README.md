@@ -20,6 +20,34 @@ This library builds on top of kuromoji to group the morphemes it produces into f
 
 See the test cases under '/test/' to get a sense of the types of tokens bunsetsu groups together as a single word unit.
 
+## Debugging Unit Tests in VSCode
+
+The source code is written in Typescript using ES modules, and the unit tests are written using [MochaJS](https://mochajs.org/). In order to debug the Typescript unit tests, you must run the tests with `ts-node`.  Add the following configuration to your `launch.json` file in VSCode to get started:
+
+```
+{
+    "args": [
+        "${workspaceRoot}/test/**/*.spec.ts",
+        "--no-timeouts"
+    ],
+    "runtimeArgs": [
+        "--loader",
+        "ts-node/esm",
+    ],
+    "env": {
+        "TS_NODE_LOG_ERROR": "true"
+    },
+    "internalConsoleOptions": "openOnSessionStart",
+    "name": "Mocha Tests",
+    "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+    "request": "launch",
+    "skipFiles": [
+        "<node_internals>/**"
+    ],
+    "type": "node"
+}
+```
+
 ## License
 
 bunsetsu is licensed under the MIT license.
