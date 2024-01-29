@@ -33,7 +33,7 @@ describe('Segmenter', function () {
     });
   });
 
-  describe('PartOfSpeech', function () {
+  describe('segmentAsWords', function () {
     // Using async in 'describe()' can cause the test not
     // to print: https://github.com/mochajs/mocha/issues/2975
     const context: TestContext = { segmenter: null };
@@ -78,5 +78,75 @@ describe('Segmenter', function () {
     particle.runTestSuite(context);
     copula.runTestSuite(context);
     conjunction.runTestSuite(context);
+  });
+
+  describe('segmentAsSentences', function () {
+    const context: TestContext = { segmenter: null };
+    before(async () => {
+      context.segmenter = await bunsetsu.build(DICTIONARY_PATH);
+    });
+
+    describe('no punctuation', async function () {
+      const sentence = 'これはペンです';
+      it(`should identify ${sentence} as one sentence`, function () {
+        assert.ok(context.segmenter);
+        const sentences = context.segmenter.segmentAsSentences(sentence);
+        assert.equal(sentences.length, 1);
+        const s0 = sentences[0];
+        assert.equal(s0.words.length, 4);
+      });
+    });
+
+    describe('with full stop', async function () {
+      const sentence = 'これはペンです。あれもペンです。';
+      it(`should identify ${sentence} as two sentences`, function () {
+        assert.ok(context.segmenter);
+        const sentences = context.segmenter.segmentAsSentences(sentence);
+        assert.equal(sentences.length, 2);
+        const s0 = sentences[0];
+        const s1 = sentences[1];
+        assert.equal(s0.words.length, 5);
+        assert.equal(s1.words.length, 5);
+      });
+    });
+
+    describe('with question mark', async function () {
+      const sentence = 'これはペンですか？あれもペンです。';
+      it(`should identify ${sentence} as two sentences`, function () {
+        assert.ok(context.segmenter);
+        const sentences = context.segmenter.segmentAsSentences(sentence);
+        assert.equal(sentences.length, 2);
+        const s0 = sentences[0];
+        const s1 = sentences[1];
+        assert.equal(s0.words.length, 6);
+        assert.equal(s1.words.length, 5);
+      });
+    });
+
+    describe('with exclamation mark', async function () {
+      const sentence = 'これはペンですよ！あれもペンですよ！';
+      it(`should identify ${sentence} as two sentences`, function () {
+        assert.ok(context.segmenter);
+        const sentences = context.segmenter.segmentAsSentences(sentence);
+        assert.equal(sentences.length, 2);
+        const s0 = sentences[0];
+        const s1 = sentences[1];
+        assert.equal(s0.words.length, 6);
+        assert.equal(s1.words.length, 6);
+      });
+    });
+
+    describe('with tententen', async function () {
+      const sentence = 'これはペンです…あれもペンです…';
+      it(`should identify ${sentence} as two sentences`, function () {
+        assert.ok(context.segmenter);
+        const sentences = context.segmenter.segmentAsSentences(sentence);
+        assert.equal(sentences.length, 2);
+        const s0 = sentences[0];
+        const s1 = sentences[1];
+        assert.equal(s0.words.length, 5);
+        assert.equal(s1.words.length, 5);
+      });
+    });
   });
 });

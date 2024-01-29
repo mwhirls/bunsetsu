@@ -472,6 +472,18 @@ function nextWord(cursor: TokenCursor): IpadicNode {
     }
 }
 
+function isSentenceDelimiter(cursor: TokenCursor) {
+    const token = cursor.token();
+    const punctuation = ['。', '！', '？', '…'];
+    const next = cursor.next();
+    if (!next) {
+        return punctuation.includes(token.surface_form);
+    }
+    const endQuotes = ['」', '】', '』'];
+    return punctuation.includes(token.surface_form) &&
+        !endQuotes.includes(next.token().surface_form);
+}
+
 function nextSentence(tokens: kuromoji.IpadicFeatures[], start: number): IpadicSentence {
     const result = [];
     let index = start;
@@ -480,7 +492,12 @@ function nextSentence(tokens: kuromoji.IpadicFeatures[], start: number): IpadicS
         const word = new IpadicWord(root);
         index += word.tokens.length;
         result.push(word);
-        // todo: break sentence
+        const last = index - 1 < tokens.length ? index - 1 : undefined;
+        if (last) {
+            if (isSentenceDelimiter(new TokenCursor(tokens, last))) {
+                return { words: result, start, end: index };
+            }
+        }
     }
     return { words: result, start, end: index };
 }
