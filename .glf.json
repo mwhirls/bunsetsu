@@ -1,0 +1,10 @@
+{
+    "inputs": [
+        "./package.json"
+    ],
+    "output": "./NOTICE.txt",
+    "lineEnding": "lf",
+    "replace": {
+        "kuromoji@0.1.2": "./node_modules/kuromoji/LICENSE-2.0.txt"
+    }
+}
