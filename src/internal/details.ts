@@ -1,5 +1,5 @@
 import { IpadicFeatures } from "kuromoji";
-import { PartOfSpeech, SymbolType } from "./token.js";
+import { PartOfSpeech, SymbolType } from "../token.js";
 
 export enum DetailsType {
     Suffix = '接尾',

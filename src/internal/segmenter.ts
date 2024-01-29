@@ -2,7 +2,7 @@ import kuromoji, { IpadicFeatures } from "kuromoji";
 import { Segmenter } from "../segmenter.js";
 import { PartOfSpeech, ConjugatedForm, ConjugatedType } from "../token.js";
 import { Sentence, Word } from "../word.js";
-import { IpadicPOSDetails } from "../details.js";
+import { IpadicPOSDetails } from "./details.js";
 import { IpadicConjugation, IpadicNode, IpadicSymbol } from "./token.js";
 import { IpadicSentence, IpadicWord } from "./word.js";
 

@@ -17,7 +17,10 @@
     "dev": "rollup --config --watch",
     "prepublish": "npm run clean && npm run lint && npm run test && npm run build"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mwhirls/bunsetsu.git"
+  },
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",

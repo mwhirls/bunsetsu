@@ -1,6 +1,6 @@
 // string literals from kuromoji (Mecab IPADIC)
 export enum PartOfSpeech {
-    Filler = 'フィラー', // 「あのー」「えーと」
+    Filler = 'フィラー',
     Interjection = '感動詞',
     Symbol = '記号',
     iAdjective = '形容詞',
