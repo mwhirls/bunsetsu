@@ -281,8 +281,10 @@ function handleMasu(cursor: TokenCursor) {
         const masen = nextWord(next);
         const nextNext = next.next();
         if (nextNext) {
-            const desu = nextWord(nextNext);
-            masen.next = desu;
+            if (isPoliteCopula(nextNext.token())) {
+                const desu = nextWord(nextNext);
+                masen.next = desu;
+            }
         }
         return new IpadicConjugation(token, masen);
     } else if (nextToken.pos === PartOfSpeech.AuxillaryVerb) { // まし（た）

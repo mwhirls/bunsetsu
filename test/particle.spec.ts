@@ -204,5 +204,12 @@ export function runTestSuite(context: TestContext) {
             ];
             runTest(cases, 'から', -1, context);
         });
+
+        describe('ので', function () {
+            const cases = [
+                'いつもめ事を起こすか分かりませんので',
+            ];
+            runTest(cases, 'ので', -1, context);
+        });
     });
 }
