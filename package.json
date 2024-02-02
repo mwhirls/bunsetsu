@@ -13,6 +13,7 @@
     "clean": "rm -rf dist/",
     "lint": "eslint \"./{src,test}/**/*.{js,cjs,mjs,ts}\"",
     "test": "env TS_NODE_LOG_ERROR=true && mocha \"./test/*.{js,cjs,mjs,ts}\"",
+    "coverage": "c8 --lines 95 --functions 95 --branches 95 npm test",
     "build": "rollup --config",
     "dev": "rollup --config --watch",
     "prepublish": "npm run clean && npm run lint && npm run test && npm run build"
@@ -34,6 +35,7 @@
     "@types/node": "^20.10.3",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
+    "c8": "^9.1.0",
     "chai": "^4.3.10",
     "eslint": "^8.55.0",
     "generate-license-file": "^3.0.1",
