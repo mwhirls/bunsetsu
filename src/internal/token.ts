@@ -1,5 +1,5 @@
 import { IpadicFeatures } from "kuromoji";
-import { ConjugatedForm, ConjugationDetail, DetailType, PartOfSpeech, SymbolDetail, SymbolType, TokenDetail } from "../token.js";
+import { ConjugatedForm, ConjugationDetail, PartOfSpeech, SymbolDetail, SymbolType, TokenDetail } from "../token.js";
 import { IpadicPOSDetails } from "./details.js";
 
 export class IpadicNode {
@@ -50,22 +50,22 @@ export class IpadicSymbol extends IpadicNode {
 }
 
 export class IpadicSymbolDetail implements SymbolDetail {
-    type: DetailType.SymbolDetail;
+    type: "SymbolDetail";
     symbolType: SymbolType;
 
     constructor(token: IpadicFeatures) {
-        this.type = DetailType.SymbolDetail;
+        this.type = "SymbolDetail";
         const details = new IpadicPOSDetails(token);
         this.symbolType = details.symbolType() ?? SymbolType.Unknown;
     }
 }
 
 export class IpadicConjugationDetail implements ConjugationDetail {
-    type: DetailType.ConjugationDetail;
+    type: "ConjugationDetail";
     conjugatedForm: ConjugatedForm
 
     constructor(conjugatedForm: ConjugatedForm) {
-        this.type = DetailType.ConjugationDetail;
+        this.type = "ConjugationDetail";
         this.conjugatedForm = conjugatedForm;
     }
 }

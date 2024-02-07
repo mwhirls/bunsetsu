@@ -36,7 +36,7 @@ export function runTest(testCases: VerbTestCase[], conjugatedForm: bunsetsu.Conj
             assert.ok(word.tokens.length >= 1);
             const token = word.tokens[0];
             assert.ok(token.detail);
-            assert.equal(token.detail!.type, bunsetsu.DetailType.ConjugationDetail);
+            assert.equal(token.detail!.type, "ConjugationDetail");
             const detail = token.detail as bunsetsu.ConjugationDetail;
             assert.equal(detail.conjugatedForm, conjugatedForm);
 
@@ -64,7 +64,7 @@ export function runTestOnPhrase(testCases: PhraseTestCase[], conjugatedForm: bun
             assert.ok(word.tokens.length >= 1);
             const token = word.tokens[0];
             assert.ok(token.detail);
-            assert.equal(token.detail!.type, bunsetsu.DetailType.ConjugationDetail);
+            assert.equal(token.detail!.type, "ConjugationDetail");
             const detail = token.detail as bunsetsu.ConjugationDetail;
             assert.equal(detail.conjugatedForm, conjugatedForm);
 

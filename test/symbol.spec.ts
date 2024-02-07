@@ -21,7 +21,7 @@ export function runTestSuite(context: TestContext) {
         assert.equal(word.tokens.length, 1);
         const token = word.tokens[0];
         assert.ok(token.detail);
-        assert.equal(token.detail.type, bunsetsu.DetailType.SymbolDetail);
+        assert.equal(token.detail.type, "SymbolDetail");
         const detail = token.detail as bunsetsu.SymbolDetail;
         assert.equal(detail.symbolType, symbolType);
       });
