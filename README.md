@@ -1,8 +1,16 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
+<div align="center">
+    <h1>bunsetsu</h1>
+</div>
+<p align="center">
+  A wrapper library around <a href="https://github.com/takuyaa/kuromoji.js">kuromoji</a> that intelligently groups Japanese morphemes into words
+</p>
+<div align="center">
+    <a href="https://github.com/mwhirls/jimakun/actions"><img src="https://img.shields.io/github/actions/workflow/status/mwhirls/jimakun/build.yml?branch=main" alt="Build Status"></a>
+    <a href="https://github.com/mwhirls/bunsetsu/blob/main/LICENSE.txt"><img alt="GitHub License" src="https://img.shields.io/github/license/mwhirls/bunsetsu"></a>
+    <img alt="Static Badge" src="https://img.shields.io/badge/stability-experimental-yellow?style=flat">
+</div>
 
-# bunsetsu
-A wrapper library around [kuromoji](https://github.com/takuyaa/kuromoji.js) that intelligently groups Japanese morphemes into words
+## About
 
 Kuromoji and other morphological parsers tokenize Japanese sentences into morphemes, which may or may not correspond to what we typically think of as word unit.  This means that conjugations of a verb are typically parsed as multiple tokens separate from the stem-form of the word.  For example, the te-form of a verb, such as 食べる (taberu), is parsed as 食べ and て instead of together as 食べて.
 
