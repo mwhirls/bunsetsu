@@ -2,7 +2,7 @@
     <h1>bunsetsu</h1>
 </div>
 <p align="center">
-  A wrapper library around <a href="https://github.com/takuyaa/kuromoji.js">kuromoji</a> that intelligently groups Japanese morphemes into words
+  A wrapper library written in Typescript around <a href="https://github.com/takuyaa/kuromoji.js">kuromoji</a> that intelligently groups Japanese morphemes into words
 </p>
 <div align="center">
     <a href="https://github.com/mwhirls/bunsetsu/actions"><img src="https://img.shields.io/github/actions/workflow/status/mwhirls/bunsetsu/build.yml?branch=main" alt="Build Status"></a>
@@ -27,6 +27,9 @@ This library builds on top of kuromoji to group the morphemes it produces into f
 * The base verb plus some auxillary verbs, such as ～てくれる・～てもらう・～てあげる (tekureru / temorau / teageru) and their polite equivalents.
 
 See the test cases under '/test/' to get a sense of the types of tokens bunsetsu groups together as a single word unit.
+
+## Support
+bunsetsu is ESM library that supports both server and browser.
 
 ## Debugging Unit Tests in VSCode
 
