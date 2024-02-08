@@ -5,8 +5,8 @@
   A wrapper library around <a href="https://github.com/takuyaa/kuromoji.js">kuromoji</a> that intelligently groups Japanese morphemes into words
 </p>
 <div align="center">
-    <a href="https://github.com/mwhirls/jimakun/actions"><img src="https://img.shields.io/github/actions/workflow/status/mwhirls/jimakun/build.yml?branch=main" alt="Build Status"></a>
-    <a href="https://github.com/mwhirls/bunsetsu/blob/main/LICENSE.txt"><img alt="GitHub License" src="https://img.shields.io/github/license/mwhirls/bunsetsu"></a>
+    <a href="https://github.com/mwhirls/bunsetsu/actions"><img src="https://img.shields.io/github/actions/workflow/status/mwhirls/bunsetsu/build.yml?branch=main" alt="Build Status"></a>
+    <a href="https://github.com/mwhirls/bunsetsu/blob/main/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/mwhirls/bunsetsu"></a>
     <img alt="Static Badge" src="https://img.shields.io/badge/stability-experimental-yellow?style=flat">
 </div>
 
